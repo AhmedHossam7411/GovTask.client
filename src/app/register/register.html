@@ -1,0 +1,36 @@
+<form [formGroup]="form" class="bg-gray-300 p-6 rounded-lg shadow-lg w-96 mt-24 flex justify-center">
+  <h2 class="font-bold">Register</h2>
+
+  <div class="p-2">
+    <div class="p-2">
+      <label for="email">Username</label>
+      <input id="Username" type="name" formControlName="Username"
+      class="rounded-lg"
+      />
+    </div>
+  <div class="p-2">
+    <div class="p-2">
+      <label for="email">Email </label>
+      <input id="email" type="email" formControlName="email"
+      class="rounded-lg"
+      />
+    </div>
+  
+    <div class="pr-10">
+      <label for="password">Password </label>
+      <input id="password" type="password" formControlName="password"
+      class="rounded-lg"
+      />
+    </div>
+
+    <button class=" hover:font- mt-4 mx-auto block">Login</button>
+  </div>
+  @if (emailIsInvalid) 
+  {
+    <p>Please enter a valid email address.</p>
+  }
+  @if (passwordIsInvalid) 
+  {
+    <p>Password must be at least 6 characters long.</p>
+  }
+</form>
