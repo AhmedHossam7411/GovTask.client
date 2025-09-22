@@ -62,7 +62,7 @@ export class register {
   }
   onSubmit() {
      if (this.form.invalid) {
-    this.form.markAllAsTouched(); // show validation errors
+    this.form.markAllAsTouched(); 
     return;
   }
   const formValue: RegisterRequest = this.form.value as RegisterRequest;
