@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { RegisterRequest } from './registerReq.model';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 
 
@@ -27,7 +27,7 @@ function passwordRules(control: AbstractControl)
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
