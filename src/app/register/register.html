@@ -1,5 +1,5 @@
 <div class="flex justify-center h-[515px]">
-<form [formGroup]="form" class="bg-gray-300 p-6 rounded-lg shadow-lg w-[20rem] mt-24">
+<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 rounded-lg shadow-lg w-[20rem] mt-24">
   <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Register</h2>
   
   <div class="pt-8">
@@ -36,6 +36,7 @@
        </div>
       
        </div>
-       <button class=" hover:border-gray-400 hover:bg-lime-300 py-2 bg-lime-200 font-semibold rounded-full px-5 text-sm mx-auto block mt-10 ">Login</button>
+       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
+       bg-lime-200 font-semibold rounded-full px-5 text-sm mx-auto block mt-10 ">Register</button>
 </form>
 

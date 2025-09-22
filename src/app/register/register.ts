@@ -2,6 +2,8 @@ import { Component, inject, NgModule } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators,} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { RegisterRequest } from './registerReq.model';
 
 
 function passwordRules(control: AbstractControl)
@@ -30,6 +32,8 @@ function passwordRules(control: AbstractControl)
 
 export class register {
   private httpClient = inject(HttpClient);
+  private apiUrl='https://localhost:7285';
+
   form = new FormGroup({
     email : new FormControl('',{
       validators: [Validators.required, Validators.email,],
@@ -56,9 +60,19 @@ export class register {
     && this.form.controls.userName.touched
     && this.form.controls.userName.dirty;
   }
-  onSubmit() 
-  {
-    console.log(this.form);
+  onSubmit() {
+     if (this.form.invalid) {
+    this.form.markAllAsTouched(); // show validation errors
+    return;
   }
-  
+  const formValue: RegisterRequest = this.form.value as RegisterRequest;
+
+  this.register(formValue).subscribe({
+    next: (res) => console.log('Registered successfully:', res),
+    error: (err) => console.error('Registration failed:', err)
+  });
+}
+ register(data: RegisterRequest): Observable<any> {
+    return this.httpClient.post(`${this.apiUrl}/api/Auth/register`, data);
+  }
 }
