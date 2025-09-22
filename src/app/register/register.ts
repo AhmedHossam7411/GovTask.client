@@ -68,7 +68,10 @@ export class register {
   const formValue: RegisterRequest = this.form.value as RegisterRequest;
 
   this.register(formValue).subscribe({
-    next: (res) => console.log('Registered successfully:', res),
+    next: (res) => {
+      console.log('Registered successfully:', res);
+      window.location.reload(); 
+    },
     error: (err) => console.error('Registration failed:', err)
   });
 }
