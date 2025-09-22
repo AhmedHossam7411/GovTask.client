@@ -3,15 +3,12 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { RegisterRequest } from './registerReq.model';
-import { Router } from '@angular/router';
-
-
+import { LoginRequest } from './LoginReq.model';
+import { RouterModule } from '@angular/router';
 
 function passwordRules(control: AbstractControl)
 {
   const value = control.value || '';
-
   const hasNumber = /\d/.test(value);
   const hasSymbol = /[^A-Za-z0-9]/.test(value);
   const hasUpperCase = /[A-Z]/.test(value);
@@ -23,19 +20,16 @@ function passwordRules(control: AbstractControl)
   return null;
 }
 
-
-
 @Component({
-  selector: 'app-register',
-  imports: [CommonModule,ReactiveFormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css'
+  selector: 'app-login',
+  imports: [CommonModule,ReactiveFormsModule,RouterModule],
+  templateUrl: './login.html',
+  styleUrl: './login.css'
 })
 
-export class register {
+export class login {
   private httpClient = inject(HttpClient);
   private apiUrl='https://localhost:7285';
-  private router = inject(Router);
 
   form = new FormGroup({
     email : new FormControl('',{
@@ -43,9 +37,6 @@ export class register {
     }),
     password : new FormControl('',{
       validators: [passwordRules,Validators.required, Validators.minLength(6),],
-    }),
-    userName : new FormControl('',{
-      validators: [Validators.required, Validators.minLength(6),Validators.maxLength(15)],
     }),
   });
    get emailIsInvalid(){
@@ -58,27 +49,22 @@ export class register {
     && this.form.controls.password.touched
     && this.form.controls.password.dirty;
   }
-  get userNameIsInvalid(){
-    return this.form.controls.userName.invalid 
-    && this.form.controls.userName.touched
-    && this.form.controls.userName.dirty;
-  }
   onSubmit() {
      if (this.form.invalid) {
     this.form.markAllAsTouched(); 
     return;
   }
-  const formValue: RegisterRequest = this.form.value as RegisterRequest;
+  const formValue: LoginRequest = this.form.value as LoginRequest;
 
-  this.register(formValue).subscribe({
+  this.login(formValue).subscribe({
     next: (res) => {
-      console.log('Registered successfully:', res);
+      console.log('login success:', res);
       window.location.reload(); 
     },
-    error: (err) => console.error('Registration failed:', err)
+    error: (err) => console.error('login failed:', err)
   });
 }
- register(data: RegisterRequest): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/api/Auth/register`, data);
+ login(data: LoginRequest): Observable<any> {
+    return this.httpClient.post(`${this.apiUrl}/api/Auth/login`, data);
   }
 }

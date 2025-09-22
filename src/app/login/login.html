@@ -1,0 +1,38 @@
+<div class="flex justify-center h-[515px]">
+<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 rounded-lg shadow-lg w-[20rem] mt-24">
+  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Login</h2>
+  
+  <div class="pt-8">
+    <div class="mb-4">
+      <label for="email" class="">Email </label>
+      <input id="email" type="email" formControlName="email"
+      class="rounded-lg flex justify-stretch w-full"
+      [ngClass]="{ 'border border-red-500': emailIsInvalid }"
+      />      
+      <span class="h-5 text-red-400 text-sm block mt-1">
+    {{ emailIsInvalid ? 'Please enter a valid email address.' : '' }}
+  </span>
+    </div>
+      
+      
+      <div class="mb-4">
+        <label for="password" class="mr-2">Password </label>
+        <input id="password" type="password" formControlName="password"
+        class="rounded-lg w-full"
+        [ngClass]="{ 'border border-red-500': passwordIsInvalid }"
+        />
+        <span class="h-5 text-red-400 text-sm block mt-1">
+       {{ passwordIsInvalid ? 'Password must contain symbol, number, uppercase, 6+ chars.' : '' }}
+        </span>
+       </div>
+       <p class="mt-4 text-sm">
+        Don’t have an account?
+       <a routerLink="/register" class="text-blue-600 hover:underline cursor-pointer">
+        Register here
+        </a>
+        </p>
+       </div>
+       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
+       bg-lime-200 font-semibold rounded-full px-5 text-sm mx-auto block mt-10 ">Login</button>
+</form>
+
