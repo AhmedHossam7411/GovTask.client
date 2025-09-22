@@ -10,18 +10,18 @@
       />
       <span class="text-red-400 h-5 block mt-1">
       {{ userNameIsInvalid ? 'must be 6+ chars' : '' }}
-     </span>
-    </div>
-    <div class="mb-4">
+      </span>
+      </div>
+     <div class="mb-4">
       <label for="email" class="">Email </label>
       <input id="email" type="email" formControlName="email"
       class="rounded-lg flex justify-stretch w-full"
       [ngClass]="{ 'border border-red-500': emailIsInvalid }"
       />      
       <span class="h-5 text-red-400 text-sm block mt-1">
-    {{ emailIsInvalid ? 'Please enter a valid email address.' : '' }}
-  </span>
-    </div>
+      {{ emailIsInvalid ? 'Please enter a valid email address.' : '' }}
+     </span>
+      </div>
       
       
       <div class="mb-4">
@@ -34,12 +34,12 @@
        {{ passwordIsInvalid ? 'Password must contain symbol, number, uppercase, 6+ chars.' : '' }}
         </span>
        </div>
-      <p class="mt-4 text-sm">
+      <p class="mt-5 text-sm">
       Already have an Account?
       <a routerLink="/login" class="text-blue-600 hover:underline cursor-pointer">
       login here
      </a>
-</p>
+     </p>
        </div>
        <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
        bg-lime-200 font-semibold rounded-full px-5 text-sm mx-auto block mt-5 ">Register</button>

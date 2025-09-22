@@ -30,7 +30,7 @@ function passwordRules(control: AbstractControl)
 export class login {
   private httpClient = inject(HttpClient);
   private apiUrl='https://localhost:7285';
-
+   errorMessage: string = '';
   form = new FormGroup({
     email : new FormControl('',{
       validators: [Validators.required, Validators.email,],
@@ -58,11 +58,13 @@ export class login {
 
   this.login(formValue).subscribe({
     next: (res) => {
-      console.log('login success:', res);
-      window.location.reload(); 
+      console.log('login success:', res); 
     },
-    error: (err) => console.error('login failed:', err)
-  });
+    error: (err) => {
+      this.errorMessage = 'Email or Password not found' 
+      console.error('login failed:', err)
+    }
+    });
 }
  login(data: LoginRequest): Observable<any> {
     return this.httpClient.post(`${this.apiUrl}/api/Auth/login`, data);

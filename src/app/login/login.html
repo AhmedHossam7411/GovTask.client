@@ -25,7 +25,10 @@
        {{ passwordIsInvalid ? 'Password must contain symbol, number, uppercase, 6+ chars.' : '' }}
         </span>
        </div>
-       <p class="mt-4 text-sm">
+       <div *ngIf="errorMessage" class="text-red-500">
+       {{ errorMessage }}
+      </div>
+       <p class="mt-6 text-sm">
         Don’t have an account?
        <a routerLink="/register" class="text-blue-600 hover:underline cursor-pointer">
         Register here

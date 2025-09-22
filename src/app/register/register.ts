@@ -35,7 +35,6 @@ function passwordRules(control: AbstractControl)
 export class register {
   private httpClient = inject(HttpClient);
   private apiUrl='https://localhost:7285';
-  private router = inject(Router);
 
   form = new FormGroup({
     email : new FormControl('',{
@@ -71,9 +70,8 @@ export class register {
   const formValue: RegisterRequest = this.form.value as RegisterRequest;
 
   this.register(formValue).subscribe({
-    next: (res) => {
+    next: (res) => { 
       console.log('Registered successfully:', res);
-      window.location.reload(); 
     },
     error: (err) => console.error('Registration failed:', err)
   });
