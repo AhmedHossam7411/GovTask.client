@@ -13,7 +13,7 @@ import { Auth } from '../services/auth';
   styleUrl: './registerComponent.css'
 })
 
-export class registerComponent {
+export class RegisterComponent {
 
   private auth = inject(Auth);
 
