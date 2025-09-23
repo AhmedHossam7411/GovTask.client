@@ -1,38 +1,21 @@
-import { Component, inject, NgModule } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators,} from '@angular/forms';
+import { Component, inject} from '@angular/core';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { RegisterRequest } from './registerReq.model';
-
-
-function passwordRules(control: AbstractControl)
-{
-  const value = control.value || '';
-
-  const hasNumber = /\d/.test(value);
-  const hasSymbol = /[^A-Za-z0-9]/.test(value);
-  const hasUpperCase = /[A-Z]/.test(value);
-
-  if (!hasNumber || !hasSymbol || !hasUpperCase) {
-    return { passwordRules: true };
-  }
-
-  return null;
-}
-
-
+import { RegisterRequest } from './register-Request.model';
+import { RouterModule } from '@angular/router';
+import { passwordRules } from '../shared/Custom-validators';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule,ReactiveFormsModule],
-  templateUrl: './register.html',
-  styleUrl: './register.css'
+  imports: [CommonModule,ReactiveFormsModule,RouterModule],
+  templateUrl: './registerComponent.html',
+  styleUrl: './registerComponent.css'
 })
 
-export class register {
-  private httpClient = inject(HttpClient);
-  private apiUrl='https://localhost:7285';
+export class RegisterComponent {
+
+  private auth = inject(Auth);
 
   form = new FormGroup({
     email : new FormControl('',{
@@ -65,17 +48,14 @@ export class register {
     this.form.markAllAsTouched(); 
     return;
   }
-  const formValue: RegisterRequest = this.form.value as RegisterRequest;
+  const registerData = this.form.value as RegisterRequest;
 
-  this.register(formValue).subscribe({
-    next: (res) => {
+    this.auth.register(registerData).subscribe({
+    next: (res) => { 
       console.log('Registered successfully:', res);
-      window.location.reload(); 
     },
     error: (err) => console.error('Registration failed:', err)
   });
 }
- register(data: RegisterRequest): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/api/Auth/register`, data);
-  }
+ 
 }
