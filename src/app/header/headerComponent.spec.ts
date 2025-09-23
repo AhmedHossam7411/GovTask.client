@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { register } from './register';
+import { Header } from './headerComponent';
 
-describe('Register', () => {
-  let component: register;
-  let fixture: ComponentFixture<register>;
+describe('Header', () => {
+  let component: Header;
+  let fixture: ComponentFixture<Header>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [register]
+      imports: [Header]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(register);
+    fixture = TestBed.createComponent(Header);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

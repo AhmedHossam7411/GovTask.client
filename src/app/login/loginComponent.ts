@@ -1,35 +1,24 @@
 import { Component, inject, NgModule } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators,} from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { LoginRequest } from './LoginReq.model';
+import { LoginRequest } from './Login-request.model';
 import { RouterModule } from '@angular/router';
-
-function passwordRules(control: AbstractControl)
-{
-  const value = control.value || '';
-  const hasNumber = /\d/.test(value);
-  const hasSymbol = /[^A-Za-z0-9]/.test(value);
-  const hasUpperCase = /[A-Z]/.test(value);
-
-  if (!hasNumber || !hasSymbol || !hasUpperCase) {
-    return { passwordRules: true };
-  }
-
-  return null;
-}
+import { passwordRules } from '../shared/Custom-validators';
+import { Auth } from '../services/auth';
 
 @Component({
   selector: 'app-login',
   imports: [CommonModule,ReactiveFormsModule,RouterModule],
-  templateUrl: './login.html',
-  styleUrl: './login.css'
+  templateUrl: './loginComponent.html',
+  styleUrl: './loginComponent.css'
 })
 
-export class login {
-  private httpClient = inject(HttpClient);
-  private apiUrl='https://localhost:7285';
+export class loginComponent {
+
+  constructor(
+    private auth: Auth
+  ) {}
+
    errorMessage: string = '';
   form = new FormGroup({
     email : new FormControl('',{
@@ -54,9 +43,9 @@ export class login {
     this.form.markAllAsTouched(); 
     return;
   }
-  const formValue: LoginRequest = this.form.value as LoginRequest;
+  const loginData = this.form.value as LoginRequest;
 
-  this.login(formValue).subscribe({
+    this.auth.login(loginData).subscribe({
     next: (res) => {
       console.log('login success:', res); 
     },
@@ -66,7 +55,5 @@ export class login {
     }
     });
 }
- login(data: LoginRequest): Observable<any> {
-    return this.httpClient.post(`${this.apiUrl}/api/Auth/login`, data);
-  }
+
 }
