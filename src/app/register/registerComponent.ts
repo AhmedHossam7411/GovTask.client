@@ -1,4 +1,4 @@
-import { Component} from '@angular/core';
+import { Component, inject} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from './register-Request.model';
@@ -14,9 +14,8 @@ import { Auth } from '../services/auth';
 })
 
 export class registerComponent {
-  constructor(
-    private auth: Auth
-  ) {}
+
+  private auth = inject(Auth);
 
   form = new FormGroup({
     email : new FormControl('',{

@@ -15,9 +15,7 @@ import { Auth } from '../services/auth';
 
 export class loginComponent {
 
-  constructor(
-    private auth: Auth
-  ) {}
+  private auth = inject(Auth);
 
    errorMessage: string = '';
   form = new FormGroup({
