@@ -2,7 +2,7 @@ import { Component, inject, NgModule } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators,} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoginRequest } from './Login-request.model';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
 import { Auth } from '../services/auth';
 
@@ -16,7 +16,7 @@ import { Auth } from '../services/auth';
 export class LoginComponent {
 
   private auth = inject(Auth);
-
+  private router = inject(Router); 
    errorMessage: string = '';
   form = new FormGroup({
     email : new FormControl('',{
@@ -45,7 +45,8 @@ export class LoginComponent {
 
     this.auth.login(loginData).subscribe({
     next: (res) => {
-      console.log('login success:', res); 
+      console.log('login success:', res);
+      this.router.navigate(['/departments'])
     },
     error: (err) => {
       this.errorMessage = 'Email or Password not found' 

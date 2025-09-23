@@ -2,7 +2,7 @@ import { Component, inject} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RegisterRequest } from './register-Request.model';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
 import { Auth } from '../services/auth';
 
@@ -16,7 +16,7 @@ import { Auth } from '../services/auth';
 export class RegisterComponent {
 
   private auth = inject(Auth);
-
+  private router = inject(Router);
   form = new FormGroup({
     email : new FormControl('',{
       validators: [Validators.required, Validators.email,],
@@ -53,6 +53,7 @@ export class RegisterComponent {
     this.auth.register(registerData).subscribe({
     next: (res) => { 
       console.log('Registered successfully:', res);
+      this.router.navigate(['/login']);
     },
     error: (err) => console.error('Registration failed:', err)
   });
