@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { LoginRequest } from './Login-request.model';
 import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
-import { Auth } from '../services/auth';
+import { Auth } from '../services/auth-service';
 
 @Component({
   selector: 'app-login',
