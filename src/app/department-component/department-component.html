@@ -1,23 +1,13 @@
-<div class="bg-white shadow-lg rounded-xl overflow-hidden hover:shadow-2xl transition m-4 w-80">
+<div>
   <div class="flex items-center bg-gray-100 p-3">
-    <div class="bg-lime-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
+    <div class="bg-lime-800 rounded-full w-10 
+    h-10 flex items-center justify-center text-white font-bold">
     
     </div>
     <div class="ml-3">
-       <h2 class="text-lg font-semibold text-gray-800">name</h2>
+       <h2 class="text-lg font-semibold text-gray-800">{{name()}}</h2>
       
     </div>  
-  </div>
-
-  <div class="p-4">
-    <h4 class="font-medium text-gray-700">Department-Users</h4>
-    <ul *ngIf="dept.users?.length > 0; else noUsers"
-        class="list-disc list-inside text-gray-600">
-      <li>users</li>
-    </ul>
-    <ng-template #noUsers>
-      <p class="text-sm text-gray-400">No users assigned</p>
-    </ng-template>
   </div>
 
   

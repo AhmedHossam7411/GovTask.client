@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
 
@@ -9,6 +9,8 @@ import { DepartmentService } from '../services/department-Service';
   styleUrl: './department-component.css'
 })
 export class DepartmentComponent {
+   public id = input<string>();
+   public name = input.required<string>();
    private departments: DepartmentDto[] = [];
    private departmentService = inject(DepartmentService);
    private errorMessage:string = '';
