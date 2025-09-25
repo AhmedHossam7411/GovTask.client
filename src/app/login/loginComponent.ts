@@ -18,6 +18,7 @@ export class LoginComponent {
   private auth = inject(Auth);
   private router = inject(Router); 
    errorMessage: string = '';
+
   form = new FormGroup({
     email : new FormControl('',{
       validators: [Validators.required, Validators.email,],
