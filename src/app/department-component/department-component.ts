@@ -15,23 +15,17 @@ export class DepartmentComponent {
   private departmentService = inject(DepartmentService);
   private errorMessage: string = '';
   protected editingId: string | null = null;
+  protected formIsVisible = false;
 
   openEditForm(id: string | null)
   {
+    this.formIsVisible = true;
     return this.editingId = id;
   }
   closeEditForm()
   {
+    this.formIsVisible = false;
     return this.editingId = null;
   }
 
-  updateDepartment(id: string , departmentDto:DepartmentDto)
-  {
-    this.departmentService.putDepartment(id,departmentDto).subscribe({
-      next: () => {
-          
-        },
-        error: (err) => console.error(err),
-    })
-  }
 }

@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DepartmentDto } from '../departmentDto.model';
 import { DepartmentService } from '../../services/department-Service';
@@ -12,22 +12,38 @@ import { DepartmentService } from '../../services/department-Service';
 export class EditForm {
 @Input() department!: DepartmentDto; 
 private departmentService = inject(DepartmentService);
-
+@Output() close = new EventEmitter<string>(); 
 form = new FormGroup({
    name : new FormControl('',{
-      validators: [Validators.required, ],
+      validators: [Validators.required,Validators.minLength(6) ],
     }),
 });
 
+onClose()
+{
+  this.close.emit('');
+}
 
 updateDepartment(id: string , departmentDto:DepartmentDto)
   {
+    if (this.form.valid && this.department) {
+    const updated: DepartmentDto = {
+      ...this.department,
+      name: this.form.value.name || ''
+    };
     this.departmentService.putDepartment(id,departmentDto).subscribe({
-      next: () => {
-          
+      next: (response) => {
+          this.department.name = response.name;
+          this.onClose(); 
         },
         error: (err) => console.error(err),
     })
+  }
+}
+  get nameIsInvalid(){
+    return this.form.controls.name.invalid 
+    && this.form.controls.name.touched
+    && this.form.controls.name.dirty;
   }
 
 }
