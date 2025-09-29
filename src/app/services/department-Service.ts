@@ -13,11 +13,19 @@ export class DepartmentService {
    
    getDepartments(): Observable<DepartmentDto[]>
    {
-     return this.http.get<DepartmentDto[]>(`${this.apiUrl}/api/Department/AllDepartments`,);
+     return this.http.get<DepartmentDto[]>
+     (`${this.apiUrl}/api/Department/AllDepartments`,);
    }
 
    deleteDepartment(id: string):Observable<void>
    {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>
+    (`${this.apiUrl}/api/Department/${id}`);
+   }
+   putDepartment(id: string , departmentDto: DepartmentDto):Observable<DepartmentDto>
+   {
+     return this.http.put<DepartmentDto>
+     (`${this.apiUrl}/api/Department/${id}`
+      ,departmentDto)
    }
 }

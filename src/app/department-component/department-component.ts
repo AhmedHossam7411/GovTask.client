@@ -1,40 +1,37 @@
-import { Component, inject, Input, input } from '@angular/core';
+import { Component, EventEmitter, inject, Input, input, Output, output } from '@angular/core';
 import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
+import { EditForm } from "./edit-form/edit-form";
 
 @Component({
   selector: 'app-department-component',
-  imports: [],
+  imports: [EditForm],
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })
 export class DepartmentComponent {
-  @Input() department!: DepartmentDto; // input function in docs
+  @Input() department!: DepartmentDto; 
+  @Output() onDelete = new EventEmitter<string>();
   private departmentService = inject(DepartmentService);
   private errorMessage: string = '';
+  protected editingId: string | null = null;
 
-  // ngOnInit() {
-  //   this.loadDepartments();
-  // }
+  openEditForm(id: string | null)
+  {
+    return this.editingId = id;
+  }
+  closeEditForm()
+  {
+    return this.editingId = null;
+  }
 
-  // loadDepartments() {
-  //   this.departmentService.getDepartments().subscribe({
-  //     next: (data) => {
-  //       this.departments = data
-  //       console.log("data", this.departments)
-  //     },
-  //     error: (err) => this.errorMessage = 'failed to fetch departments' + err
-  //   });
-  // }
-
-  // deleteDepartment(id: string) {
-  //   if (confirm('Are you sure you want to delete this department?')) {
-  //     this.departmentService.deleteDepartment(id).subscribe({
-  //       next: () => {
-  //         this.departments = this.departments.filter((d) => d.id !== id);
-  //       },
-  //       error: (err) => console.error(err),
-  //     });
-  //   }
-  // }
+  updateDepartment(id: string , departmentDto:DepartmentDto)
+  {
+    this.departmentService.putDepartment(id,departmentDto).subscribe({
+      next: () => {
+          
+        },
+        error: (err) => console.error(err),
+    })
+  }
 }

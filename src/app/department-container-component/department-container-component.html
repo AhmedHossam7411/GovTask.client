@@ -1,5 +1,6 @@
 @for (dept of departments; track $index) {
-    <app-department-component [department]="dept">
+    <app-department-component 
+    [department]="dept"
+    (onDelete)="deleteRow($event)">
     </app-department-component>
-
 }
