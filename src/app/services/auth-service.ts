@@ -12,14 +12,16 @@ import { AuthResponseDto } from '../shared/Auth-responseDto';
 export class Auth { 
    private apiUrl = environment.apiUrl;
    private http = inject(HttpClient);
-   public jwt_token = '';
 
   login(data: LoginRequest): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/login`, data)
-    .pipe(tap(res => this.jwt_token = res.token));
+    .pipe(tap(res => localStorage.setItem('authToken',res.token) ));
   }
   register(data: RegisterRequest): Observable<AuthResponseDto> {
       return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/register`, data)
-      .pipe(tap(res => this.jwt_token = res.token));
+      .pipe(tap(res => localStorage.setItem('authToken',res.token) ));
+    }
+    getToken(){
+      return localStorage.getItem('authToken');
     }
 }

@@ -1,5 +1,12 @@
 import { Component, inject, NgModule } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators,} from '@angular/forms';
+import {
+  AbstractControl,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { LoginRequest } from './Login-request.model';
 import { Router, RouterModule } from '@angular/router';
@@ -8,52 +15,53 @@ import { Auth } from '../services/auth-service';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule,ReactiveFormsModule,RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './loginComponent.html',
-  styleUrl: './loginComponent.css'
+  styleUrl: './loginComponent.css',
 })
-
 export class LoginComponent {
-
   private auth = inject(Auth);
-  private router = inject(Router); 
-   errorMessage: string = '';
+  private router = inject(Router);
+  errorMessage: string = '';
 
   form = new FormGroup({
-    email : new FormControl('',{
-      validators: [Validators.required, Validators.email,],
+    email: new FormControl('', {
+      validators: [Validators.required, Validators.email],
     }),
-    password : new FormControl('',{
-      validators: [passwordRules,Validators.required, Validators.minLength(6),],
+    password: new FormControl('', {
+      validators: [passwordRules, Validators.required, Validators.minLength(6)],
     }),
   });
-   get emailIsInvalid(){
-    return this.form.controls.email.invalid 
-    && this.form.controls.email.touched
-    && this.form.controls.email.dirty;
+  get emailIsInvalid() {
+    return (
+      this.form.controls.email.invalid &&
+      this.form.controls.email.touched &&
+      this.form.controls.email.dirty
+    );
   }
-   get passwordIsInvalid(){
-    return this.form.controls.password.invalid 
-    && this.form.controls.password.touched
-    && this.form.controls.password.dirty;
+  get passwordIsInvalid() {
+    return (
+      this.form.controls.password.invalid &&
+      this.form.controls.password.touched &&
+      this.form.controls.password.dirty
+    );
   }
   onSubmit() {
-     if (this.form.invalid) {
-    this.form.markAllAsTouched(); 
-    return;
-  }
-  const loginData = this.form.value as LoginRequest;
-
-    this.auth.login(loginData).subscribe({
-    next: (res) => {
-      console.log('login success:', res);
-      this.router.navigate(['/departments'])
-    },
-    error: (err) => {
-      this.errorMessage = 'Email or Password not found' 
-      console.error('login failed:', err)
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
     }
+    const loginData = this.form.value as LoginRequest;
+    this.auth.login(loginData).subscribe({
+      next: (res) => {
+        console.log('login success:', res);
+        localStorage.setItem('authToken', res.token);
+        this.router.navigate(['/departments']);
+      },
+      error: (err) => {
+        this.errorMessage = 'Email or Password not found';
+        console.error('login failed:', err);
+      },
     });
-}
-
+  }
 }

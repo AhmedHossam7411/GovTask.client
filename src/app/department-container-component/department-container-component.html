@@ -1,7 +1,5 @@
-@for (department of departments; track department.id) 
-{
-
-    <app-department-component [name]="department.name" [id]="department.id">
-
+@for (dept of departments; track $index) {
+    <app-department-component [department]="dept">
     </app-department-component>
+
 }

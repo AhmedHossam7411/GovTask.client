@@ -6,14 +6,15 @@ import { inject, Injectable } from '@angular/core';
 export function tokenInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> {
   { 
     const auth = inject(Auth);
-    const token = auth.jwt_token;
-
+  console.log("here", localStorage.getItem('authToken'));
+  const token = auth.getToken();
   if(token){
     const tokenizedReq = req.clone({
       setHeaders: {
         Authorization : `Bearer ${token}`
       }
     });
+    console.log(tokenizedReq.headers);
     return next(tokenizedReq);
   }
   return next(req); 

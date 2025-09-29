@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
@@ -11,7 +11,7 @@ import { DepartmentComponent } from "../department-component/department-componen
   styleUrl: './department-container-component.css'
 })
 export class DepartmentContainerComponent {
-   public departments: DepartmentDto[] = [];
+   protected departments: DepartmentDto[] = [];
    private departmentService = inject(DepartmentService);
    private errorMessage:string = '';
 
@@ -21,7 +21,10 @@ export class DepartmentContainerComponent {
 
   loadDepartments() {
     this.departmentService.getDepartments().subscribe({
-      next: (data) => this.departments = data,
+      next: (data) => {
+        this.departments = data
+        console.log("data", this.departments)
+      },
       error: (err) => this.errorMessage = 'failed to fetch departments' + err
     });
   }

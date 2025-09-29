@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { map, Observable, of } from 'rxjs';
+import { Observable} from 'rxjs';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 
 @Injectable({
@@ -18,6 +18,6 @@ export class DepartmentService {
 
    deleteDepartment(id: string):Observable<void>
    {
-    return this,this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
    }
 }

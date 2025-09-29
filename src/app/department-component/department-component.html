@@ -1,16 +1,19 @@
-<div>
+<div class="shadow-md rounded-lg overflow-hidden bg-white">
+  <!-- Header -->
   <div class="flex items-center bg-gray-100 p-3">
-    <div class="bg-lime-800 rounded-full w-10 
-    h-10 flex items-center justify-center text-white font-bold">
-    
+    <!-- Avatar circle with first letter -->
+    <div class="bg-lime-800 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
+      {{ department.name.charAt(0) }}
     </div>
+
+    <!-- Department name -->
     <div class="ml-3">
-       <h2 class="text-lg font-semibold text-gray-800">{{name()}}</h2>
-      
-    </div>  
+      <h2 class="text-lg font-semibold text-gray-800">{{ department.name }}</h2>
+      <p class="text-sm text-gray-500">ID: {{ department.id }}</p>
+    </div>
   </div>
 
-  
+  <!-- Action buttons -->
   <div class="flex justify-between p-3 border-t">
     <button class="text-lime-600 hover:text-lime-800">View</button>
     <button class="text-blue-600 hover:text-blue-800">Edit</button>
