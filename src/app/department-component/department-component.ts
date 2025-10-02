@@ -11,21 +11,24 @@ import { EditForm } from "./edit-form/edit-form";
 })
 export class DepartmentComponent {
   @Input() department!: DepartmentDto; 
-  @Output() onDelete = new EventEmitter<string>();
+  @Output() delete = new EventEmitter<number>();
   private departmentService = inject(DepartmentService);
   private errorMessage: string = '';
   protected editingId: number | null = null;
   protected formIsVisible = false;
 
-  openEditForm(id: number | null)
+  openEditForm(department:DepartmentDto)
   {
     this.formIsVisible = true;
-    return this.editingId = id;
+    return this.editingId = department.id;
   }
   closeEditForm()
   {
     this.formIsVisible = false;
     return this.editingId = null;
   }
-
+   onDelete()
+   {
+    this.delete.emit(this.department.id);
+   }
 }

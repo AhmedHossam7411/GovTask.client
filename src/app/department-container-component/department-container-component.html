@@ -1,6 +1,7 @@
+<div class="flex justify-end">Add Department</div>
 @for (dept of departments; track $index) {
     <app-department-component 
     [department]="dept"
-    (onDelete)="deleteRow($event)">
+    (delete)="deleteRow($event)">
     </app-department-component>
 }

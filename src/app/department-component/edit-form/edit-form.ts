@@ -14,7 +14,7 @@ export class EditForm {
 private departmentService = inject(DepartmentService);
 @Output() close = new EventEmitter<string>(); 
 form = new FormGroup({
-   name : new FormControl('',{
+   name : new FormControl(this.department.name,{
       validators: [Validators.required,Validators.minLength(6) ],
     }),
 });
@@ -27,17 +27,19 @@ onClose()
 updateDepartment(id: number , departmentDto:DepartmentDto)
   {
     if (this.form.valid && this.department) {
-      console.log(this.department,this.department.id);
+      console.log(this.department.name);
     const updated: DepartmentDto = {
-      ...this.department,
-      name: this.form.value.name || ''
-      
+      id: this.department.id,
+      name: this.form.value.name ?? this.department.name
+         
     };
-    console.log(this.department,this.department.id);
+    console.log("logaya",this.department.name,this.department.id);
+    this.department.name = updated.name;
     this.departmentService.putDepartment(id,departmentDto).subscribe({
       next: (response) => {
-        console.log(this.department,this.department.id);
-          this.department.name = response.name;
+        console.log(this.department.name);
+        console.log(this.department.name);
+
           this.onClose(); 
         },
         error: (err) => console.error(err),

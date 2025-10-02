@@ -17,7 +17,7 @@ export class DepartmentService {
      (`${this.apiUrl}/api/Department/AllDepartments`,);
    }
 
-   deleteDepartment(id: string):Observable<void>
+   deleteDepartment(id: number):Observable<void>
    {
     return this.http.delete<void>
     (`${this.apiUrl}/api/Department/${id}`);

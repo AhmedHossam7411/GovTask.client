@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
@@ -30,10 +30,16 @@ export class DepartmentContainerComponent implements OnInit {
 
   
   deleteRow(id : number) {
-    
-    this.departments = this.departments.filter(d => d.id !== id);
-    
-  }
+    if (confirm('Are you sure you want to delete this department?')) {
+      this.departmentService.deleteDepartment(id).subscribe({
+        next: () => {
+           this.loadDepartments(); 
+        },
+        error: (err) => console.error(err),
+      });
+    }
+
+   }
   
   }
 
