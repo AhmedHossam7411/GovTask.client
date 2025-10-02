@@ -2,7 +2,6 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
-import { Dialog } from '@angular/cdk/dialog';
 import { EditForm } from '../department-component/edit-form/edit-form';
 
 
@@ -40,10 +39,6 @@ export class DepartmentContainerComponent implements OnInit {
       });
     }
 
-   }
-   protected openModal()
-   {
-    this.dialog.open()
    }
   
   }

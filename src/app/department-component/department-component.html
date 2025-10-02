@@ -18,12 +18,12 @@ hover:scale-105 ">
 
   <div class="flex justify-between p-3 border-t">
     <button class="text-lime-600 hover:text-lime-800">View</button>
-    <button (click)="openModal()" class="text-blue-600 hover:text-blue-800">Edit</button>
+    <button (click)="openModal(department)" class="text-blue-600 hover:text-blue-800">Edit</button>
     <button (click)="onDelete()" class="text-red-600 hover:text-red-800">Delete</button>
   </div>
 </div>
 
 @if (formIsVisible) 
 {
-  <app-edit-form [department]="department" (close)="closeEditForm()"></app-edit-form>
+  <app-edit-form [department]="department"></app-edit-form>
 }

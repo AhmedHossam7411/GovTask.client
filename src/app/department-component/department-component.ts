@@ -19,7 +19,7 @@ export class DepartmentComponent {
   protected formIsVisible = false;
   private dialog = inject(Dialog);
   
-   protected openModal()
+   protected openModal(department:DepartmentDto)
    {
     this.dialog.open(EditForm)
    }
