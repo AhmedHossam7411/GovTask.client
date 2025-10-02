@@ -10,7 +10,7 @@ import { DepartmentService } from '../../services/department-Service';
   styleUrl: './edit-form.css'
 })
 export class EditForm {
-@Input() department!: DepartmentDto; 
+@Input() department: DepartmentDto = { id: 0, name: '' }; 
 private departmentService = inject(DepartmentService);
 @Output() close = new EventEmitter<string>(); 
 form = new FormGroup({
@@ -24,15 +24,19 @@ onClose()
   this.close.emit('');
 }
 
-updateDepartment(id: string , departmentDto:DepartmentDto)
+updateDepartment(id: number , departmentDto:DepartmentDto)
   {
     if (this.form.valid && this.department) {
+      console.log(this.department,this.department.id);
     const updated: DepartmentDto = {
       ...this.department,
       name: this.form.value.name || ''
+      
     };
+    console.log(this.department,this.department.id);
     this.departmentService.putDepartment(id,departmentDto).subscribe({
       next: (response) => {
+        console.log(this.department,this.department.id);
           this.department.name = response.name;
           this.onClose(); 
         },

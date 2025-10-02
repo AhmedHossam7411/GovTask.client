@@ -1,5 +1,5 @@
 export interface DepartmentDto
 {
-    id: string,
+    id: number,
     name : string;
 }

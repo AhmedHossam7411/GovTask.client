@@ -22,7 +22,7 @@ export class DepartmentService {
     return this.http.delete<void>
     (`${this.apiUrl}/api/Department/${id}`);
    }
-   putDepartment(id: string , departmentDto: DepartmentDto):Observable<DepartmentDto>
+   putDepartment(id: number , departmentDto: DepartmentDto):Observable<DepartmentDto>
    {
      return this.http.put<DepartmentDto>
      (`${this.apiUrl}/api/Department/${id}`

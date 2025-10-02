@@ -29,7 +29,7 @@ export class DepartmentContainerComponent implements OnInit {
   }
 
   
-  deleteRow(id : string) {
+  deleteRow(id : number) {
     
     this.departments = this.departments.filter(d => d.id !== id);
     

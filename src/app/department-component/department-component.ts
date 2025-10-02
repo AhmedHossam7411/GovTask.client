@@ -14,10 +14,10 @@ export class DepartmentComponent {
   @Output() onDelete = new EventEmitter<string>();
   private departmentService = inject(DepartmentService);
   private errorMessage: string = '';
-  protected editingId: string | null = null;
+  protected editingId: number | null = null;
   protected formIsVisible = false;
 
-  openEditForm(id: string | null)
+  openEditForm(id: number | null)
   {
     this.formIsVisible = true;
     return this.editingId = id;
