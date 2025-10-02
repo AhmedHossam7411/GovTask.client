@@ -1,9 +1,11 @@
-<div class="shadow-md border border-gray-300 overflow-hidden bg-white">
+<div class="shadow-md border border-gray-300 overflow-hidden bg-blue-100
+transform transition-transform duration-500  
+hover:scale-105 ">
  
-  <div class="flex items-center bg-gray-100 p-3">
+  <div class="flex items-center bg-gray-200 p-3">
   
     <div class="bg-lime-800 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-      {{ department.name.charAt(0) }}
+      {{ department.name.charAt(0) }}{{ department.name.charAt(1).toUpperCase() }}
     </div>
 
 
@@ -16,7 +18,7 @@
 
   <div class="flex justify-between p-3 border-t">
     <button class="text-lime-600 hover:text-lime-800">View</button>
-    <button (click)="openEditForm(department)" class="text-blue-600 hover:text-blue-800">Edit</button>
+    <button (click)="openModal()" class="text-blue-600 hover:text-blue-800">Edit</button>
     <button (click)="onDelete()" class="text-red-600 hover:text-red-800">Delete</button>
   </div>
 </div>

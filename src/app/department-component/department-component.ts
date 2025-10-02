@@ -2,6 +2,7 @@ import { Component, EventEmitter, inject, Input, input, Output, output } from '@
 import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
+import { Dialog } from '@angular/cdk/dialog';
 
 @Component({
   selector: 'app-department-component',
@@ -16,6 +17,12 @@ export class DepartmentComponent {
   private errorMessage: string = '';
   protected editingId: number | null = null;
   protected formIsVisible = false;
+  private dialog = inject(Dialog);
+  
+   protected openModal()
+   {
+    this.dialog.open(EditForm)
+   }
 
   openEditForm(department:DepartmentDto)
   {

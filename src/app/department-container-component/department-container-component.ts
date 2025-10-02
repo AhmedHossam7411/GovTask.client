@@ -2,6 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
+import { Dialog } from '@angular/cdk/dialog';
+import { EditForm } from '../department-component/edit-form/edit-form';
 
 
 @Component({
@@ -28,7 +30,6 @@ export class DepartmentContainerComponent implements OnInit {
     });
   }
 
-  
   deleteRow(id : number) {
     if (confirm('Are you sure you want to delete this department?')) {
       this.departmentService.deleteDepartment(id).subscribe({
@@ -39,6 +40,10 @@ export class DepartmentContainerComponent implements OnInit {
       });
     }
 
+   }
+   protected openModal()
+   {
+    this.dialog.open()
    }
   
   }
