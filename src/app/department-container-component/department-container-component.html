@@ -13,8 +13,7 @@
             @for (dept of departments; track $index) {
                 <div class="pb-6">
                     <app-department-component 
-                    [department]="dept"
-                    (delete)="deleteRow($event)">
+                    [department]="dept">
                 </app-department-component>
                 </div>
         }

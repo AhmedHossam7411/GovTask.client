@@ -3,10 +3,11 @@ import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { DeleteConfirmDialog } from './delete-confirm-dialog/delete-confirm-dialog';
 
 @Component({
   selector: 'app-department-component',
-  imports: [EditForm,MatDialogModule],
+  imports: [MatDialogModule],
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })
@@ -19,26 +20,17 @@ export class DepartmentComponent {
   protected formIsVisible = false;
   private dialogRef = inject(MatDialog);
   
-  openDialog(department : DepartmentDto)
+  openEditDialog(department : DepartmentDto)
  {
-   console.log(department);
    this.dialogRef.open(EditForm,{
     data : department
    });
  }
+ openDeleteDialog(department : DepartmentDto)
+ {
+   this.dialogRef.open(DeleteConfirmDialog,{
+    data : department
+   });
+ }
 
-  openEditForm(department:DepartmentDto)
-  {
-    this.formIsVisible = true;
-    return this.editingId = department.id;
-  }
-  closeEditForm()
-  {
-    this.formIsVisible = false;
-    return this.editingId = null;
-  }
-   onDelete()
-   {
-    this.delete.emit(this.department.id);
-   }
 }

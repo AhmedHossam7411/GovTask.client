@@ -28,4 +28,9 @@ export class DepartmentService {
      (`${this.apiUrl}/api/Department/${id}`
       ,departmentDto)
    }
+   postDepartment(departmentDto : DepartmentDto)
+   {
+      return this.http.post<DepartmentDto>
+      (`${this.apiUrl}/api/Department`,departmentDto)
+   }
 }

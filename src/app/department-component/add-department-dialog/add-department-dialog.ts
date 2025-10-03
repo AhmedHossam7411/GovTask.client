@@ -1,25 +1,21 @@
-import { Component, inject,  Input,  OnInit  } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { DepartmentDto } from '../departmentDto.model';
+import { Component, inject, Input } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartmentService } from '../../services/department-Service';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { DepartmentDto } from '../departmentDto.model';
+import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-edit-form',
+  selector: 'app-add-department-dialog',
   imports: [ReactiveFormsModule],
-  templateUrl: './edit-form.html',
-  styleUrl: './edit-form.css'
+  templateUrl: './add-department-dialog.html',
+  styleUrl: './add-department-dialog.css'
 })
-export class EditForm implements OnInit {
-  @Input() department!: DepartmentDto;
+export class AddDepartmentDialog {
+
+@Input() department!: DepartmentDto;
   private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   data = inject(MAT_DIALOG_DATA) as DepartmentDto;
-  
-  ngOnInit() {
-    console.log(this.data);
-    this.form.controls.name.setValue(this.data.name);
-  }
 
 form = new FormGroup({
    name : new FormControl('',{
@@ -27,7 +23,7 @@ form = new FormGroup({
     }),
 });
 
-updateDepartment(id: number , departmentDto:DepartmentDto)
+addDepartment(departmentDto:DepartmentDto)
   {
     if (this.form.valid && this.data) {
       console.log(this.data);
@@ -38,7 +34,7 @@ updateDepartment(id: number , departmentDto:DepartmentDto)
     };
     console.log("logger",this.data.name,this.data.id);
     this.data.name = updated.name;
-    this.departmentService.putDepartment(id,departmentDto).subscribe({
+    this.departmentService.postDepartment(departmentDto).subscribe({
       next: (response) => {
         console.log(this.data.name);
         console.log(this.data.name);
@@ -49,7 +45,8 @@ updateDepartment(id: number , departmentDto:DepartmentDto)
     })
   }
 }
-  get nameIsInvalid(){
+
+get nameIsInvalid(){
     return this.form.controls.name.invalid 
     && this.form.controls.name.touched
     && this.form.controls.name.dirty;
@@ -59,4 +56,5 @@ updateDepartment(id: number , departmentDto:DepartmentDto)
    {
     this.dialogRef.close();
    }
+
 }
