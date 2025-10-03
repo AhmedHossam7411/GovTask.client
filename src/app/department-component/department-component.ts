@@ -1,12 +1,12 @@
-import { Component, EventEmitter, inject, Input, input, Output, output } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, Input, Output } from '@angular/core';
 import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
-import { Dialog } from '@angular/cdk/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-department-component',
-  imports: [EditForm],
+  imports: [EditForm,MatDialogModule],
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })
@@ -17,12 +17,15 @@ export class DepartmentComponent {
   private errorMessage: string = '';
   protected editingId: number | null = null;
   protected formIsVisible = false;
-  private dialog = inject(Dialog);
+  private dialogRef = inject(MatDialog);
   
-   protected openModal(department:DepartmentDto)
-   {
-    this.dialog.open(EditForm)
-   }
+  openDialog(department : DepartmentDto)
+ {
+   console.log(department);
+   this.dialogRef.open(EditForm,{
+    data : department
+   });
+ }
 
   openEditForm(department:DepartmentDto)
   {

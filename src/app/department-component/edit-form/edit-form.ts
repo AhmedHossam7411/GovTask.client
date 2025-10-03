@@ -1,8 +1,8 @@
-import { Component, EventEmitter, Inject, inject, Input, Output, output } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, Input, OnInit, Output, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DepartmentDto } from '../departmentDto.model';
 import { DepartmentService } from '../../services/department-Service';
-import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-edit-form',
@@ -10,33 +10,40 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
   templateUrl: './edit-form.html',
   styleUrl: './edit-form.css'
 })
-export class EditForm {
-@Input() department: DepartmentDto = { id: 0, name: '' }; 
-private departmentService = inject(DepartmentService);
+export class EditForm implements OnInit {
+  
+  private departmentService = inject(DepartmentService);
+  private dialogRef = inject(MatDialogRef);
+  data = inject(MAT_DIALOG_DATA) as DepartmentDto;
+  
+  ngOnInit() {
+    console.log(this.data);
+    this.form.controls.name.setValue(this.data.name);
+  }
 
 form = new FormGroup({
-   name : new FormControl(this.department.name,{
+   name : new FormControl('',{
       validators: [Validators.required,Validators.minLength(6) ],
     }),
 });
 
 updateDepartment(id: number , departmentDto:DepartmentDto)
   {
-    if (this.form.valid && this.department) {
-      console.log(this.department.name);
+    if (this.form.valid && this.data) {
+      console.log(this.data);
     const updated: DepartmentDto = {
-      id: this.department.id,
-      name: this.form.value.name ?? this.department.name
+      id: this.data.id,
+      name: this.form.value.name ?? this.data.name
          
     };
-    console.log("logger",this.department.name,this.department.id);
-    this.department.name = updated.name;
+    console.log("logger",this.data.name,this.data.id);
+    this.data.name = updated.name;
     this.departmentService.putDepartment(id,departmentDto).subscribe({
       next: (response) => {
-        console.log(this.department.name);
-        console.log(this.department.name);
+        console.log(this.data.name);
+        console.log(this.data.name);
 
-          this.closeModal(); 
+          this.closeDialog(); 
         },
         error: (err) => console.error(err),
     })
@@ -47,9 +54,9 @@ updateDepartment(id: number , departmentDto:DepartmentDto)
     && this.form.controls.name.touched
     && this.form.controls.name.dirty;
   }
-   private dialogRef = inject(DialogRef, {optional : true});
-   protected closeModal()
+
+   protected closeDialog()
    {
-    this.dialogRef?.close();
+    this.dialogRef.close();
    }
 }
