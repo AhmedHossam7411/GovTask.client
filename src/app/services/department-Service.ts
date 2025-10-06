@@ -28,7 +28,7 @@ export class DepartmentService {
      (`${this.apiUrl}/api/Department/${id}`
       ,departmentDto)
    }
-   postDepartment(departmentDto : DepartmentDto)
+   postDepartment(departmentDto : Pick<DepartmentDto, "name">)
    {
       return this.http.post<DepartmentDto>
       (`${this.apiUrl}/api/Department`,departmentDto)

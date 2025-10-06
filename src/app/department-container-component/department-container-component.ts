@@ -1,8 +1,10 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
 import { EditForm } from '../department-component/edit-form/edit-form';
+import { AddDepartmentDialog } from '../department-component/add-department-dialog/add-department-dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 
 
 @Component({
@@ -15,7 +17,8 @@ export class DepartmentContainerComponent implements OnInit {
   protected departments: DepartmentDto[] = [];
   private departmentService = inject(DepartmentService);
   private errorMessage:string = '';
-  
+  private dialogRef = inject(MatDialog);
+  #cdr = inject(ChangeDetectorRef)
   ngOnInit() {
     this.loadDepartments();
   }
@@ -24,23 +27,23 @@ export class DepartmentContainerComponent implements OnInit {
     this.departmentService.getDepartments().subscribe({
       next: (data) => {
         this.departments = data
+        this.#cdr.markForCheck()
       },
       error: (err) => this.errorMessage = 'failed to fetch departments' + err
     });
   }
 
-  deleteRow(id : number) {
-    if (confirm('Are you sure you want to delete this department?')) {
-      this.departmentService.deleteDepartment(id).subscribe({
-        next: () => {
-           this.loadDepartments(); 
-        },
-        error: (err) => console.error(err),
-      });
+   openAddDialog()
+   {
+   const dialogRef = this.dialogRef.open(AddDepartmentDialog);
+   dialogRef.afterClosed().subscribe((newDepartment : DepartmentDto) => {
+    if(newDepartment)
+    {
+      this.departments.push(newDepartment);
     }
-
-   }
+   });
+ }
   
-  }
+}
 
 

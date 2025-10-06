@@ -4,6 +4,7 @@ import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialog } from './delete-confirm-dialog/delete-confirm-dialog';
+import { AddDepartmentDialog } from './add-department-dialog/add-department-dialog';
 
 @Component({
   selector: 'app-department-component',
