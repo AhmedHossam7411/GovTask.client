@@ -1,12 +1,12 @@
 <div class="flex justify-center h-[515px]">
-<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 rounded-lg shadow-lg w-[20rem] mt-10">
+<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[20rem] mt-10">
   <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Register</h2>
   
   <div class="pt-8">
     <div class="mb-4">
       <label for="email" class="mr-2">Username </label>
       <input id="Username" type="name" formControlName="userName"
-      class="rounded-lg w-full"
+      class=" w-full"
       />
       <span class="text-red-400 h-5 block mt-1">
       {{ userNameIsInvalid ? 'must be 6+ chars' : '' }}
@@ -15,7 +15,7 @@
      <div class="mb-4">
       <label for="email" class="">Email </label>
       <input id="email" type="email" formControlName="email"
-      class="rounded-lg flex justify-stretch w-full"
+      class="flex justify-stretch w-full"
       [ngClass]="{ 'border border-red-500': emailIsInvalid }"
       />      
       <span class="h-5 text-red-400 text-sm block mt-1">
@@ -27,7 +27,7 @@
       <div class="mb-4">
         <label for="password" class="mr-2">Password </label>
         <input id="password" type="password" formControlName="password"
-        class="rounded-lg w-full"
+        class="w-full"
         [ngClass]="{ 'border border-red-500': passwordIsInvalid }"
         />
         <span class="h-5 text-red-400 text-sm block mt-1">
@@ -42,6 +42,6 @@
      </p>
        </div>
        <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
-       bg-lime-200 font-semibold rounded-full px-5 text-sm mx-auto block mt-5 ">Register</button>
+       bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-5 ">Register</button>
 </form>
 
