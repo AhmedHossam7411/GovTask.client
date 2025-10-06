@@ -1,5 +1,5 @@
-import { Component, inject, Input } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, inject, input} from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 import { DepartmentService } from '../../services/department-Service';
 import { DepartmentDto } from '../departmentDto.model';
 import {
@@ -17,7 +17,7 @@ import {
   styleUrl: './add-department-dialog.css',
 })
 export class AddDepartmentDialog {
-  @Input() department!: DepartmentDto;
+  department = input.required<DepartmentDto>();
   private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   #fb = inject(NonNullableFormBuilder);

@@ -14,7 +14,7 @@ export class DepartmentService {
    getDepartments(): Observable<DepartmentDto[]>
    {
      return this.http.get<DepartmentDto[]>
-     (`${this.apiUrl}/api/Department/AllDepartments`,);
+     (`${this.apiUrl}/api/Department/AllDepartments`);
    }
 
    deleteDepartment(id: number):Observable<void>

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, inject, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Inject, inject, input, Output } from '@angular/core';
 import { DepartmentDto } from './departmentDto.model';
 import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
@@ -12,9 +12,9 @@ import { AddDepartmentDialog } from './add-department-dialog/add-department-dial
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })
+
 export class DepartmentComponent {
-  @Input() department!: DepartmentDto; 
-  @Output() delete = new EventEmitter<number>();
+  department = input.required<DepartmentDto>();
   private departmentService = inject(DepartmentService);
   private errorMessage: string = '';
   protected editingId: number | null = null;
@@ -23,6 +23,7 @@ export class DepartmentComponent {
   
   openEditDialog(department : DepartmentDto)
  {
+   
    this.dialogRef.open(EditForm,{
     data : department
    });
@@ -32,6 +33,6 @@ export class DepartmentComponent {
    this.dialogRef.open(DeleteConfirmDialog,{
     data : department
    });
- }
+ } 
 
 }

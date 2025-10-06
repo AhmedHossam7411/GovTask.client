@@ -1,4 +1,4 @@
-import { Component, inject,  Input,  OnInit  } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DepartmentDto } from '../departmentDto.model';
 import { DepartmentService } from '../../services/department-Service';
@@ -11,7 +11,6 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrl: './edit-form.css'
 })
 export class EditForm implements OnInit {
-  @Input() department!: DepartmentDto;
   private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   data = inject(MAT_DIALOG_DATA) as DepartmentDto;
@@ -44,6 +43,7 @@ updateDepartment(id: number , departmentDto:DepartmentDto)
         console.log(this.data.name);
 
           this.closeDialog(); 
+          
         },
         error: (err) => console.error(err),
     })

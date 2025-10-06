@@ -5,21 +5,21 @@ hover:scale-105 ">
   <div class="flex items-center bg-gray-200 p-3">
   
     <div class="bg-lime-800 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
-      {{ department.name.charAt(0) }}{{ department.name.charAt(1).toUpperCase() }}
+      {{ department().name.charAt(0).toUpperCase() }}{{ department().name.charAt(1).toUpperCase() }}
     </div>
 
 
     <div class="ml-3">
-      <h2 class="text-lg font-semibold text-gray-800">{{ department.name }}</h2>
-      <p class="text-sm text-gray-500">ID: {{ department.id }}</p>
+      <h2 class="text-lg font-semibold text-gray-800">{{ department().name }}</h2>
+      <p class="text-sm text-gray-500">ID: {{ department().id }}</p>
     </div>
   </div>
 
 
   <div class="flex justify-between p-3 border-t">
     <button class="text-lime-600 hover:text-lime-800">View</button>
-    <button (click)="openEditDialog(department)" class="text-blue-600 hover:text-blue-800">Edit</button>
-    <button (click)="openDeleteDialog(department)" class="text-red-600 hover:text-red-800">Delete</button>
+    <button (click)="openEditDialog(department())" class="text-blue-600 hover:text-blue-800">Edit</button>
+    <button (click)="openDeleteDialog(department())" class="text-red-600 hover:text-red-800">Delete</button>
   </div>
 </div>
 

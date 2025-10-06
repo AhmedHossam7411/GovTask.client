@@ -1,4 +1,4 @@
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartmentService } from '../../services/department-Service';
 import { DepartmentDto } from '../departmentDto.model';
@@ -10,7 +10,6 @@ import { DepartmentDto } from '../departmentDto.model';
   styleUrl: './delete-confirm-dialog.css'
 })
 export class DeleteConfirmDialog {
-   @Input() department!: DepartmentDto;
   private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   data = inject(MAT_DIALOG_DATA) as DepartmentDto;
