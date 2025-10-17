@@ -6,6 +6,7 @@ import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
 import { Auth } from '../services/auth-service';
 
+
 @Component({
   selector: 'app-register',
   imports: [CommonModule,ReactiveFormsModule,RouterModule],
@@ -14,7 +15,6 @@ import { Auth } from '../services/auth-service';
 })
 
 export class RegisterComponent {
-
   private auth = inject(Auth);
   private router = inject(Router);
   form = new FormGroup({
@@ -57,7 +57,8 @@ export class RegisterComponent {
       this.router.navigate(['/login']);
     },
     error: (err) => console.error('Registration failed:', err)
-  });
-}
+   });
+ }
+ 
  
 }
