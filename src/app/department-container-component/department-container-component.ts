@@ -34,6 +34,7 @@ export class DepartmentContainerComponent implements OnInit {
 
    openAddDialog()
    {
+        console.log('Dialog closed without deletion');
    const dialogRef = this.dialogRef.open(AddDepartmentDialog);
    dialogRef.afterClosed().subscribe((newDepartment : DepartmentDto) => {
     if(newDepartment)

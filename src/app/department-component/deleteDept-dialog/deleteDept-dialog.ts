@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DepartmentService } from '../../services/department-Service';
 import { DepartmentDto } from '../departmentDto.model';
@@ -13,8 +13,9 @@ export class DeleteConfirmDialog {
   private departmentService = inject(DepartmentService);
   private dialogRef = inject(MatDialogRef);
   data = inject(MAT_DIALOG_DATA) as DepartmentDto;
+  @Input() department?: DepartmentDto;
 
-  confirmDelete()
+  confirmDepartmentDelete()
   {
     if(this.data && this.data.id)
     {
@@ -30,8 +31,9 @@ export class DeleteConfirmDialog {
       });
     }
   }
-  protected closeDialog()
+  closeDepartmentDialog()
    {
+    console.log('Dialog closed without deletion');
     this.dialogRef.close();
    }
 }

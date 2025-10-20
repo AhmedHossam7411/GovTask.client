@@ -32,7 +32,7 @@ export class AddDepartmentDialog {
     console.log(departmentDto);
     this.departmentService.postDepartment(departmentDto).subscribe({
       next: (response) => {
-        this.closeDialog(response);
+        this.closeDialog();
       },
       error: (err) => console.error(err),
     });
@@ -46,7 +46,7 @@ export class AddDepartmentDialog {
     );
   }
 
-  protected closeDialog(departmentDto: DepartmentDto) {
+   closeDialog() {
     this.dialogRef.close();
   }
 }

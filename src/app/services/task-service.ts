@@ -19,6 +19,8 @@ export class taskService {
 
    deleteTask(id: number):Observable<void>
    {
+    console.log('Deleting task with idrgrgrgrgr:', id);
+
     return this.http.delete<void>
     (`${this.apiUrl}/api/Task/${id}`);
    }
