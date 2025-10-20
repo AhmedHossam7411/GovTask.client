@@ -1,7 +1,7 @@
 import { Component, inject, input } from '@angular/core';
 import { taskDto } from './taskDto';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmDialog } from '../department-component/delete-confirm-dialog/delete-confirm-dialog';
+import { DeleteConfirmDialog } from '../department-component/deleteDept-dialog/deleteDept-dialog';
 import { taskService } from '../services/task-service';
 
 @Component({
@@ -12,8 +12,6 @@ import { taskService } from '../services/task-service';
 })
 export class Tasks {
   task = input.required<taskDto>();
-  private taskService = inject(taskService);
-  private errorMessage: string = '';
   private dialogRef = inject(MatDialog);
   
 //   openEditDialog(department : taskDto)
@@ -25,7 +23,7 @@ export class Tasks {
 //  }
  openDeleteDialog(task : taskDto)
  {
-   this.dialogRef.open(DeleteConfirmDialog,{
+   this.dialogRef.open(DeleteTaskConfirmDialog,{
     data : task
    });
  } 

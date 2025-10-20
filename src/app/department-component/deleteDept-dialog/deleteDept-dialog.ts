@@ -7,7 +7,7 @@ import { DepartmentDto } from '../departmentDto.model';
   selector: 'app-delete-confirm-dialog',
   imports: [],
   templateUrl: './delete-confirm-dialog.html',
-  styleUrl: './delete-confirm-dialog.css'
+  styleUrl: './deleteDept-dialog.css'
 })
 export class DeleteConfirmDialog {
   private departmentService = inject(DepartmentService);
