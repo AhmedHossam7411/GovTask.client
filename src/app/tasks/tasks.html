@@ -11,7 +11,7 @@ hover:scale-105 ">
 
     <div class="ml-3">
       <h2 class="text-lg font-semibold text-gray-800">{{ task().name }}</h2>
-      <p class="text-sm text-gray-500">DueDate  : {{ task().dueDate }}</p>
+      <p class="text-sm text-gray-500">DueDate  : {{ task().dueDate | date: 'yyyy-MM-dd' }}</p>
       <p class="text-sm text-gray-500">Description  : {{ task().description }}</p>
       <p class="text-sm text-blue-500">Associated Department  : {{ task().departmentId }}</p>
 

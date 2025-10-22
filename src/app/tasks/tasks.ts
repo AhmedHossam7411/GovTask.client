@@ -1,13 +1,12 @@
 import { Component, inject, input, OnInit } from '@angular/core';
 import { taskDto } from './taskDto';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteConfirmDialog } from '../department-component/deleteDept-dialog/deleteDept-dialog';
-import { taskService } from '../services/task-service';
 import { DeleteTaskDialog } from './delete-task-dialog/delete-task-dialog';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-tasks',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './tasks.html',
   styleUrl: './tasks.css'
 })

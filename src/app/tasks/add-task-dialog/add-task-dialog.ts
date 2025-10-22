@@ -26,12 +26,21 @@ export class AddTaskDialog {
     name: this.#fb.control('', {
       validators: [Validators.required, Validators.minLength(6)],
     }),
+      description: this.#fb.control('', {
+      validators: [Validators.required, Validators.minLength(15)],
+    }),
+      dueDate: this.#fb.control('', {
+      validators: [Validators.required, Validators.minLength(6),Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)],
+      }),  
+      departmentId: this.#fb.control('', {
+      validators: [],
+    }),
   });
 
   addtask(taskDto: any) {
     console.log(taskDto);
     this.taskService.postTask(taskDto).subscribe({
-      next: (response) => {
+      next: () => {
         this.closeTaskDialog();
       },
       error: (err) => console.error(err),
@@ -45,18 +54,13 @@ export class AddTaskDialog {
       this.form.controls.name.dirty
     );
   }
-  openAddDialog()
-     {
-          console.log('Dialog closed without deletion');
-     const dialogRef = this.dialogRef.open(AddTaskDialog);
-     dialogRef.afterClosed().subscribe((newDepartment : taskDto) => {
-      if(newDepartment)
-      {
-        this.departments.push(newDepartment);
-      }
-     });
-   }
-
+    get descriptionIsInvalid() {
+    return (
+      this.form.controls.description.invalid &&
+      this.form.controls.description.touched &&
+      this.form.controls.description.dirty
+    );
+  }
    closeTaskDialog() {
     this.dialogRef.close();
   }

@@ -3,6 +3,7 @@ import { Tasks } from '../tasks/tasks';
 import { MatDialog } from '@angular/material/dialog';
 import { taskDto } from '../tasks/taskDto';
 import { taskService } from '../services/task-service';
+import { AddTaskDialog } from '../tasks/add-task-dialog/add-task-dialog';
 
 @Component({
   selector: 'app-tasks-container',
@@ -29,5 +30,15 @@ export class TasksContainer {
       error: (err) => this.errorMessage = 'failed to fetch Tasks' + err
     });
   }
+  openAddDialog()
+     {
+     const dialogRef = this.dialogRef.open(AddTaskDialog);
+     dialogRef.afterClosed().subscribe((newTask : taskDto) => {
+      if(newTask)
+      {
+        this.tasks.push(newTask);
+      }
+     });
+   }
 
 }
