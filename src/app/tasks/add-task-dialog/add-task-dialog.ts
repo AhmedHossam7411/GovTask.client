@@ -32,9 +32,7 @@ export class AddTaskDialog {
       dueDate: this.#fb.control('', {
       validators: [Validators.required, Validators.minLength(6),Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)],
       }),  
-      departmentId: this.#fb.control('', {
-      validators: [],
-    }),
+      departmentId: null as number | null
   });
 
   addtask(taskDto: any) {
