@@ -1,0 +1,57 @@
+<div class="flex items-center justify-center h-[546px]">
+  <form (ngSubmit)="addtask(form.value)" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[600px]">
+  <button 
+ (click)="closeTaskDialog()" type="button" class="border-gray-400 hover:bg-lime-300 py-2  
+  bg-lime-200 font-semibold px-3 text-sm mx-auto">X</button>
+  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Add task</h2>
+  
+  <div class="pt-2">
+    <div class="mb-4">
+      <label for="name" class="mr-2">Add Name </label>
+      <input id="Username" type="name" formControlName="name"
+      placeholder=" New Task"
+      class=" w-full"
+      />
+      <span class="text-red-400 h-5 block mt-1">
+      {{ nameIsInvalid ? 'must be 6+ chars' : '' }}
+      </span>
+      </div>
+
+      <h2>Description</h2>
+      <textarea
+      formControlName="description"
+      placeholder="Enter description"
+      rows="3"
+      class="w-full border rounded p-2 resize-y">
+      </textarea>
+      <span class="text-red-400 h-5 block mt-1">
+      {{ descriptionIsInvalid ? 'must be 20+ chars' : '' }}
+      </span>
+
+      <div class="mb-4">
+      <label for="Due-Date" class="mr-2">Due Date </label>
+      <input id="DueDate" type="DueDate" formControlName="dueDate"
+      placeholder="YYYY-MM-DD"
+      class=" w-full"
+      />
+       <span class="text-red-400 h-5 block mt-1">
+      {{ descriptionIsInvalid ? 'required in correct format' : '' }}
+      </span>
+      </div>
+      <div class="mb-4">
+      <label for="departmentId" class="mr-2">DepartmentId</label>
+      <input id="departmentId" type="departmentId" formControlName="departmentId"
+      placeholder="Department ID (Optional)"
+      class=" w-full"
+      />
+
+       </div>
+
+
+
+       </div>
+       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
+       bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-5 ">Add</button>
+       
+</form>
+<div>
