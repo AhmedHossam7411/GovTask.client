@@ -14,12 +14,21 @@ interface KeyEventData {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BehaviorTrackerService implements OnDestroy {
-
   private mouseEvents: MouseEventData[] = [];
   private keyEvents: KeyEventData[] = [];
+
+  private lastMouseMoveTime: number | null = null;
+  private lastMousePosition: { x: number; y: number } | null = null;
+  private mouseSpeeds: number[] = [];
+  private mouseIdleTimes: number[] = [];
+
+  private keyDownTimestamps = new Map<string, number>();
+  private keyDwellTimes: number[] = [];
+  private keyFlightTimes: number[] = [];
+  private lastKeyDownTime: number | null = null;
 
   constructor() {
     this.startTracking();
@@ -33,41 +42,67 @@ export class BehaviorTrackerService implements OnDestroy {
   }
 
   private handleMouseMove = (event: MouseEvent) => {
-    this.mouseEvents.push({
+    const now = performance.now();
+
+    if (this.lastMouseMoveTime && this.lastMousePosition) {
+      const deltaTime = now - this.lastMouseMoveTime;
+
+      const deltaX = event.clientX - this.lastMousePosition.x;
+      const deltaY = event.clientY - this.lastMousePosition.y;
+
+      const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+
+      const speed = distance / deltaTime; // px per ms
+
+      this.mouseSpeeds.push(speed);
+      this.mouseIdleTimes.push(deltaTime);
+
+      console.log('Mouse deltaTime:', deltaTime);
+      console.log('Mouse distance:', distance);
+      console.log('Mouse speed:', speed);
+    }
+
+    this.lastMouseMoveTime = now;
+    this.lastMousePosition = {
       x: event.clientX,
       y: event.clientY,
-      timestamp: Date.now(),
-      type: 'move'
-    });
-    console.log('mouse movement tracked', this.mouseEvents.length);
+    };
   };
 
   private handleClick = (event: MouseEvent) => {
     this.mouseEvents.push({
       x: event.clientX,
       y: event.clientY,
-      timestamp: Date.now(),
-      type: 'click'
+      timestamp: performance.now(),
+      type: 'click',
     });
     console.log('click count now:', this.mouseEvents.length);
   };
 
   private handleKeyDown = (event: KeyboardEvent) => {
-    console.log('KEY DOWN', event.key);
-    this.keyEvents.push({
-      key: event.key,
-      timestamp: Date.now(),
-      type: 'down'
-    });
-    console.log('Key count now:', this.keyEvents.length);
+    const now = performance.now();
+
+    if (this.lastKeyDownTime) {
+      const flight = now - this.lastKeyDownTime;
+      this.keyFlightTimes.push(flight);
+      console.log('Flight time:', flight);
+    }
+
+    this.keyDownTimestamps.set(event.key, now);
+    this.lastKeyDownTime = now;
   };
 
   private handleKeyUp = (event: KeyboardEvent) => {
-    this.keyEvents.push({
-      key: event.key,
-      timestamp: Date.now(),
-      type: 'up'
-    });
+    const now = performance.now();
+    const downTime = this.keyDownTimestamps.get(event.key);
+
+    if (downTime) {
+      const dwell = now - downTime;
+      this.keyDwellTimes.push(dwell);
+
+      console.log('Dwell time:', dwell);
+      this.keyDownTimestamps.delete(event.key);
+    }
   };
 
   getMouseEvents() {
