@@ -1,24 +1,16 @@
-import { Injectable, OnDestroy } from '@angular/core';
+import { Injectable } from '@angular/core';
 
-interface MouseEventData {
-  x: number;
-  y: number;
-  timestamp: number;
-  type: 'move' | 'click';
-}
-
-interface KeyEventData {
-  key: string;
-  timestamp: number;
-  type: 'down' | 'up';
-}
 
 @Injectable({
   providedIn: 'root',
 })
-export class BehaviorTrackerService implements OnDestroy {
-  private mouseEvents: MouseEventData[] = [];
-  private keyEvents: KeyEventData[] = [];
+export class BehaviorTrackerService {
+  private lastClickTime: number | null = null;
+  private mouseDownTime: number | null = null;
+
+  private clickIntervals: number[] = [];
+  private clickDurations: number[] = [];
+  private preClickSpeeds: number[] = [];
 
   private lastMouseMoveTime: number | null = null;
   private lastMousePosition: { x: number; y: number } | null = null;
@@ -30,98 +22,173 @@ export class BehaviorTrackerService implements OnDestroy {
   private keyFlightTimes: number[] = [];
   private lastKeyDownTime: number | null = null;
 
-  constructor() {
-    this.startTracking();
+  private isTracking = false;
+  private context : 'preAuth' | 'postAuth' = 'preAuth';
+  setContext(ctx:'preAuth' | 'postAuth' = 'preAuth' ){
+    this.context = ctx;
+    console.log("Behavior context switched to: ",ctx);
   }
-
-  private startTracking() {
+  
+  start() {
+    if (this.isTracking) {
+      console.log("Tracking already active");
+      return;
+    }
     window.addEventListener('mousemove', this.handleMouseMove);
-    window.addEventListener('click', this.handleClick);
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
+    window.addEventListener('mousedown', this.handleMouseDown);
+    window.addEventListener('mouseup', this.handleMouseUp);
+    
+    console.log("Behavior tracking STARTED");
+    this.isTracking = true;
+  }
+  
+  private pushWithLimit<T>(arr: T[], value: T, limit = 200) {
+    arr.push(value);
+    if (arr.length > limit) {
+      arr.shift();
+    }
   }
 
-  private handleMouseMove = (event: MouseEvent) => {
+  private handleMouseDown = (event: MouseEvent) => {
+    this.mouseDownTime = performance.now();
+  };
+  private handleMouseUp = (event: MouseEvent) => {
     const now = performance.now();
+    
+    // Duration (how long button was held)
+  if (this.mouseDownTime) {
+    const duration = now - this.mouseDownTime;
+    this.pushWithLimit(this.clickDurations, duration);
+    console.log("Click duration:", duration);
+  }
+  
+  // Interval between clicks
+  if (this.lastClickTime) {
+    const interval = now - this.lastClickTime;
+    this.pushWithLimit(this.clickIntervals, interval);
+    console.log("Click interval:", interval);
+  }
+  
+  // Speed before click (if exists)
+  if (this.mouseSpeeds.length > 0) {
+    const lastSpeed = this.mouseSpeeds[this.mouseSpeeds.length - 1];
+    this.pushWithLimit(this.preClickSpeeds, lastSpeed);
+    console.log("Pre-click speed:", lastSpeed);
+  }
 
-    if (this.lastMouseMoveTime && this.lastMousePosition) {
-      const deltaTime = now - this.lastMouseMoveTime;
+  this.lastClickTime = now;
+};
 
-      const deltaX = event.clientX - this.lastMousePosition.x;
-      const deltaY = event.clientY - this.lastMousePosition.y;
-
+private handleMouseMove = (event: MouseEvent) => {
+  const now = performance.now();
+  
+  if (this.lastMouseMoveTime && this.lastMousePosition) {
+    const deltaTime = now - this.lastMouseMoveTime;
+    
+    const deltaX = event.clientX - this.lastMousePosition.x;
+    const deltaY = event.clientY - this.lastMousePosition.y;
+    
       const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
       const speed = distance / deltaTime; // px per ms
-
-      this.mouseSpeeds.push(speed);
-      this.mouseIdleTimes.push(deltaTime);
-
+      
+      this.pushWithLimit(this.mouseSpeeds, speed);
+      this.pushWithLimit(this.mouseIdleTimes, deltaTime);
+      
       console.log('Mouse deltaTime:', deltaTime);
       console.log('Mouse distance:', distance);
       console.log('Mouse speed:', speed);
     }
-
+    
     this.lastMouseMoveTime = now;
     this.lastMousePosition = {
       x: event.clientX,
       y: event.clientY,
     };
   };
-
-  private handleClick = (event: MouseEvent) => {
-    this.mouseEvents.push({
-      x: event.clientX,
-      y: event.clientY,
-      timestamp: performance.now(),
-      type: 'click',
-    });
-    console.log('click count now:', this.mouseEvents.length);
-  };
-
+  
   private handleKeyDown = (event: KeyboardEvent) => {
     const now = performance.now();
-
+    
     if (this.lastKeyDownTime) {
       const flight = now - this.lastKeyDownTime;
-      this.keyFlightTimes.push(flight);
+      this.pushWithLimit(this.keyFlightTimes, flight);
       console.log('Flight time:', flight);
     }
-
+    
     this.keyDownTimestamps.set(event.key, now);
     this.lastKeyDownTime = now;
   };
-
+  
   private handleKeyUp = (event: KeyboardEvent) => {
     const now = performance.now();
     const downTime = this.keyDownTimestamps.get(event.key);
-
+    
     if (downTime) {
       const dwell = now - downTime;
-      this.keyDwellTimes.push(dwell);
-
+      this.pushWithLimit(this.keyFlightTimes, dwell);
+      
       console.log('Dwell time:', dwell);
       this.keyDownTimestamps.delete(event.key);
     }
   };
-
-  getMouseEvents() {
-    return this.mouseEvents;
+  
+  getContext(){
+    return this.context;
   }
 
-  getKeyEvents() {
-    return this.keyEvents;
+  getBehaviorSnapshot() {
+    return {
+      avgMouseSpeed: this.average(this.mouseSpeeds),
+      avgMouseIdle: this.average(this.mouseIdleTimes),
+      avgDwell: this.average(this.keyDwellTimes),
+      avgFlight: this.average(this.keyFlightTimes),
+    };
   }
+  
+  private average(arr: number[]): number {
+    if (arr.length === 0) return 0;
+    console.log('Behavior Snapshot:', this.getBehaviorSnapshot());
+    return arr.reduce((a, b) => a + b, 0) / arr.length;
+  }
+  
+  stop() {
+  if (!this.isTracking) {
+    console.log("Tracking already stopped");
+    return;
+  }
+  window.removeEventListener('mousemove', this.handleMouseMove);
+  window.removeEventListener('keydown', this.handleKeyDown);
+  window.removeEventListener('keyup', this.handleKeyUp);
+  window.removeEventListener('mousedown', this.handleMouseDown);
+  window.removeEventListener('mouseup', this.handleMouseUp);
+  
+  console.log("Behavior tracking STOPPED");
+  this.isTracking = false;
+}
+clearData(): void {
 
-  clearData() {
-    this.mouseEvents = [];
-    this.keyEvents = [];
-  }
+  // Mouse dynamics
+  this.mouseSpeeds = [];
+  this.mouseIdleTimes = [];
+  this.lastMouseMoveTime = null;
+  this.lastMousePosition = null;
 
-  ngOnDestroy(): void {
-    window.removeEventListener('mousemove', this.handleMouseMove);
-    window.removeEventListener('click', this.handleClick);
-    window.removeEventListener('keydown', this.handleKeyDown);
-    window.removeEventListener('keyup', this.handleKeyUp);
-  }
+  // Click dynamics
+  this.clickIntervals = [];
+  this.clickDurations = [];
+  this.preClickSpeeds = [];
+  this.lastClickTime = null;
+  this.mouseDownTime = null;
+
+  // Keystroke dynamics
+  this.keyDwellTimes = [];
+  this.keyFlightTimes = [];
+  this.keyDownTimestamps.clear();
+  this.lastKeyDownTime = null;
+
+  console.log("Behavior data cleared.");
+}
 }

@@ -1,24 +1,34 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Header } from "./header/headerComponent";
-import { RegisterComponent } from "./register/registerComponent";
-import { LoginComponent } from "./login/loginComponent";
 import { MatDialogModule } from '@angular/material/dialog';
 import { BehaviorTrackerService } from './services/behavior-tracker.service';
+import { Auth } from './services/auth-service';
 
 @Component({
   selector: 'app-root',
-  imports: [MatDialogModule,RouterOutlet, Header, RegisterComponent, LoginComponent],
+  imports: [MatDialogModule, RouterOutlet, Header],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  constructor(private behaviorTracker: BehaviorTrackerService) {
-    console.log('Behavior tracker started');
-     setTimeout(() => {
-    console.log('Mouse events:', this.behaviorTracker.getMouseEvents().length);
-    console.log('Key events:', this.behaviorTracker.getKeyEvents().length);
-  }, 5000);
-  }
+export class App implements OnInit {
+
   protected readonly title = signal('govTask');
+
+  constructor(
+    private behaviorTracker: BehaviorTrackerService,
+    private auth: Auth
+  ) {}
+
+ ngOnInit(): void {
+  this.auth.authState$.subscribe(isAuth => {
+    if (isAuth) {
+      this.behaviorTracker.setContext('postAuth');
+      this.behaviorTracker.start();
+    } else {
+      this.behaviorTracker.setContext('preAuth');
+      // this.behaviorTracker.clearData();
+    }
+  });
+}
 }
