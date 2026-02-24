@@ -10,51 +10,65 @@ import { AuthResponseDto } from '../shared/Auth-responseDto';
   providedIn: 'root'
 })
 export class Auth {
+  constructor() {
+  console.log("Auth service created");
+}
 
   private apiUrl = environment.apiUrl;
   private http = inject(HttpClient);
 
-  private authState = new BehaviorSubject<boolean>(this.hasValidToken());
+  private accessToken: string | null = null;
+  private authState = new BehaviorSubject<boolean>(false);
   authState$ = this.authState.asObservable();
 
   login(data: LoginRequest): Observable<AuthResponseDto> {
-    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/login`, data)
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/login`
+      , data , {withCredentials: true})
       .pipe(
         tap(res => {
-          localStorage.setItem('authToken', res.token);
+          this.accessToken = res.accessToken;
           this.authState.next(true);
         })
       );
+  }
+
+  refresh():  Observable<AuthResponseDto> {
+    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/refresh`,
+      {},
+      {withCredentials: true}
+    ).pipe(
+      tap(res => {
+        this.accessToken = res.accessToken;
+        this.authState.next(true);
+      })
+    )
   }
 
   register(data: RegisterRequest): Observable<AuthResponseDto> {
     return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/register`, data)
       .pipe(
         tap(res => {
-          localStorage.setItem('authToken', res.token);
+          this.accessToken = res.accessToken;
           this.authState.next(true);
         })
       );
   }
 
-  logout() {
-    localStorage.removeItem('authToken');
-    this.authState.next(false);
+  logout(): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/api/Auth/logout`,
+      {},
+      {withCredentials: true}
+    ).pipe(
+      tap(() => {
+        this.accessToken = null;
+        this.authState.next(false);
+      })
+    );
   }
 
   getToken() {
-    return localStorage.getItem('authToken');
+    return this.accessToken;
   }
 
-  private hasValidToken(): boolean {
-    const token = localStorage.getItem('authToken');
-    if (!token) return false;
-
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp * 1000 > Date.now();
-    } catch {
-      return false;
-    }
-  }
 }

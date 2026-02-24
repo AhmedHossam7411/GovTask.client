@@ -1,29 +1,33 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
 import { Auth } from './services/auth-service';
+import { Observable, of, catchError, map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthGuard implements CanActivate {
   
   private router = inject(Router); 
   private auth = inject(Auth);
-  
- canActivate(): boolean {
+
+canActivate(): Observable<boolean> {
 
   console.log('Guard check');
+
   const token = this.auth.getToken();
-  if (!token) return this.redirect();
 
-  const payload = JSON.parse(atob(token.split('.')[1]));
-  const isExpired = Date.now() > payload.exp * 1000;
-  if (isExpired) return this.redirect();
+  // If access token exists, allow immediately
+  if (token) {
+    return of(true);
+  }
 
-  return true;
-}
+  // If no access token, attempt silent refresh
+  return this.auth.refresh().pipe(
+    map(() => true),
+    catchError(() => {
+      this.router.navigate(['login']);
+      return of(false);
+    })
+    );
+  }
 
-redirect() {
-  this.router.navigate(['login']);
-  return false;
-}
-  
 }

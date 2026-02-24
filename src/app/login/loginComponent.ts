@@ -55,7 +55,6 @@ export class LoginComponent {
     this.auth.login(loginData).subscribe({
       next: (res) => {
         console.log('login success:', res);
-        localStorage.setItem('authToken', res.token);
         this.router.navigate(['/departments']);
         this.behaviorTracker.setContext('postAuth');
         this.behaviorTracker.start();
