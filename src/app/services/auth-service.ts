@@ -1,9 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap, BehaviorSubject } from 'rxjs';
+import { Observable, tap, BehaviorSubject, catchError, throwError } from 'rxjs';
 import { LoginRequest } from '../login/Login-request.model';
 import { RegisterRequest } from '../register/register-Request.model';
-import { environment } from '../../environments/environment';
 import { AuthResponseDto } from '../shared/Auth-responseDto';
 
 @Injectable({
@@ -11,44 +10,55 @@ import { AuthResponseDto } from '../shared/Auth-responseDto';
 })
 export class Auth {
   constructor() {
-  console.log("Auth service created");
-}
-
-  private apiUrl = environment.apiUrl;
+      const token = localStorage.getItem(this.accessTokenKey);
+      if(token && !this.isTokenExpired(token)) {
+        this.authState.next(true);
+      }
+  }
   private http = inject(HttpClient);
-
-  private accessToken: string | null = null;
+  private accessTokenKey = "access-Token";
   private authState = new BehaviorSubject<boolean>(false);
   authState$ = this.authState.asObservable();
 
+  private isTokenExpired(token: string): boolean {
+  const payload = JSON.parse(atob(token.split('.')[1]));
+  const exp = payload.exp;
+  const now = Math.floor(Date.now() / 1000);
+  return exp < now;
+  } 
+
   login(data: LoginRequest): Observable<AuthResponseDto> {
-    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/login`
+    return this.http.post<AuthResponseDto>(`/api/Auth/login`
       , data , {withCredentials: true})
       .pipe(
         tap(res => {
-          this.accessToken = res.accessToken;
+          localStorage.setItem(this.accessTokenKey,res.accessToken);
           this.authState.next(true);
         })
       );
   }
 
   refresh():  Observable<AuthResponseDto> {
-    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/refresh`,
-      {},
+    return this.http.post<AuthResponseDto>(`/api/Auth/refresh`,
+      null,
       {withCredentials: true}
     ).pipe(
       tap(res => {
-        this.accessToken = res.accessToken;
+        localStorage.setItem(this.accessTokenKey,res.accessToken);
         this.authState.next(true);
+      }),
+      catchError(err => {
+        console.error('refresh() error', err);
+        return throwError(() => err);
       })
     )
   }
 
   register(data: RegisterRequest): Observable<AuthResponseDto> {
-    return this.http.post<AuthResponseDto>(`${this.apiUrl}/api/Auth/register`, data)
+    return this.http.post<AuthResponseDto>(`/api/Auth/register`, data)
       .pipe(
         tap(res => {
-          this.accessToken = res.accessToken;
+          localStorage.setItem(this.accessTokenKey,res.accessToken)
           this.authState.next(true);
         })
       );
@@ -56,19 +66,19 @@ export class Auth {
 
   logout(): Observable<any> {
     return this.http.post(
-      `${this.apiUrl}/api/Auth/logout`,
+      `/api/Auth/logout`,
       {},
       {withCredentials: true}
     ).pipe(
       tap(() => {
-        this.accessToken = null;
+        localStorage.removeItem(this.accessTokenKey);
         this.authState.next(false);
       })
     );
   }
 
   getToken() {
-    return this.accessToken;
+    return localStorage.getItem(this.accessTokenKey);
   }
 
 }
