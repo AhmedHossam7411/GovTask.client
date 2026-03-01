@@ -21,6 +21,7 @@ export class BehaviorTrackerService {
   private keyFlightTimes: number[] = [];
   private lastKeyDownTime: number | null = null;
 
+  private windowTimer: any = null;
   private isTracking = false;
   private context : 'preAuth' | 'postAuth' = 'preAuth';
   setContext(ctx:'preAuth' | 'postAuth' = 'preAuth' ){
@@ -29,10 +30,7 @@ export class BehaviorTrackerService {
   }
   
   start() {
-    if (this.isTracking) {
-      console.log("Tracking already active");
-      return;
-    }
+     if (this.isTracking) return;
     window.addEventListener('mousemove', this.handleMouseMove);
     window.addEventListener('keydown', this.handleKeyDown);
     window.addEventListener('keyup', this.handleKeyUp);
@@ -41,6 +39,23 @@ export class BehaviorTrackerService {
     
     console.log("Behavior tracking STARTED");
     this.isTracking = true;
+    this.startWindowTimer();
+  }
+
+  startWindowTimer() {
+  console.log("Starting window timer for behavior snapshot...");
+  if (this.windowTimer) return;
+
+  this.windowTimer = setInterval(() => {
+    const snapshot = this.getBehaviorSnapshot();
+
+    if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
+      console.log("Sending window snapshot:", snapshot);
+      // TODO: call backend API here
+    }
+
+    this.clearData();
+    }, 30000);
   }
   
   private pushWithLimit<T>(arr: T[], value: T, limit = 200) {
@@ -60,21 +75,18 @@ export class BehaviorTrackerService {
   if (this.mouseDownTime) {
     const duration = now - this.mouseDownTime;
     this.pushWithLimit(this.clickDurations, duration);
-    console.log("Click duration:", duration);
   }
   
   // Interval between clicks
   if (this.lastClickTime) {
     const interval = now - this.lastClickTime;
     this.pushWithLimit(this.clickIntervals, interval);
-    console.log("Click interval:", interval);
   }
   
   // Speed before click (if exists)
   if (this.mouseSpeeds.length > 0) {
     const lastSpeed = this.mouseSpeeds[this.mouseSpeeds.length - 1];
     this.pushWithLimit(this.preClickSpeeds, lastSpeed);
-    console.log("Pre-click speed:", lastSpeed);
   }
 
   this.lastClickTime = now;
@@ -96,9 +108,6 @@ private handleMouseMove = (event: MouseEvent) => {
       this.pushWithLimit(this.mouseSpeeds, speed);
       this.pushWithLimit(this.mouseIdleTimes, deltaTime);
       
-      console.log('Mouse deltaTime:', deltaTime);
-      console.log('Mouse distance:', distance);
-      console.log('Mouse speed:', speed);
     }
     
     this.lastMouseMoveTime = now;
@@ -114,7 +123,6 @@ private handleMouseMove = (event: MouseEvent) => {
     if (this.lastKeyDownTime) {
       const flight = now - this.lastKeyDownTime;
       this.pushWithLimit(this.keyFlightTimes, flight);
-      console.log('Flight time:', flight);
     }
     
     this.keyDownTimestamps.set(event.key, now);
@@ -127,9 +135,7 @@ private handleMouseMove = (event: MouseEvent) => {
     
     if (downTime) {
       const dwell = now - downTime;
-      this.pushWithLimit(this.keyFlightTimes, dwell);
-      
-      console.log('Dwell time:', dwell);
+      this.pushWithLimit(this.keyDwellTimes, dwell);
       this.keyDownTimestamps.delete(event.key);
     }
   };
@@ -139,23 +145,65 @@ private handleMouseMove = (event: MouseEvent) => {
   }
 
   getBehaviorSnapshot() {
-    return {
-      avgMouseSpeed: this.average(this.mouseSpeeds),
-      avgMouseIdle: this.average(this.mouseIdleTimes),
-      avgDwell: this.average(this.keyDwellTimes),
-      avgFlight: this.average(this.keyFlightTimes),
+  console.log("Generating behavior snapshot...");
+  const windowSeconds = 30;
+
+  return {
+    // Metadata
+    context: this.context,
+    timestamp: new Date().toISOString(),
+
+    // Mouse
+    avgMouseSpeed: this.average(this.mouseSpeeds),
+    stdMouseSpeed: this.std(this.mouseSpeeds),
+    mouseMoveCount: this.mouseSpeeds.length,
+
+    avgMouseIdle: this.average(this.mouseIdleTimes),
+    stdMouseIdle: this.std(this.mouseIdleTimes),
+
+    // Clicks
+    avgClickDuration: this.average(this.clickDurations),
+    stdClickDuration: this.std(this.clickDurations),
+    clickCount: this.clickDurations.length,
+
+    avgClickInterval: this.average(this.clickIntervals),
+    stdClickInterval: this.std(this.clickIntervals),
+
+    // Keystrokes
+    avgDwell: this.average(this.keyDwellTimes),
+    stdDwell: this.std(this.keyDwellTimes),
+
+    avgFlight: this.average(this.keyFlightTimes),
+    stdFlight: this.std(this.keyFlightTimes),
+    keyEventCount: this.keyDwellTimes.length,
+
+    typingRate: this.keyDwellTimes.length / windowSeconds
     };
   }
   
   private average(arr: number[]): number {
     if (arr.length === 0) return 0;
-    console.log('Behavior Snapshot:', this.getBehaviorSnapshot());
     return arr.reduce((a, b) => a + b, 0) / arr.length;
   }
+  
+  private std(arr: number[]): number {
+  if (arr.length === 0) return 0;
+
+  const mean = this.average(arr);
+  const variance =
+    arr.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) /
+    arr.length;
+
+  return Math.sqrt(variance);
+}
   
   stop() {
   if (!this.isTracking) {
     console.log("Tracking already stopped");
+    if (this.windowTimer) {
+    clearInterval(this.windowTimer);
+    this.windowTimer = null;
+}
     return;
   }
   window.removeEventListener('mousemove', this.handleMouseMove);
@@ -189,5 +237,5 @@ clearData(): void {
   this.lastKeyDownTime = null;
 
   console.log("Behavior data cleared.");
-}
+  }
 }
