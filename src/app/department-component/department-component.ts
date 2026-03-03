@@ -5,10 +5,10 @@ import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialog } from './deleteDept-dialog/deleteDept-dialog';
 import { AddDepartmentDialog } from './add-department-dialog/add-department-dialog';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-department-component',
-  imports: [MatDialogModule],
+  imports: [MatDialogModule, MatSlideToggleModule],
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })

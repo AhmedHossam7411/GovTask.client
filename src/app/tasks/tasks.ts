@@ -3,10 +3,11 @@ import { taskDto } from './taskDto';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteTaskDialog } from './delete-task-dialog/delete-task-dialog';
 import { DatePipe } from '@angular/common';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-tasks',
-  imports: [DatePipe],
+  imports: [DatePipe, MatSlideToggleModule],
   templateUrl: './tasks.html',
   styleUrl: './tasks.css'
 })

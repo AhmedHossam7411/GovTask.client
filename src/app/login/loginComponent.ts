@@ -1,10 +1,8 @@
 import { Component, inject, NgModule } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
   Validators,
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -12,6 +10,7 @@ import { LoginRequest } from './Login-request.model';
 import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
 import { Auth } from '../services/auth-service';
+import { BehaviorTrackerService } from '../services/behavior-tracker.service';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +21,7 @@ import { Auth } from '../services/auth-service';
 export class LoginComponent {
   private auth = inject(Auth);
   private router = inject(Router);
+  private behaviorTracker = inject(BehaviorTrackerService);
   errorMessage: string = '';
 
   form = new FormGroup({
@@ -55,8 +55,9 @@ export class LoginComponent {
     this.auth.login(loginData).subscribe({
       next: (res) => {
         console.log('login success:', res);
-        localStorage.setItem('authToken', res.token);
         this.router.navigate(['/departments']);
+        this.behaviorTracker.setContext('postAuth');
+        this.behaviorTracker.start();
       },
       error: (err) => {
         this.errorMessage = 'Email or Password not found';

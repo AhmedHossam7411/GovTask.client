@@ -4,11 +4,12 @@ import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
 import { AddDepartmentDialog } from '../department-component/add-department-dialog/add-department-dialog';
 import { MatDialog } from '@angular/material/dialog';
-
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatCheckbox } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-department-container-component',
-  imports: [DepartmentComponent],
+  imports: [DepartmentComponent,MatSlideToggleModule,MatCheckbox],
   templateUrl: './department-container-component.html',
   styleUrl: './department-container-component.css'
 })
@@ -32,14 +33,13 @@ export class DepartmentContainerComponent implements OnInit {
     });
   }
 
-   openAddDialog()
-   {
-        console.log('Dialog closed without deletion');
+   openAddDialog(){
    const dialogRef = this.dialogRef.open(AddDepartmentDialog);
    dialogRef.afterClosed().subscribe((newDepartment : DepartmentDto) => {
     if(newDepartment)
     {
       this.departments.push(newDepartment);
+      this.#cdr.markForCheck();  // ??
     }
    });
  }

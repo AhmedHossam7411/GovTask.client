@@ -53,7 +53,6 @@ export class RegisterComponent {
     this.auth.register(registerData).subscribe({
     next: (res) => { 
       console.log('Registered successfully:', res);
-      localStorage.setItem('authToken', res.token);
       this.router.navigate(['/login']);
     },
     error: (err) => console.error('Registration failed:', err)

@@ -4,10 +4,10 @@ import { MatDialog } from '@angular/material/dialog';
 import { taskDto } from '../tasks/taskDto';
 import { taskService } from '../services/task-service';
 import { AddTaskDialog } from '../tasks/add-task-dialog/add-task-dialog';
-
+import { MatCheckbox } from '@angular/material/checkbox';
 @Component({
   selector: 'app-tasks-container',
-  imports: [Tasks],
+  imports: [Tasks,MatCheckbox],
   templateUrl: './tasks-container.html',
   styleUrl: './tasks-container.css'
 })

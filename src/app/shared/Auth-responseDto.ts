@@ -1,4 +1,4 @@
 export interface AuthResponseDto
 {
-    token: string;
+    accessToken: string;
 }
