@@ -1,4 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +23,7 @@ export class BehaviorTrackerService {
   private keyFlightTimes: number[] = [];
   private lastKeyDownTime: number | null = null;
 
+  private http: HttpClient = inject(HttpClient);
   private windowTimer: any = null;
   private isTracking = false;
   private context : 'preAuth' | 'postAuth' = 'preAuth';
@@ -51,9 +54,13 @@ export class BehaviorTrackerService {
 
     if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
-      // TODO: call backend API here
+       
+      this.http.post( `/api/Behavior/snapshot`, snapshot, { withCredentials: true })
+        .subscribe({
+          next: () => console.log("Behavior snapshot sent successfully"),
+          error: (err) => console.error("Behavior snapshot failed:", err)
+        });
     }
-
     this.clearData();
     }, 30000);
   }
