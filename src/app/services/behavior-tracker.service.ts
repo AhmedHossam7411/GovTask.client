@@ -52,7 +52,7 @@ export class BehaviorTrackerService {
   this.windowTimer = setInterval(() => {
     const snapshot = this.getBehaviorSnapshot();
 
-    if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
+    if (snapshot.mouseMoveCount >= 50 && snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
        
       this.http.post( `/api/Behavior/snapshot`, snapshot, { withCredentials: true })

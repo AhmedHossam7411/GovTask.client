@@ -1,24 +1,18 @@
-import { Component, inject, input} from '@angular/core';
+import { Component, inject, input } from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { taskService } from '../../services/task-service';
-import { taskDto } from '../taskDto';
-import{
-  FormGroup,
-  FormControl,
-  Validators,
-  ReactiveFormsModule,
-  NonNullableFormBuilder,
-} from '@angular/forms';
+import { DocumentService } from '../../../services/document-service';
+import { documentDto } from '../../documentDto';
 
 @Component({
-  selector: 'app-add-task-dialog',
+  selector: 'app-add-document-dialog',
   imports: [ReactiveFormsModule],
-  templateUrl: './add-task-dialog.html',
-  styleUrl: './add-task-dialog.css',
+  templateUrl: './add-document-dialog.html',
+  styleUrl: './add-document-dialog.css'
 })
-export class AddTaskDialog {
-  task = input.required<taskDto>();
-  private taskService = inject(taskService);
+export class AddDocumentDialog {
+  Document = input.required<documentDto>();
+  private DocumentService = inject(DocumentService);
   private dialogRef = inject(MatDialogRef);
   #fb = inject(NonNullableFormBuilder);
 
@@ -35,11 +29,11 @@ export class AddTaskDialog {
       departmentId: null as number | null
   });
 
-  addtask(taskDto: any) {
-    console.log(taskDto);
-    this.taskService.postTask(taskDto).subscribe({
+  addDocument(DocumentDto: any) {
+    console.log(DocumentDto);
+    this.DocumentService.postDocument(DocumentDto).subscribe({
       next: () => {
-        this.closeTaskDialog();
+        this.closeDocumentDialog();
       },
       error: (err) => console.error(err),
     });
@@ -52,21 +46,21 @@ export class AddTaskDialog {
       this.form.controls.name.dirty
     );
   }
-  get descriptionIsInvalid() {
-  return (
-    this.form.controls.description.invalid &&
-    this.form.controls.description.touched &&
-    this.form.controls.description.dirty
-  );
-}
- get dueDateIsInvalid() {
+    get descriptionIsInvalid() {
+    return (
+      this.form.controls.description.invalid &&
+      this.form.controls.description.touched &&
+      this.form.controls.description.dirty
+    );
+  }
+   get uploadDateIsInvalid() {
   return (
     this.form.controls.dueDate.invalid &&
     this.form.controls.dueDate.touched &&
     this.form.controls.dueDate.dirty
   );
 }
-   closeTaskDialog() {
+   closeDocumentDialog() {
     this.dialogRef.close();
   }
 }
