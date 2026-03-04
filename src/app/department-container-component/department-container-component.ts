@@ -4,12 +4,13 @@ import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
 import { AddDepartmentDialog } from '../department-component/add-department-dialog/add-department-dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-department-container-component',
-  imports: [DepartmentComponent,MatSlideToggleModule,MatCheckbox],
+  imports: [DepartmentComponent,MatSliderModule,MatCheckbox,MatSlideToggle],
   templateUrl: './department-container-component.html',
   styleUrl: './department-container-component.css'
 })

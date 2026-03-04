@@ -5,9 +5,10 @@ import { documentDto } from '../document-component/documentDto';
 import { DocumentService } from '../services/document-service';
 import { AddDocumentDialog } from '../document-component/add-document-dialog/add-document-dialog/add-document-dialog';
 import { Documents } from '../document-component/documents';
+import { MatSliderModule } from '@angular/material/slider';
 @Component({
   selector: 'app-document-container-component',
-  imports: [Documents,MatCheckbox],
+  imports: [Documents,MatCheckbox,MatSliderModule],
   templateUrl: './document-container-component.html',
   styleUrl: './document-container-component.css'
 })
