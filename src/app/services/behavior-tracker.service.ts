@@ -1,6 +1,5 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -52,7 +51,7 @@ export class BehaviorTrackerService {
   this.windowTimer = setInterval(() => {
     const snapshot = this.getBehaviorSnapshot();
 
-    if (snapshot.mouseMoveCount >= 50 && snapshot.keyEventCount > 5) {
+    if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
        
       this.http.post( `/api/Behavior/snapshot`, snapshot, { withCredentials: true })

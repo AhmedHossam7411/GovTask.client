@@ -23,10 +23,12 @@ export class AddDocumentDialog {
       description: this.#fb.control('', {
       validators: [Validators.required, Validators.minLength(15)],
     }),
-      dueDate: this.#fb.control('', {
+      uploadDate: this.#fb.control('', {
       validators: [Validators.required, Validators.minLength(6),Validators.pattern(/^\d{4}-\d{2}-\d{2}$/)],
       }),  
-      departmentId: null as number | null
+      taskId: this.#fb.control('',{
+      validators: [Validators.required, Validators.pattern('^[0-9]*$')],
+      })
   });
 
   addDocument(DocumentDto: any) {
@@ -55,9 +57,9 @@ export class AddDocumentDialog {
   }
    get uploadDateIsInvalid() {
   return (
-    this.form.controls.dueDate.invalid &&
-    this.form.controls.dueDate.touched &&
-    this.form.controls.dueDate.dirty
+    this.form.controls.uploadDate.invalid &&
+    this.form.controls.uploadDate.touched &&
+    this.form.controls.uploadDate.dirty
   );
 }
    closeDocumentDialog() {
