@@ -64,7 +64,7 @@ export class BehaviorTrackerService {
     const token = localStorage.getItem("access-Token");
     return !token;
   }
-  
+
   startWindowTimer() {
   console.log("Starting window timer for behavior snapshot...");
   if (this.windowTimer) return;
@@ -74,7 +74,7 @@ export class BehaviorTrackerService {
       return;
     const snapshot = this.getBehaviorSnapshot();
 
-    if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
+    if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
        
       this.http.post( `/api/Behavior/snapshot`, snapshot, { withCredentials: true })
@@ -84,7 +84,7 @@ export class BehaviorTrackerService {
         });
     }
     this.clearData();
-    }, 30000);
+    }, 45000);
   }
   
   private pushWithLimit<T>(arr: T[], value: T, limit = 200) {
@@ -175,7 +175,7 @@ private handleMouseMove = (event: MouseEvent) => {
 
   getBehaviorSnapshot() {
   console.log("Generating behavior snapshot...");
-  const windowSeconds = 30;
+  const windowSeconds = 45;
 
   return {
     // Metadata
