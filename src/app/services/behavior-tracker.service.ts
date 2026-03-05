@@ -27,6 +27,21 @@ export class BehaviorTrackerService {
   private windowTimer: any = null;
   private isTracking = false;
   private context : 'preAuth' | 'postAuth' = 'preAuth';
+  private sessionId: string = this.generateSessionId();
+
+  private generateSessionId(): string {
+    const existing = sessionStorage.getItem('behaviorSessionId');
+
+  if (existing) {
+    this.sessionId = existing;
+    return this.sessionId;
+  } else {
+    this.sessionId = crypto.randomUUID();
+    sessionStorage.setItem('behaviorSessionId', this.sessionId);
+    return this.sessionId;
+    }
+  }
+
   setContext(ctx:'preAuth' | 'postAuth' = 'preAuth' ){
     this.context = ctx;
     console.log("Behavior context switched to: ",ctx);
@@ -45,11 +60,18 @@ export class BehaviorTrackerService {
     this.startWindowTimer();
   }
 
+  didLogoutOccur() {
+    const token = localStorage.getItem("access-Token");
+    return !token;
+  }
+  
   startWindowTimer() {
   console.log("Starting window timer for behavior snapshot...");
   if (this.windowTimer) return;
 
   this.windowTimer = setInterval(() => {
+    if (this.didLogoutOccur())
+      return;
     const snapshot = this.getBehaviorSnapshot();
 
     if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
@@ -157,6 +179,7 @@ private handleMouseMove = (event: MouseEvent) => {
 
   return {
     // Metadata
+    sessionId: this.sessionId,
     context: this.context,
     timestamp: new Date().toISOString(),
 
