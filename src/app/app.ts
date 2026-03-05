@@ -14,7 +14,7 @@ import { AppMenu } from './app-menu/app-menu';
 })
 export class App implements OnInit {
 
-  protected readonly title = signal('govTask');
+  protected readonly title = signal('Task Management System');
 
   constructor(
     private behaviorTracker: BehaviorTrackerService,

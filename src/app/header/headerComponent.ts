@@ -8,6 +8,6 @@ import { RouterLink } from '@angular/router';
   styleUrl: './headerComponent.css'
 })
 export class Header {
-  protected title = 'Government Task Management';
+  protected title = 'Task Management System';
   imgSrc = signal("assets/logo.jpg")
 }
