@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { filter } from 'rxjs/internal/operators/filter';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -28,8 +30,19 @@ export class BehaviorTrackerService {
   private isTracking = false;
   private context : 'preAuth' | 'postAuth' = 'preAuth';
   private sessionId: string = this.generateSessionId();
+  private router = inject(Router);
+  private currentPage: string = '';
+  
+  currentModule(){
+   this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
 
-  private generateSessionId(): string {
+        this.currentPage = event.urlAfterRedirects;
+      });
+  }
+  
+  generateSessionId(): string {
     const existing = sessionStorage.getItem('behaviorSessionId');
 
   if (existing) {
@@ -57,6 +70,7 @@ export class BehaviorTrackerService {
     
     console.log("Behavior tracking STARTED");
     this.isTracking = true;
+    this.currentModule();
     this.startWindowTimer();
   }
 
@@ -74,7 +88,7 @@ export class BehaviorTrackerService {
       return;
     const snapshot = this.getBehaviorSnapshot();
 
-    if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
+    if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
        
       this.http.post( `/api/Behavior/snapshot`, snapshot, { withCredentials: true })
@@ -181,6 +195,7 @@ private handleMouseMove = (event: MouseEvent) => {
     // Metadata
     sessionId: this.sessionId,
     context: this.context,
+    currentPage: this.currentPage,
     timestamp: new Date().toISOString(),
 
     // Mouse
