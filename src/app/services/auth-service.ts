@@ -72,6 +72,7 @@
       ).pipe(
         tap(() => {
           localStorage.removeItem(this.accessTokenKey);
+          sessionStorage.removeItem('behaviorSessionId');
           this.authState.next(false);
         })
       );

@@ -4,16 +4,17 @@ import { Header } from "./header/headerComponent";
 import { MatDialogModule } from '@angular/material/dialog';
 import { BehaviorTrackerService } from './services/behavior-tracker.service';
 import { Auth } from './services/auth-service';
+import { AppMenu } from './app-menu/app-menu';
 
 @Component({
   selector: 'app-root',
-  imports: [MatDialogModule, RouterOutlet, Header],
+  imports: [MatDialogModule, RouterOutlet, Header,AppMenu],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
 
-  protected readonly title = signal('govTask');
+  protected readonly title = signal('Task Management System');
 
   constructor(
     private behaviorTracker: BehaviorTrackerService,
