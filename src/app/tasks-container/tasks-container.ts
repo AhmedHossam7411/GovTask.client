@@ -5,9 +5,11 @@ import { taskDto } from '../tasks/taskDto';
 import { taskService } from '../services/task-service';
 import { AddTaskDialog } from '../tasks/add-task-dialog/add-task-dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
+import { MatSliderModule } from '@angular/material/slider';
+
 @Component({
   selector: 'app-tasks-container',
-  imports: [Tasks,MatCheckbox],
+  imports: [Tasks,MatCheckbox,MatSliderModule],
   templateUrl: './tasks-container.html',
   styleUrl: './tasks-container.css'
 })

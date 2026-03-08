@@ -1,0 +1,21 @@
+<mat-slide-toggle> Demo :Toggle me! </mat-slide-toggle>
+<div class="shadow-md border border-gray-300 overflow-hidden bg-blue-100
+transform transition-transform duration-500  
+hover:scale-105 ">
+  <div class="flex items-center bg-gray-200 p-3">
+    <div class="bg-lime-800 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold">
+      {{ document().name.charAt(0).toUpperCase() }}{{ document().name.charAt(1).toUpperCase() }}
+    </div>
+    <div class="ml-3">
+      <h2 class="text-lg font-semibold text-gray-800">{{ document().name }}</h2>
+      <p class="text-sm text-blue-500">ID  : {{ document().id}}</p>
+      <p class="text-sm text-gray-500">Upload-Date  : {{ document().uploadDate| date: 'yyyy-MM-dd' }}</p>
+      <p class="text-sm text-gray-500">Description  : {{ document().description }}</p>
+      <p class="text-sm text-blue-500">Associated Task  : {{ document().taskId}}</p>
+    </div>
+  </div>
+  <div class="flex justify-between p-3 border-t">
+    <!-- <button (click)="openEditDialog(document())" class="text-blue-600 hover:text-blue-800">Edit</button> -->
+    <button (click)="openDeleteDialog(document())" class="text-red-600 hover:text-red-800">Delete</button>
+  </div>
+</div>

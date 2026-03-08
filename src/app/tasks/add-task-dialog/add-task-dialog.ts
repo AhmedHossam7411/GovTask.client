@@ -52,13 +52,20 @@ export class AddTaskDialog {
       this.form.controls.name.dirty
     );
   }
-    get descriptionIsInvalid() {
-    return (
-      this.form.controls.description.invalid &&
-      this.form.controls.description.touched &&
-      this.form.controls.description.dirty
-    );
-  }
+  get descriptionIsInvalid() {
+  return (
+    this.form.controls.description.invalid &&
+    this.form.controls.description.touched &&
+    this.form.controls.description.dirty
+  );
+}
+ get dueDateIsInvalid() {
+  return (
+    this.form.controls.dueDate.invalid &&
+    this.form.controls.dueDate.touched &&
+    this.form.controls.dueDate.dirty
+  );
+}
    closeTaskDialog() {
     this.dialogRef.close();
   }

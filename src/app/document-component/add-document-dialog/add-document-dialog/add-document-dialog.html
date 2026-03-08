@@ -1,15 +1,15 @@
 <div class="flex items-center justify-center h-[540px]">
-  <form (ngSubmit)="addtask(form.value)" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[600px]">
+  <form (ngSubmit)="addDocument(form.value)" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[600px]">
   <button 
- (click)="closeTaskDialog()" type="button" class="border-gray-400 hover:bg-lime-300 py-2  
+ (click)="closeDocumentDialog()" type="button" class="border-gray-400 hover:bg-lime-300 py-2  
   bg-lime-200 font-semibold px-3 text-sm mx-auto">X</button>
-  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Add task</h2>
+  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Add Document</h2>
   
   <div class="pt-2">
     <div class="mb-4">
       <label for="name" class="mr-2">Add Name </label>
       <input id="Username" type="name" formControlName="name"
-      placeholder=" New Task"
+      placeholder=" New Document"
       class=" w-full"
       />
       <span class="text-red-400 h-5 block mt-1">
@@ -29,25 +29,24 @@
       </span>
 
       <div class="mb-4">
-      <label for="Due-Date" class="mr-2">Due Date </label>
-      <input id="DueDate" type="date" formControlName="dueDate"
+      <label for="Due-Date" class="mr-2">Upload Date </label>
+      <input id="uploadDate" type="date" formControlName="uploadDate"
       placeholder="YYYY-MM-DD"
       class=" w-full"
       />
        <span class="text-red-400 h-5 block mt-1">
-      {{ dueDateIsInvalid ? 'required in correct format' : '' }}
+      {{ uploadDateIsInvalid ? 'required in correct format' : '' }}
       </span>
       </div>
       <div class="mb-4">
-      <label for="departmentId" class="mr-2">DepartmentId</label>
-      <input id="departmentId" type="number" formControlName="departmentId"
-      placeholder="Department ID (Optional)"
+      <label for="taskId" class="mr-2">Task-Id</label>
+      <input id="taskId" type="number" formControlName="taskId"
+      placeholder="Task ID"
       class=" w-full"
       />
-
-       </div>
-
-       </div>
+       
+ </div>
+    </div>
        <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
        bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-5 ">Add</button>
        

@@ -1,5 +1,5 @@
-<div class="flex justify-center h-[515px]">
-<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6  shadow-lg w-[20rem] mt-24">
+<div class="flex justify-center items-center min-h-screen bg-login bg-cover bg-center">
+<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[20rem]">
   <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Login</h2>
   
   <div class="pt-8">
@@ -17,7 +17,7 @@
       
       <div class="mb-4">
         <label for="password" class="mr-2">Password </label>
-        <input id="password" type="password" formControlName="password"
+        <input id="password" name="password" autocomplete="current-password" type="password" formControlName="password"
         class=" w-full"
         [ngClass]="{ 'border border-red-500': passwordIsInvalid }"
         />

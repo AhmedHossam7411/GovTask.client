@@ -1,0 +1,29 @@
+<div class="flex flex-col space-y-4 bg-app bg-cover bg-center">
+    <div class="flex justify-between items-center pt-10 pb-4 mx-6">
+        <div class="text-xl ">Documents</div>
+        <h2>rate this Demo behavioral biometrics experience</h2>
+        <mat-slider>
+            <input matSliderThumb>
+        </mat-slider>
+        
+        <mat-checkbox class="ml-6" labelPosition="after">Demo Check box</mat-checkbox>
+        <button class="px-6 py-4 bg-lime-600 text-gray-200 font-semibold 
+        border border-gray-300 shadow-md hover:bg-lime-700 
+        focus:outline-Snone focus:ring-2 focus:ring-lime-400"
+        (click)="openAddDialog()">
+        Add Document
+    </button>
+</div>
+<div class="flex justify-center w-full">
+    <div class="w-1/2 max-w-2xl">
+        @for (document of documents; track $index) {
+            <div class="pb-6">
+                <app-documents 
+                [document]="document">
+            </app-documents>
+        </div>
+    }
+</div>
+</div>
+</div>
+

@@ -10,7 +10,7 @@ import { taskDto } from '../taskDto';
   styleUrl: './delete-task-dialog.css'
 })
 export class DeleteTaskDialog {
-   private taskService = inject(taskService);
+  private taskService = inject(taskService);
   private dialogRef = inject(MatDialogRef);
   data = inject(MAT_DIALOG_DATA) as taskDto;
 
