@@ -1,5 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { filter } from 'rxjs/internal/operators/filter';
+import { NavigationEnd, Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +29,32 @@ export class BehaviorTrackerService {
   private windowTimer: any = null;
   private isTracking = false;
   private context : 'preAuth' | 'postAuth' = 'preAuth';
+  private sessionId: string = this.generateSessionId();
+  private router = inject(Router);
+  private currentPage: string = '';
+  
+  currentModule(){
+   this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+
+        this.currentPage = event.urlAfterRedirects;
+      });
+  }
+  
+  generateSessionId(): string {
+    const existing = sessionStorage.getItem('behaviorSessionId');
+
+  if (existing) {
+    this.sessionId = existing;
+    return this.sessionId;
+  } else {
+    this.sessionId = crypto.randomUUID();
+    sessionStorage.setItem('behaviorSessionId', this.sessionId);
+    return this.sessionId;
+    }
+  }
+
   setContext(ctx:'preAuth' | 'postAuth' = 'preAuth' ){
     this.context = ctx;
     console.log("Behavior context switched to: ",ctx);
@@ -41,7 +70,13 @@ export class BehaviorTrackerService {
     
     console.log("Behavior tracking STARTED");
     this.isTracking = true;
+    this.currentModule();
     this.startWindowTimer();
+  }
+
+  didLogoutOccur() {
+    const token = localStorage.getItem("access-Token");
+    return !token;
   }
 
   startWindowTimer() {
@@ -49,6 +84,8 @@ export class BehaviorTrackerService {
   if (this.windowTimer) return;
 
   this.windowTimer = setInterval(() => {
+    if (this.didLogoutOccur())
+      return;
     const snapshot = this.getBehaviorSnapshot();
 
     if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
@@ -61,7 +98,7 @@ export class BehaviorTrackerService {
         });
     }
     this.clearData();
-    }, 30000);
+    }, 45000);
   }
   
   private pushWithLimit<T>(arr: T[], value: T, limit = 200) {
@@ -152,11 +189,13 @@ private handleMouseMove = (event: MouseEvent) => {
 
   getBehaviorSnapshot() {
   console.log("Generating behavior snapshot...");
-  const windowSeconds = 30;
+  const windowSeconds = 45;
 
   return {
     // Metadata
+    sessionId: this.sessionId,
     context: this.context,
+    currentPage: this.currentPage,
     timestamp: new Date().toISOString(),
 
     // Mouse

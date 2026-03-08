@@ -1,0 +1,6 @@
+<div>
+    <button mat-button [matMenuTriggerFor]="dropDownMenu">Menu</button>
+<mat-menu #dropDownMenu="matMenu">
+    <button mat-menu-item (click)="logout()" type="button">Logout</button>
+</mat-menu>
+</div>
