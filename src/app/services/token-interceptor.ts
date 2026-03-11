@@ -25,7 +25,7 @@ export function tokenInterceptor(
 
     catchError(error => {
 
-  console.log("Interceptor caught error:", error.status, req.url);
+  console.log("Interceptor caught error:", error, req.url);
 
   if (error.status === 401 &&
       !req.url.toLowerCase().includes('/auth/refresh')) {
