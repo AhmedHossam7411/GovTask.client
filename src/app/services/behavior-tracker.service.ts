@@ -194,7 +194,7 @@ private handleMouseMove = (event: MouseEvent) => {
   return {
     // Metadata
     sessionId: this.sessionId,
-    context: this.context,
+    context : this.context,
     currentPage: this.currentPage,
     timestamp: new Date().toISOString(),
 
