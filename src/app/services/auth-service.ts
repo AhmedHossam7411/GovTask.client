@@ -29,6 +29,7 @@
     } 
 
     login(data: LoginRequest): Observable<AuthResponseDto> {
+      console.log(environment.apiUrl);
       return this.http.post<AuthResponseDto>(`${environment.apiUrl}/Auth/login`
         , data , {withCredentials: true})
         .pipe(
