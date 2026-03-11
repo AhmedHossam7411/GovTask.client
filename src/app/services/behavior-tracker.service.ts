@@ -188,7 +188,7 @@ private handleMouseMove = (event: MouseEvent) => {
   }
 
   getBehaviorSnapshot() {
-  console.log("Generating behavior snapshot...");
+  console.log("Generating behavior snapshot now...");
   const windowSeconds = 45;
 
   return {
