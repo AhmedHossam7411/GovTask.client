@@ -39,7 +39,6 @@ export function tokenInterceptor(
         const retryReq = req.clone({
           setHeaders: {
             Authorization: `Bearer ${res.accessToken}`,
-            'ngrok-skip-browser-warning': 'true'
           }
         });
         return next(retryReq);
