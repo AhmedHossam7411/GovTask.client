@@ -16,7 +16,8 @@ export function tokenInterceptor(
   if (token) {
     authReq = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true'
       }
     });
   }
@@ -37,7 +38,8 @@ export function tokenInterceptor(
         console.log("Refresh success");
         const retryReq = req.clone({
           setHeaders: {
-            Authorization: `Bearer ${res.accessToken}`
+            Authorization: `Bearer ${res.accessToken}`,
+            'ngrok-skip-browser-warning': 'true'
           }
         });
         return next(retryReq);
