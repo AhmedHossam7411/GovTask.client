@@ -41,7 +41,7 @@
     }
 
     refresh():  Observable<AuthResponseDto> {
-      return this.http.post<AuthResponseDto>(`/api/Auth/refresh`,
+      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/api/Auth/refresh`,
         null,
         {withCredentials: true}
       ).pipe(
@@ -57,7 +57,7 @@
     }
 
     register(data: RegisterRequest): Observable<AuthResponseDto> {
-      return this.http.post<AuthResponseDto>(`/api/Auth/register`, data)
+      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/Auth/register`, data)
         .pipe(
           tap(res => {
             localStorage.setItem(this.accessTokenKey,res.accessToken)
