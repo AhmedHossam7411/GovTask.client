@@ -4,7 +4,7 @@
   import { LoginRequest } from '../login/Login-request.model';
   import { RegisterRequest } from '../register/register-Request.model';
   import { AuthResponseDto } from '../shared/Auth-responseDto';
-import { environment } from '../../environments/environment';
+  import { environment } from '../../environments/environment';
  
   @Injectable({
     providedIn: 'root'
@@ -29,7 +29,7 @@ import { environment } from '../../environments/environment';
     } 
 
     login(data: LoginRequest): Observable<AuthResponseDto> {
-      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/api/Auth/login`
+      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/Auth/login`
         , data , {withCredentials: true})
         .pipe(
           tap(res => {
