@@ -41,7 +41,7 @@
     }
 
     refresh():  Observable<AuthResponseDto> {
-      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/api/Auth/refresh`,
+      return this.http.post<AuthResponseDto>(`${environment.apiUrl}/Auth/refresh`,
         null,
         {withCredentials: true}
       ).pipe(
@@ -68,7 +68,7 @@
 
     logout(): Observable<any> {
       return this.http.post(
-        `/api/Auth/logout`,
+        `${environment.apiUrl}/Auth/logout`,
         {},
         {withCredentials: true}
       ).pipe(

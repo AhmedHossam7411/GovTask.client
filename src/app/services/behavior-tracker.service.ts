@@ -91,7 +91,7 @@ export class BehaviorTrackerService {
     if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
       console.log("Sending window snapshot:", snapshot);
        
-      this.http.post( `${environment.apiUrl}/api/Behavior/snapshot`, snapshot, { withCredentials: true })
+      this.http.post( `${environment.apiUrl}/Behavior/snapshot`, snapshot, { withCredentials: true })
         .subscribe({
           next: () => console.log("Behavior snapshot sent successfully"),
           error: (err) => console.error("Behavior snapshot failed:", err)

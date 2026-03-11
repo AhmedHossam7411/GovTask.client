@@ -14,25 +14,23 @@ export class taskService {
    getTasks(): Observable<taskDto[]>
    {
      return this.http.get<taskDto[]>
-     (`${this.apiUrl}/api/Task/AllTasks`);
+     (`${this.apiUrl}/Task/AllTasks`);
    }
 
    deleteTask(id: number):Observable<void>
    {
-    console.log('Deleting task with idrgrgrgrgr:', id);
-
     return this.http.delete<void>
-    (`${this.apiUrl}/api/Task/${id}`);
+    (`${this.apiUrl}/Task/${id}`);
    }
    putTask(name: string , taskDto: taskDto):Observable<taskDto>
    {
      return this.http.put<taskDto>
-     (`${this.apiUrl}/api/Task/${name}`
+     (`${this.apiUrl}/Task/${name}`
       ,taskDto)
    }
    postTask(taskDto : taskDto)
    {
       return this.http.post<taskDto>
-      (`${this.apiUrl}/api/Task`,taskDto)
+      (`${this.apiUrl}/Task`,taskDto)
    }
 }

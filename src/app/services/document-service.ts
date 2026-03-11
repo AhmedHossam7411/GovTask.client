@@ -14,25 +14,25 @@ export class DocumentService {
    getDocuments(): Observable<documentDto[]>
    {
      return this.http.get<documentDto[]>
-     (`${this.apiUrl}/api/Document/AllDocuments`);
+     (`${this.apiUrl}/Document/AllDocuments`);
    }
 
    deleteDocument(id: number):Observable<void>
    {
     return this.http.delete<void>
-    (`${this.apiUrl}/api/Document/Delete`);
+    (`${this.apiUrl}/Document/${id}`);
    }
 
    putDocument(id: number , documentDto: documentDto):Observable<documentDto>
    {
      return this.http.put<documentDto>
-     (`${this.apiUrl}/api/Document/${id}`
+     (`${this.apiUrl}/Document/${id}`
       ,documentDto)
    }
    
    postDocument(documentDto : Pick<documentDto, "name">)
    {
       return this.http.post<documentDto>
-      (`${this.apiUrl}/api/Document`,documentDto)
+      (`${this.apiUrl}/Document`,documentDto)
    }
 }

@@ -20,17 +20,17 @@ export class DepartmentService {
    deleteDepartment(id: number):Observable<void>
    {
     return this.http.delete<void>
-    (`${this.apiUrl}/api/Department/${id}`);
+    (`${this.apiUrl}/Department/${id}`);
    }
    putDepartment(id: number , departmentDto: DepartmentDto):Observable<DepartmentDto>
    {
      return this.http.put<DepartmentDto>
-     (`${this.apiUrl}/api/Department/${id}`
+     (`${this.apiUrl}/Department/${id}`
       ,departmentDto)
    }
    postDepartment(departmentDto : Pick<DepartmentDto, "name">)
    {
       return this.http.post<DepartmentDto>
-      (`${this.apiUrl}/api/Department`,departmentDto)
+      (`${this.apiUrl}/Department`,departmentDto)
    }
 }
