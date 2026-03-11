@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 import { filter } from 'rxjs/internal/operators/filter';
 import { NavigationEnd, Router } from '@angular/router';
 

@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
+  production: true,
   apiUrl: 'https://uncoincident-faye-unpiratically.ngrok-free.dev/api'
 };
