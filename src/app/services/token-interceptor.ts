@@ -1,6 +1,6 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { Observable, catchError, switchMap, throwError } from 'rxjs';
+import { Observable, catchError, skip, switchMap, throwError } from 'rxjs';
 import { Auth } from './auth-service';
 
 export function tokenInterceptor(
@@ -17,6 +17,7 @@ export function tokenInterceptor(
     authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
+        'ngrok-skip-browser-warning': 'true'
       }
     });
   }
