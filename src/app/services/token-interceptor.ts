@@ -10,14 +10,13 @@ export function tokenInterceptor(
 
   const auth = inject(Auth);
   const token = auth.getToken();
-
+  let refreshInProgress = false;
   let authReq = req;
 
   if (token) {
     authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
-        'ngrok-skip-browser-warning': 'true'
       }
     });
   }
@@ -29,13 +28,14 @@ export function tokenInterceptor(
   console.log("Interceptor caught error:", error, req.url);
 
   if (error.status === 401 &&
-      !req.url.toLowerCase().includes('/auth/refresh')) {
+      !req.url.toLowerCase().includes('/auth/refresh') && !refreshInProgress ) {
 
     console.log("401 detected, attempting refresh");
 
     return auth.refresh().pipe(
       switchMap(res => {
         console.log("Refresh success");
+        refreshInProgress = true;
         const retryReq = req.clone({
           setHeaders: {
             Authorization: `Bearer ${res.accessToken}`,
@@ -45,6 +45,7 @@ export function tokenInterceptor(
       }),
       catchError(refreshError => {
         console.log("Refresh failed → logout");
+        refreshInProgress = false;
         return auth.logout().pipe(
           switchMap(() => throwError(() => refreshError))
         );
