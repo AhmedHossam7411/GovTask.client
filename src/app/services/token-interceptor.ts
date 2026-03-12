@@ -17,7 +17,7 @@ export function tokenInterceptor(
     authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
-        'ngrok-skip-browser-warning': 'true'
+        'ngrok-skip-browser-warning': '6024'
       }
     });
   }
