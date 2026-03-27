@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, computed } from '@angular/core';
 import { DepartmentService } from '../services/department-Service';
 import { DepartmentDto } from '../department-component/departmentDto.model';
 import { DepartmentComponent } from "../department-component/department-component";
@@ -10,12 +10,22 @@ import { MatSlideToggle } from '@angular/material/slide-toggle';
 
 @Component({
   selector: 'app-department-container-component',
-  imports: [DepartmentComponent,MatSliderModule,MatCheckbox,MatSlideToggle],
+  imports: [DepartmentComponent],
   templateUrl: './department-container-component.html',
   styleUrl: './department-container-component.css'
 })
 export class DepartmentContainerComponent implements OnInit {
-  protected departments: DepartmentDto[] = [];
+  protected departments = signal<DepartmentDto[]>([]);
+  public searchTerm = signal('');
+  
+  protected filteredDepartments = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) return this.departments();
+    return this.departments().filter(d => 
+      d.name.toLowerCase().includes(term) || 
+      d.id.toString().includes(term)
+    );
+  });
   private departmentService = inject(DepartmentService);
   private errorMessage:string = '';
   private dialogRef = inject(MatDialog);
@@ -27,23 +37,35 @@ export class DepartmentContainerComponent implements OnInit {
   loadDepartments() {
     this.departmentService.getDepartments().subscribe({
       next: (data) => {
-        this.departments = data
-        this.#cdr.markForCheck()
+        this.departments.set(data);
+        this.#cdr.markForCheck();
       },
       error: (err) => this.errorMessage = 'failed to fetch departments' + err
     });
   }
 
-   openAddDialog(){
+  openAddDialog(){
    const dialogRef = this.dialogRef.open(AddDepartmentDialog);
    dialogRef.afterClosed().subscribe((newDepartment : DepartmentDto) => {
     if(newDepartment)
     {
-      this.departments.push(newDepartment);
-      this.#cdr.markForCheck();  // ??
+      this.departments.update(deps => [...deps, newDepartment]);
+      this.#cdr.markForCheck();
     }
    });
  }
+
+  onDepartmentEdited(updatedDepartment: DepartmentDto) {
+    this.departments.update(deps => deps.map(d => 
+      d.id === updatedDepartment.id ? updatedDepartment : d
+    ));
+    this.#cdr.markForCheck();
+  }
+
+  onDepartmentDeleted(deletedId: number) {
+    this.departments.update(deps => deps.filter(d => d.id !== deletedId));
+    this.#cdr.markForCheck();
+  }
   
 }
 

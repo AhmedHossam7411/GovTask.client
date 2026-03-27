@@ -29,8 +29,8 @@ form = new FormGroup({
   }
       this.departmentService.putDepartment
       (this.data.id,updatedDepartment).subscribe({
-        next: (res) => {
-          this.dialogRef.close(res);
+        next: () => {
+          this.dialogRef.close(updatedDepartment);
         },
         error: (err) => {
           console.error('Failed to update department', err);

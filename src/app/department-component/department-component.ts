@@ -4,34 +4,42 @@ import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialog } from './deleteDept-dialog/deleteDept-dialog';
-import { AddDepartmentDialog } from './add-department-dialog/add-department-dialog';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 @Component({
   selector: 'app-department-component',
-  imports: [MatDialogModule, MatSlideToggleModule],
+  imports: [MatDialogModule],
   templateUrl: './department-component.html',
   styleUrl: './department-component.css',
 })
 
 export class DepartmentComponent {
   department = input.required<DepartmentDto>();
-  private departmentService = inject(DepartmentService);
-  private errorMessage: string = '';
   protected editingId: number | null = null;
   protected formIsVisible = false;
   private dialogRef = inject(MatDialog);
   
+  @Output() itemEdited = new EventEmitter<DepartmentDto>();
+  @Output() itemDeleted = new EventEmitter<number>();
+  
   openEditDialog(department : DepartmentDto)
  {
-   
-   this.dialogRef.open(EditForm,{
+   const dialogRef = this.dialogRef.open(EditForm,{
     data : department
+   });
+   dialogRef.afterClosed().subscribe(res => {
+     if (res) {
+       this.itemEdited.emit(res);
+     }
    });
  }
  openDeleteDialog(department : DepartmentDto)
  {
-   this.dialogRef.open(DeleteConfirmDialog,{
+   const dialogRef = this.dialogRef.open(DeleteConfirmDialog,{
     data : department
+   });
+   dialogRef.afterClosed().subscribe(res => {
+     if (res === 'confirm') {
+       this.itemDeleted.emit(department.id);
+     }
    });
  } 
 

@@ -1,40 +1,46 @@
-<div class="flex justify-center items-center min-h-screen bg-login bg-cover bg-center">
-<form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[20rem]">
-  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Login</h2>
-  <div class="pt-8">
-    <div class="mb-4">
-      <label for="email" class="">Email </label>
-      <input id="email" type="email" formControlName="email"
-      class=" flex justify-stretch w-full"
-      [ngClass]="{ 'border border-red-500': emailIsInvalid }"
-      />      
-      <span class="h-5 text-red-400 text-sm block mt-1">
-    {{ emailIsInvalid ? 'Please enter a valid email address.' : '' }}
-  </span>
+<div class="flex justify-center items-center min-h-screen bg-gray-50 bg-login bg-cover bg-center">
+  <form (ngSubmit)="onSubmit()" [formGroup]="form" class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md mx-4 backdrop-blur-sm bg-opacity-95">
+    <div class="mb-8 text-center">
+      <h2 class="font-extrabold text-gray-900 text-3xl">Welcome Back</h2>
+      <p class="text-gray-500 mt-2 text-sm">Please sign in to your account</p>
     </div>
-      
-      
-      <div class="mb-4">
-        <label for="password" class="mr-2">Password </label>
-        <input id="password" name="password" autocomplete="current-password" type="password" formControlName="password"
-        class=" w-full"
-        [ngClass]="{ 'border border-red-500': passwordIsInvalid }"
-        />
-        <span class="h-5 text-red-400 text-sm block mt-1">
-       {{ passwordIsInvalid ? 'Password must contain symbol, number, uppercase, 6+ chars.' : '' }}
-        </span>
-       </div>
-       <div *ngIf="errorMessage" class="text-red-500">
-       {{ errorMessage }}
-      </div>
-       <p class="mt-6 text-sm">
-        Don’t have an account?
-       <a routerLink="/register" class="text-blue-600 hover:underline cursor-pointer">
-        Register here
-        </a>
-        </p>
-       </div>
-       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
-       bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-10 ">Login</button>
-</form>
 
+    <div class="space-y-6">
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input id="email" type="email" formControlName="email"
+          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent outline-none transition-all duration-200"
+          [ngClass]="{ 'border-red-500 bg-red-50 focus:ring-red-500': emailIsInvalid }" />      
+        <span class="text-red-500 text-xs mt-1 block h-4">
+          {{ emailIsInvalid ? 'Please enter a valid email address.' : '' }}
+        </span>
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+        <input id="password" name="password" autocomplete="current-password" type="password" formControlName="password"
+          class="w-full px-4 py-2.5 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-lime-500 focus:border-transparent outline-none transition-all duration-200"
+          [ngClass]="{ 'border-red-500 bg-red-50 focus:ring-red-500': passwordIsInvalid }" />
+        <span class="text-red-500 text-xs mt-1 block h-4">
+          {{ passwordIsInvalid ? 'Password must contain symbol, number, uppercase, 6+ chars.' : '' }}
+        </span>
+      </div>
+
+      <div *ngIf="errorMessage" class="p-3 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm">
+        {{ errorMessage }}
+      </div>
+
+      <button type="submit" 
+        class="w-full bg-lime-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-lime-700 focus:ring-4 focus:ring-lime-200 transition-all duration-200 transform hover:-translate-y-0.5 shadow-md">
+        Sign In
+      </button>
+
+      <p class="text-center text-sm text-gray-600 mt-6">
+        Don’t have an account?
+        <a routerLink="/register" class="font-semibold text-lime-600 hover:text-lime-700 hover:underline transition-colors">
+          Register here
+        </a>
+      </p>
+    </div>
+  </form>
+</div>

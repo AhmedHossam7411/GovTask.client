@@ -31,8 +31,8 @@ export class AddDepartmentDialog {
   addDepartment(departmentDto: any) {
     console.log(departmentDto);
     this.departmentService.postDepartment(departmentDto).subscribe({
-      next: () => {
-        this.closeDialog();
+      next: (created) => {
+        this.dialogRef.close(created);
       },
       error: (err) => console.error(err),
     });

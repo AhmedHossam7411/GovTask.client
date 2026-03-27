@@ -38,8 +38,8 @@ export class AddTaskDialog {
   addtask(taskDto: any) {
     console.log(taskDto);
     this.taskService.postTask(taskDto).subscribe({
-      next: () => {
-        this.closeTaskDialog();
+      next: (created) => {
+        this.dialogRef.close(created);
       },
       error: (err) => console.error(err),
     });

@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal, computed } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { documentDto } from '../document-component/documentDto';
@@ -12,9 +12,21 @@ import { MatSliderModule } from '@angular/material/slider';
   templateUrl: './document-container-component.html',
   styleUrl: './document-container-component.css'
 })
-export class DocumentContainerComponent {
+export class DocumentContainerComponent implements OnInit {
 
-  protected documents: documentDto[] = [];
+  protected documents = signal<documentDto[]>([]);
+  public searchTerm = signal('');
+  
+  protected filteredDocuments = computed(() => {
+    const term = this.searchTerm().toLowerCase().trim();
+    if (!term) return this.documents();
+    return this.documents().filter(d => 
+      d.name.toLowerCase().includes(term) || 
+      (d.description && d.description.toLowerCase().includes(term)) ||
+      (d.taskId && d.taskId.toString().includes(term)) ||
+      d.id.toString().includes(term)
+    );
+  });
     private documentService = inject(DocumentService);
     private dialogRef = inject(MatDialog);
     private errorMessage:string = '';
@@ -27,22 +39,34 @@ export class DocumentContainerComponent {
     loadDocuments() {
       this.documentService.getDocuments().subscribe({
         next: (data) => {
-          this.documents = data
-          this.#cdr.markForCheck()
+          this.documents.set(data);
+          this.#cdr.markForCheck();
         },
         error: (err) => this.errorMessage = 'failed to fetch Document' + err
       });
     }
 
-    openAddDialog()
-       {
+    openAddDialog() {
        const dialogRef = this.dialogRef.open(AddDocumentDialog);
        dialogRef.afterClosed().subscribe((newDocument : documentDto) => {
         if(newDocument)
         {
-          this.documents.push(newDocument);
+          this.documents.update(docs => [...docs, newDocument]);
+          this.#cdr.markForCheck();
         }
        });
      }
+
+    onDocumentEdited(updatedDocument: documentDto) {
+      this.documents.update(docs => docs.map(d => 
+        d.id === updatedDocument.id ? updatedDocument : d
+      ));
+      this.#cdr.markForCheck();
+    }
+
+    onDocumentDeleted(deletedId: number) {
+      this.documents.update(docs => docs.filter(d => d.id !== deletedId));
+      this.#cdr.markForCheck();
+    }
   }
 

@@ -1,28 +1,43 @@
-<div class="flex flex-col space-y-4 bg-app bg-cover bg-center">
-    <div class="flex justify-between items-center pt-10 pb-4 mx-6">
-        <div class="text-xl ">Departments</div>
-        <h2>rate this Demo behavioral biometrics experience</h2>
-        <mat-slider>
-            <input matSliderThumb>
-        </mat-slider>
-        <mat-checkbox class="ml-6" labelPosition="after">Demo Check box</mat-checkbox>
-        <button class="px-6 py-4 bg-lime-600 text-gray-200 font-semibold 
-               border border-gray-300 shadow-md hover:bg-lime-700 
-               focus:outline-Snone focus:ring-2 focus:ring-lime-400"
-               (click)="openAddDialog()">
-               Add department
-            </button>
+<div class="min-h-screen bg-gray-50 flex flex-col bg-app bg-cover bg-fixed bg-center">
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-white/80 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 flex flex-wrap gap-4 items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">Departments</h1>
+        <p class="mt-1 text-sm text-gray-500">Manage organizational departments</p>
+      </div>
+      
+      <div class="flex items-center gap-6 bg-white/50 p-3 rounded-xl border border-gray-100 shadow-inner w-full md:w-auto">
+
+        <!-- SEARCH BAR -->
+        <div class="relative flex-1 min-w-[200px] md:min-w-[300px]">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" /></svg>
+          </div>
+          <input type="text" 
+            [value]="searchTerm()" 
+            (input)="searchTerm.set($any($event.target).value)" 
+            class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-lime-500 focus:border-lime-500 sm:text-sm transition duration-150 ease-in-out shadow-sm" 
+            placeholder="Search departments by name or ID...">
+        </div>
+
+      <button class="inline-flex items-center gap-2 px-5 py-2.5 bg-lime-600 text-white text-sm font-semibold rounded-lg shadow-sm hover:bg-lime-700 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-lime-500 transition-all duration-200 transform hover:-translate-y-0.5 whitespace-nowrap"
+        (click)="openAddDialog()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+        </svg>
+        Add Department
+      </button>
     </div>
+
     <div class="flex justify-center w-full">
-        <div class="w-1/2 max-w-2xl">
-            @for (dept of departments; track $index) {
-                <div class="pb-6">
-                    <app-department-component 
-                    [department]="dept">
-                </app-department-component>
-                </div>
+      <div class="w-full max-w-3xl space-y-6">
+        @for (dept of filteredDepartments(); track dept.id) {
+          <app-department-component [department]="dept" (itemEdited)="onDepartmentEdited($event)" (itemDeleted)="onDepartmentDeleted($event)" class="block"></app-department-component>
         }
+      </div>
     </div>
+    
+    <div class="mt-8 flex justify-end">
     </div>
-    <mat-slide-toggle>Toggle me!</mat-slide-toggle>
+  </div>
 </div>

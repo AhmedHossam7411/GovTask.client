@@ -1,25 +1,34 @@
-<div class="flex items-center justify-center h-[275px]">
-  <form (ngSubmit)="updateDepartment()" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[20rem] mt-2">
-  <button 
- (click)="closeDialog()" type="button" class="border-gray-400 hover:bg-lime-300 py-2  
-  bg-lime-200 font-semibold px-3 text-sm mx-auto ">X</button>
-  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Edit Department</h2>
+<div class="flex flex-col h-auto bg-white rounded-xl overflow-hidden shadow-2xl w-full max-w-md mx-auto">
+  <div class="flex justify-between items-center bg-gray-50 border-b border-gray-100 p-5">
+    <h2 class="font-bold text-gray-900 text-xl tracking-tight flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+      Edit Department
+    </h2>
+    <button (click)="closeDialog()" type="button" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-200 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+    </button>
+  </div>
   
-  <div class="pt-2">
-    <div class="mb-4">
-      <label for="email" class="mr-2">Change Name </label>
-      <input id="Username" type="name" formControlName="name"
-      placeholder="                  Enter new name"
-      class=" w-full"
-      />
-      <span class="text-red-400 h-5 block mt-1">
-      {{ nameIsInvalid ? 'must be 6+ chars' : '' }}
-      </span>
-      </div>
-
-       </div>
-       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
-       bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-5 ">Update</button>
-       
-</form>
-
+  <form (ngSubmit)="updateDepartment()" [formGroup]="form" class="p-6">
+    <div class="mb-5">
+      <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Department Name</label>
+      <input id="name" type="text" formControlName="name" [placeholder]="data.name"
+        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-gray-50 text-gray-900 shadow-inner" />
+      @if (nameIsInvalid) {
+        <p class="text-red-500 text-xs mt-2 font-medium flex items-center gap-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>
+          Must be 6+ characters
+        </p>
+      }
+    </div>
+    
+    <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
+      <button type="button" (click)="closeDialog()" class="px-5 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-gray-200 outline-none shadow-sm">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="form.invalid" class="px-6 py-2.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 outline-none shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+        Save Changes
+      </button>
+    </div>
+  </form>
+</div>

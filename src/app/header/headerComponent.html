@@ -1,12 +1,12 @@
-<header class="flex items-center justify-between bg-gray-200 text-lime-500 space-x-2">
-    <div class="flex items-center space-x-6">
-        <img class="size-20" [src]="imgSrc()" alt="logo">
-        <h1 class="">{{title}}</h1>
+<header class="flex items-center justify-between bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50 px-6 py-3 backdrop-blur-md bg-opacity-90">
+    <div class="flex items-center space-x-4">
+        <img class="h-12 w-auto object-contain" [src]="imgSrc()" alt="logo">
+        <h1 class="font-bold text-xl text-gray-900 tracking-tight">{{title}}</h1>
     </div>
-    <div class="flex justify-stretch items-center space-x-4 px-8">
-        <a routerLink="/tasks">Tasks</a>
-        <a routerLink="/documents">Documents</a>
-        <a routerLink="/departments">Departments</a>
+    <div class="flex items-center space-x-6 text-sm font-medium text-gray-600">
+        <a routerLink="/tasks" class="hover:text-lime-600 transition-colors px-2 py-1 rounded-md hover:bg-lime-50">Tasks</a>
+        <a routerLink="/documents" class="hover:text-lime-600 transition-colors px-2 py-1 rounded-md hover:bg-lime-50">Documents</a>
+        <a routerLink="/departments" class="hover:text-lime-600 transition-colors px-2 py-1 rounded-md hover:bg-lime-50">Departments</a>
         <ng-content></ng-content>
     </div>
 </header>
