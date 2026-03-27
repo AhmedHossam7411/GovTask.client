@@ -1,54 +1,65 @@
-<div class="flex items-center justify-center h-[540px]">
-  <form (ngSubmit)="addDocument(form.value)" [formGroup]="form" class="bg-gray-300 p-6 shadow-lg w-[600px]">
-  <button 
- (click)="closeDocumentDialog()" type="button" class="border-gray-400 hover:bg-lime-300 py-2  
-  bg-lime-200 font-semibold px-3 text-sm mx-auto">X</button>
-  <h2 class="font-bold text-lime-500 text-xl mb-6 flex justify-center">Add Document</h2>
+<div class="flex flex-col h-auto bg-white rounded-xl overflow-hidden shadow-2xl w-full max-w-lg mx-auto">
+  <div class="flex justify-between items-center bg-gray-50 border-b border-gray-100 p-5">
+    <h2 class="font-bold text-gray-900 text-xl tracking-tight flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-lime-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+      Add Document
+    </h2>
+    <button (click)="closeDocumentDialog()" type="button" class="text-gray-400 hover:text-gray-600 transition-colors p-1.5 rounded-md hover:bg-gray-200 focus:outline-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+    </button>
+  </div>
   
-  <div class="pt-2">
-    <div class="mb-4">
-      <label for="name" class="mr-2">Add Name </label>
-      <input id="Username" type="name" formControlName="name"
-      placeholder=" New Document"
-      class=" w-full"
-      />
-      <span class="text-red-400 h-5 block mt-1">
-      {{ nameIsInvalid ? 'must be 6+ chars' : '' }}
-      </span>
+  <form (ngSubmit)="addDocument(form.value)" [formGroup]="form" class="p-6">
+    <div class="space-y-5">
+      <div>
+        <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">Document Name</label>
+        <input id="name" type="text" formControlName="name" placeholder="New Document"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow bg-gray-50 text-gray-900 shadow-inner" />
+        @if (nameIsInvalid) {
+          <p class="text-red-500 text-xs mt-1 font-medium flex items-center gap-1">
+            Must be 6+ characters
+          </p>
+        }
       </div>
 
-      <h2>Description</h2>
-      <textarea
-      formControlName="description"
-      placeholder="Enter description"
-      rows="3"
-      class="w-full border rounded p-2 resize-y">
-      </textarea>
-      <span class="text-red-400 h-5 block mt-1">
-      {{ descriptionIsInvalid ? 'must be 20+ chars' : '' }}
-      </span>
-
-      <div class="mb-4">
-      <label for="Due-Date" class="mr-2">Upload Date </label>
-      <input id="uploadDate" type="date" formControlName="uploadDate"
-      placeholder="YYYY-MM-DD"
-      class=" w-full"
-      />
-       <span class="text-red-400 h-5 block mt-1">
-      {{ uploadDateIsInvalid ? 'required in correct format' : '' }}
-      </span>
+      <div>
+        <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
+        <textarea id="description" formControlName="description" placeholder="Enter description" rows="3"
+          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow bg-gray-50 text-gray-900 shadow-inner resize-y"></textarea>
+        @if (descriptionIsInvalid) {
+          <p class="text-red-500 text-xs mt-1 font-medium flex items-center gap-1">
+            Must be 20+ characters
+          </p>
+        }
       </div>
-      <div class="mb-4">
-      <label for="taskId" class="mr-2">Task-Id</label>
-      <input id="taskId" type="number" formControlName="taskId"
-      placeholder="Task ID"
-      class=" w-full"
-      />
-       
- </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="uploadDate" class="block text-sm font-semibold text-gray-700 mb-2">Upload Date</label>
+          <input id="uploadDate" type="date" formControlName="uploadDate"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow bg-gray-50 text-gray-900 shadow-inner" />
+          @if (uploadDateIsInvalid) {
+            <p class="text-red-500 text-xs mt-1 font-medium flex items-center gap-1">
+              Required
+            </p>
+          }
+        </div>
+        
+        <div>
+          <label for="taskId" class="block text-sm font-semibold text-gray-700 mb-2">Task ID (Optional)</label>
+          <input id="taskId" type="number" formControlName="taskId" placeholder="ID"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-lime-500 focus:border-lime-500 transition-shadow bg-gray-50 text-gray-900 shadow-inner" />
+        </div>
+      </div>
     </div>
-       <button type="submit" class=" hover:border-gray-400 hover:bg-lime-300 py-2 
-       bg-lime-200 font-semibold px-5 text-sm mx-auto block mt-5 ">Add</button>
-       
-</form>
-<div>
+    
+    <div class="flex justify-end gap-3 mt-8 pt-4 border-t border-gray-100">
+      <button type="button" (click)="closeDocumentDialog()" class="px-5 py-2.5 bg-white text-gray-700 font-semibold rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors focus:ring-2 focus:ring-gray-200 outline-none shadow-sm">
+        Cancel
+      </button>
+      <button type="submit" [disabled]="form.invalid" class="px-6 py-2.5 bg-lime-600 text-white font-semibold rounded-lg hover:bg-lime-700 transition-colors focus:ring-2 focus:ring-lime-500 focus:ring-offset-1 outline-none shadow-md disabled:opacity-50 disabled:cursor-not-allowed">
+        Add Document
+      </button>
+    </div>
+  </form>
+</div>
