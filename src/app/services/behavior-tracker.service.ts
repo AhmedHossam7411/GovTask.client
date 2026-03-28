@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { filter } from 'rxjs/internal/operators/filter';
 import { NavigationEnd, Router } from '@angular/router';
 
@@ -32,6 +32,8 @@ export class BehaviorTrackerService {
   private sessionId: string = this.generateSessionId();
   private router = inject(Router);
   private currentPage: string = '';
+  private interval = 30000;
+
 
   currentModule() {
     this.router.events
@@ -74,31 +76,25 @@ export class BehaviorTrackerService {
     this.startWindowTimer();
   }
 
-  didLogoutOccur() {
-    const token = localStorage.getItem("access-Token");
-    return !token;
-  }
-
   startWindowTimer() {
     console.log("Starting window timer for behavior snapshot...");
+    console.log(this.getContext());
     if (this.windowTimer) return;
 
     this.windowTimer = setInterval(() => {
-      if (this.didLogoutOccur())
-        return;
       const snapshot = this.getBehaviorSnapshot();
 
-      if (snapshot.mouseMoveCount >= 5 && snapshot.keyEventCount > 5) {
+      if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 3) {
         console.log("Sending window snapshot:", snapshot);
 
         this.http.post(`${environment.apiUrl}/Behavior/snapshot`, snapshot, { withCredentials: true })
           .subscribe({
-            next: () => console.log("Behavior snapshot sent successfully"),
             error: (err) => console.error("Behavior snapshot failed:", err)
           });
+        console.log("Behavior snapshot sent successfully");
       }
       this.clearData();
-    }, 45000);
+    }, this.interval);
   }
 
   private pushWithLimit<T>(arr: T[], value: T, limit = 200) {
@@ -189,7 +185,7 @@ export class BehaviorTrackerService {
 
   getBehaviorSnapshot() {
     console.log("Generating behavior snapshot now...");
-    const windowSeconds = 45;
+    const windowSeconds = 30;
 
     return {
       // Metadata
@@ -210,6 +206,8 @@ export class BehaviorTrackerService {
       avgClickDuration: this.average(this.clickDurations),
       stdClickDuration: this.std(this.clickDurations),
       clickCount: this.clickDurations.length,
+      avgPreClickSpeed: this.average(this.preClickSpeeds),
+      stdPreClickSpeed: this.std(this.preClickSpeeds),
 
       avgClickInterval: this.average(this.clickIntervals),
       stdClickInterval: this.std(this.clickIntervals),
@@ -222,7 +220,11 @@ export class BehaviorTrackerService {
       stdFlight: this.std(this.keyFlightTimes),
       keyEventCount: this.keyDwellTimes.length,
 
-      typingRate: this.keyDwellTimes.length / windowSeconds
+      clickRate: this.clickDurations.length / windowSeconds,
+      mouseMoveRate: this.mouseSpeeds.length / windowSeconds,
+      typingRate: this.keyDwellTimes.length / windowSeconds,
+
+      sessionDuration: windowSeconds,
     };
   }
 

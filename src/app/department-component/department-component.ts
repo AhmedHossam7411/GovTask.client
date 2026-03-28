@@ -4,6 +4,7 @@ import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialog } from './deleteDept-dialog/deleteDept-dialog';
+import { ViewDetailsDialog } from '../shared/view-details-dialog/view-details-dialog';
 @Component({
   selector: 'app-department-component',
   imports: [MatDialogModule],
@@ -40,7 +41,14 @@ export class DepartmentComponent {
      if (res === 'confirm') {
        this.itemDeleted.emit(department.id);
      }
-   });
- } 
+    });
+  } 
+
+  openViewDialog(department: DepartmentDto) {
+    this.dialogRef.open(ViewDetailsDialog, {
+      data: { entity: department, type: 'Department' },
+      panelClass: 'custom-dialog-container'
+    });
+  }
 
 }

@@ -8,7 +8,7 @@ import { AppMenu } from './app-menu/app-menu';
 
 @Component({
   selector: 'app-root',
-  imports: [MatDialogModule, RouterOutlet, Header,AppMenu],
+  imports: [MatDialogModule, RouterOutlet, Header, AppMenu],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -19,17 +19,16 @@ export class App implements OnInit {
   constructor(
     private behaviorTracker: BehaviorTrackerService,
     private auth: Auth
-  ) {}
+  ) { }
 
- ngOnInit(): void {
-  this.auth.authState$.subscribe(isAuth => {
-    if (isAuth) {
-      this.behaviorTracker.setContext('postAuth');
-      this.behaviorTracker.start();
-    } else {
-      this.behaviorTracker.setContext('preAuth');
-      // this.behaviorTracker.clearData();
-    }
-  });
-}
+  ngOnInit(): void {
+    this.auth.authState$.subscribe(isAuth => {
+      if (isAuth) {
+        this.behaviorTracker.setContext('postAuth');
+      } else {
+        this.behaviorTracker.setContext('preAuth');
+      }
+    });
+    this.behaviorTracker.start();
+  }
 }

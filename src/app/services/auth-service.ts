@@ -4,7 +4,7 @@ import { Observable, tap, BehaviorSubject, catchError, throwError } from 'rxjs';
 import { LoginRequest } from '../login/Login-request.model';
 import { RegisterRequest } from '../register/register-Request.model';
 import { AuthResponseDto } from '../shared/Auth-responseDto';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +18,7 @@ export class Auth {
   }
   private http = inject(HttpClient);
   private accessTokenKey = "access-Token";
+  private sessionId = "behaviorSessionId";
   private authState = new BehaviorSubject<boolean>(false);
   authState$ = this.authState.asObservable();
 
@@ -74,7 +75,7 @@ export class Auth {
     ).pipe(
       tap(() => {
         localStorage.removeItem(this.accessTokenKey);
-        sessionStorage.removeItem('behaviorSessionId');
+        sessionStorage.removeItem(this.sessionId);
         this.authState.next(false);
       })
     );

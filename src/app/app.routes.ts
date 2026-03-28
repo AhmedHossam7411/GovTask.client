@@ -5,6 +5,7 @@ import { DepartmentContainerComponent } from './department-container-component/d
 import { AuthGuard } from './auth-guard';
 import { TasksContainer } from './tasks-container/tasks-container';
 import { DocumentContainerComponent } from './document-container-component/document-container-component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard';
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   {path: 'departments',component: DepartmentContainerComponent, canActivate: [AuthGuard]},
   {path: 'tasks',component: TasksContainer, canActivate: [AuthGuard]},
   {path: 'documents',component: DocumentContainerComponent, canActivate: [AuthGuard]},
+  {path: 'admin',component: AdminDashboardComponent, canActivate: [AuthGuard]},
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];

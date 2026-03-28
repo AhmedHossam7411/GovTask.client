@@ -4,6 +4,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { documentDto } from './documentDto';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteDocumentDialog } from './delete-document-dialog/delete-document-dialog/delete-document-dialog';
+import { ViewDetailsDialog } from '../shared/view-details-dialog/view-details-dialog';
+import { DocumentEditDialog } from './document-edit-dialog/document-edit-dialog';
 
 @Component({
   selector: 'app-documents',
@@ -23,13 +25,6 @@ export class Documents implements OnInit{
     console.log('Documents component initialized with document:', this.document());
   }
 
-//   openEditDialog(department : documentDto)
-//  {
-   
-//    this.dialogRef.open(EditForm,{
-//     data : document
-//    });
-//  }
  openDeleteDialog(document : documentDto)
   {
    console.log('Opening delete dialog for document:', document);
@@ -40,6 +35,24 @@ export class Documents implements OnInit{
      if (res === 'confirm') {
        this.itemDeleted.emit(document.id);
      }
-   });
-  } 
+    });
+   } 
+
+   openViewDialog(document: documentDto) {
+    this.dialogRef.open(ViewDetailsDialog, {
+      data: { entity: document, type: 'Document' },
+      panelClass: 'custom-dialog-container'
+    });
+  }
+
+  openEditDialog(document: documentDto) {
+    const dialogRef = this.dialogRef.open(DocumentEditDialog, {
+      data: document
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      if (res) {
+        this.itemEdited.emit(res);
+      }
+    });
+  }
 }

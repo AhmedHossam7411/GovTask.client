@@ -8,7 +8,7 @@ import { Documents } from '../document-component/documents';
 import { MatSliderModule } from '@angular/material/slider';
 @Component({
   selector: 'app-document-container-component',
-  imports: [Documents,MatCheckbox,MatSliderModule],
+  imports: [Documents, MatSliderModule],
   templateUrl: './document-container-component.html',
   styleUrl: './document-container-component.css'
 })

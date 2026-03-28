@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment.prod';
+import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { taskDto } from '../tasks/taskDto';
 
@@ -20,9 +20,9 @@ export class taskService {
     return this.http.delete<void>
       (`${this.apiUrl}/Task/${id}`);
   }
-  putTask(name: string, taskDto: taskDto): Observable<taskDto> {
+  putTask(taskDto: taskDto): Observable<taskDto> {
     return this.http.put<taskDto>
-      (`${this.apiUrl}/Task/${name}`
+      (`${this.apiUrl}/Task/${taskDto.id}`
         , taskDto)
   }
   postTask(taskDto: taskDto) {
