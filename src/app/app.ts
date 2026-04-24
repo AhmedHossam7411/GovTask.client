@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { BehaviorTrackerService } from './services/behavior-tracker.service';
 import { Auth } from './services/auth-service';
 import { AppMenu } from './app-menu/app-menu';
+import { BehaviorPredictorService } from './services/behavior-predictor.service';
 
 @Component({
   selector: 'app-root',
@@ -18,7 +19,8 @@ export class App implements OnInit {
 
   constructor(
     private behaviorTracker: BehaviorTrackerService,
-    private auth: Auth
+    private behaviorPredictor: BehaviorPredictorService,
+    private auth: Auth,
   ) { }
 
   ngOnInit(): void {
@@ -30,5 +32,6 @@ export class App implements OnInit {
       }
     });
     this.behaviorTracker.start();
+    this.behaviorPredictor.start();
   }
 }
