@@ -1,0 +1,14 @@
+<div class="h-screen w-full flex items-center justify-center bg-gray-50">
+  <div class="bg-white p-8 shadow rounded text-center max-w-md">
+    <h1 class="text-3xl font-bold text-red-600 mb-4">Security Challenge</h1>
+    <p class="mb-6 text-gray-700 text-lg">We detected abnormal behavior. Please solve the CAPTCHA to prove you are human. If you cancel, your session will be revoked.</p>
+
+    <div class="flex justify-center mb-6 min-h-[78px]">
+       <div id="recaptcha-container"></div>
+    </div>
+    <div class="flex gap-4 justify-center">
+      <button (click)="cancelAndLogout()" class="px-6 py-2 bg-gray-300 text-gray-800 rounded font-medium shadow hover:bg-gray-400 transition-colors">Cancel</button>
+      <button (click)="submitChallenge()" class="px-6 py-2 bg-blue-600 text-white rounded font-medium shadow hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed" [disabled]="!captchaToken">Verify</button>
+    </div>
+  </div>
+</div>

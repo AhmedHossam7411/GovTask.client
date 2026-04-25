@@ -22,17 +22,18 @@ export class BehaviorPredictorService {
   private http = inject(HttpClient);
   private router = inject(Router);
   private tracker = inject(BehaviorTrackerService);
-
-  // Note: Depending on your exact auth service implementation, you may need to adjust this.
-  // The app.ts used private auth: Auth
-  private auth = inject(Auth);
-
   private subscription: Subscription | null = null;
 
   start() {
     if (this.subscription) return;
 
     console.log("Behavior prediction service STARTED (Event Driven)");
+
+    // [DEV TOOL]: Expose a global function to easily simulate the 3 strikes and test the UI
+    (window as any).simulateSecurityChallenge = () => {
+      console.warn("[DEV] Forcing simulated security challenge...");
+      this.triggerSecurityChallenge();
+    };
 
     this.subscription = this.tracker.snapshotComplete$.subscribe(snapshot => {
       this.checkPrediction(snapshot);
@@ -95,15 +96,12 @@ export class BehaviorPredictorService {
     this.tracker.stop();
     this.stop();
 
-    // 2. Clear credentials directly via Auth Service
-    // Note: Use whatever robust logout/clear mechanism Auth provides.
-    if (typeof this.auth.logout === 'function') {
-      this.auth.logout();
-    }
+    // 2. Set challenge flag
+    sessionStorage.setItem('security_challenge_active', 'true');
+    sessionStorage.setItem('pre_challenge_url', this.router.url);
 
-    // 3. Request a security challenge by routing the user out
-    // If you have a specific page like /challenge or /login, redirect there.
-    this.router.navigate(['/login'], { queryParams: { challenge: 'anomaly_detected' } });
+    // 3. Request a security challenge by routing to the challenge UI
+    this.router.navigate(['/challenge']);
   }
 
   stop() {
