@@ -4,6 +4,7 @@ import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorTrackerService } from './behavior-tracker.service';
 import { Auth } from './auth-service'; // Assumed import based on app.ts constructor
+import { Subscription } from 'rxjs';
 
 export interface PredictResponse {
   confidence: number;
@@ -26,27 +27,35 @@ export class BehaviorPredictorService {
   // The app.ts used private auth: Auth
   private auth = inject(Auth);
 
-  private predictTimer: any = null;
-  private interval = 45000; // 45 seconds polling interval
+  private subscription: Subscription | null = null;
 
   start() {
-    if (this.predictTimer) return;
+    if (this.subscription) return;
 
-    console.log("Behavior prediction service STARTED (45s interval)");
+    console.log("Behavior prediction service STARTED (Event Driven)");
 
-    // We launch the interval
-    this.predictTimer = setInterval(() => {
-      this.checkPrediction();
-    }, this.interval);
+    this.subscription = this.tracker.snapshotComplete$.subscribe(snapshot => {
+      this.checkPrediction(snapshot);
+    });
   }
 
-  private checkPrediction() {
+  private getHighRiskCount(): number {
+    return parseInt(sessionStorage.getItem('behaviorHighRiskCount') || '0', 10);
+  }
+
+  private incrementHighRiskCount(): number {
+    const count = this.getHighRiskCount() + 1;
+    sessionStorage.setItem('behaviorHighRiskCount', count.toString());
+    return count;
+  }
+
+  private resetHighRiskCount(): void {
+    sessionStorage.removeItem('behaviorHighRiskCount');
+  }
+
+  private checkPrediction(snapshot: any) {
     console.log("Analyzing predict endpoint for potential anomalies...");
 
-    // 1. We gather the current snapshot
-    // Since this is a separate service, calling getting the snapshot from the tracker works
-    // nicely to bundle up the recent user interactions within the last 45s.
-    const snapshot = this.tracker.getBehaviorSnapshot();
     const payload = { data: [snapshot] };
 
     // 2. We send it directly to the .NET predict endpoint
@@ -56,9 +65,20 @@ export class BehaviorPredictorService {
           console.log("Analysis Result from .NET ML integration:", response);
 
           if (response?.analysis?.riskLevel === 'HIGH') {
-            this.triggerSecurityChallenge();
+            const currentStrikes = this.incrementHighRiskCount();
+            console.warn(`HIGH risk behavior detected! Strike: ${currentStrikes}/3`);
+
+            if (currentStrikes >= 3) {
+              this.triggerSecurityChallenge();
+            }
           } else if (response?.analysis?.riskLevel === 'MEDIUM') {
             console.warn("Medium risk behavior logged. Monitoring.");
+          } else if (response?.analysis?.riskLevel === 'LOW') {
+            // Optional: Reward long periods of normal behavior by decreasing the strike count
+            const current = this.getHighRiskCount();
+            if (current > 0) {
+              sessionStorage.setItem('behaviorHighRiskCount', (current - 1).toString());
+            }
           }
         },
         error: (err) => {
@@ -68,7 +88,8 @@ export class BehaviorPredictorService {
   }
 
   private triggerSecurityChallenge() {
-    console.warn("CRITICAL: HIGH risk behavior detected! Halting active sessions.");
+    console.warn("CRITICAL: HIGH risk behavior threshold reached! Halting active sessions.");
+    this.resetHighRiskCount();
 
     // 1. Stop all tracking immediately
     this.tracker.stop();
@@ -86,9 +107,9 @@ export class BehaviorPredictorService {
   }
 
   stop() {
-    if (this.predictTimer) {
-      clearInterval(this.predictTimer);
-      this.predictTimer = null;
+    if (this.subscription) {
+      this.subscription.unsubscribe();
+      this.subscription = null;
       console.log("Behavior prediction service STOPPED.");
     }
   }

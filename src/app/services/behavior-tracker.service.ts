@@ -3,11 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { filter } from 'rxjs/internal/operators/filter';
 import { NavigationEnd, Router } from '@angular/router';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BehaviorTrackerService {
+  public snapshotComplete$ = new Subject<any>();
   private lastClickTime: number | null = null;
   private mouseDownTime: number | null = null;
 
@@ -39,9 +41,29 @@ export class BehaviorTrackerService {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
+        // 1. Force flush the pending behavior snapshot labeled under the OLD page
+        const snapshot = this.getBehaviorSnapshot();
+        if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 3) {
+          console.log(`Flushing behavior snapshot for old page before navigating...`);
+          this.http.post(`${environment.apiUrl}/Behavior/snapshot`, snapshot, { withCredentials: true }).subscribe({
+            error: (err) => console.error("Behavior snapshot failed:", err)
+          });
+          this.snapshotComplete$.next(snapshot);
+        }
 
+        // 2. Clear metrics, restart the 30s timer, and only then update the page
+        this.clearData();
+        this.resetTimer();
         this.currentPage = event.urlAfterRedirects;
       });
+  }
+
+  private resetTimer() {
+    if (this.windowTimer) {
+      clearInterval(this.windowTimer);
+      this.windowTimer = null;
+    }
+    this.startWindowTimer();
   }
 
   generateSessionId(): string {
@@ -92,6 +114,7 @@ export class BehaviorTrackerService {
             error: (err) => console.error("Behavior snapshot failed:", err)
           });
         console.log("Behavior snapshot sent successfully");
+        this.snapshotComplete$.next(snapshot);
       }
       this.clearData();
     }, this.interval);
@@ -183,6 +206,22 @@ export class BehaviorTrackerService {
     return this.context;
   }
 
+  private getUserIdFromToken(): string | null {
+    const token = localStorage.getItem('access-Token');
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+        || payload.nameid
+        || payload.sub
+        || payload.uid
+        || payload.UserId
+        || null;
+    } catch {
+      return null;
+    }
+  }
+
   getBehaviorSnapshot() {
     console.log("Generating behavior snapshot now...");
     const windowSeconds = 30;
@@ -190,6 +229,7 @@ export class BehaviorTrackerService {
     return {
       // Metadata
       sessionId: this.sessionId,
+      userId: this.getUserIdFromToken(),
       context: this.context,
       currentPage: this.currentPage,
       timestamp: new Date().toISOString(),
