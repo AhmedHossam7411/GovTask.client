@@ -1,77 +1,86 @@
-import { Component, AfterViewInit, inject } from '@angular/core';
+import { Component, AfterViewInit, ViewChild, ElementRef, inject, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Auth } from '../services/auth-service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 declare var grecaptcha: any;
 
 @Component({
   selector: 'app-security-challenge',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './security-challenge.component.html'
 })
 export class SecurityChallengeComponent implements AfterViewInit {
-  captchaToken: string | null = null;
+  @ViewChild('recaptchaContainer') recaptchaContainer!: ElementRef;
+  
+  recaptchaToken: string | null = null;
+  v3Token: string | null = null;
+  hasError: boolean = false;
+  isV3Verifying: boolean = true;
+
   private auth = inject(Auth);
   private router = inject(Router);
-  private http = inject(HttpClient);
+  private cdr = inject(ChangeDetectorRef);
 
   ngAfterViewInit() {
     this.renderCaptcha();
   }
 
   renderCaptcha() {
-    if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.render !== 'undefined') {
-      try {
-        grecaptcha.render('recaptcha-container', {
-          'sitekey': '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', // Google's testing key
-          'callback': (response: string) => this.onCaptchaComplete(response),
-          'expired-callback': () => this.onCaptchaExpired()
-        });
-      } catch (e) {
-        // Handle widget already rendered issue
-      }
+    if (typeof grecaptcha !== 'undefined' && grecaptcha.render && grecaptcha.execute) {
+      // Render v2 Checkbox
+      grecaptcha.render(this.recaptchaContainer.nativeElement, {
+        'sitekey': '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI',
+        'callback': (token: string) => {
+          this.recaptchaToken = token;
+          this.hasError = false;
+          this.cdr.markForCheck();
+        },
+        'expired-callback': () => {
+          this.recaptchaToken = null;
+          this.cdr.markForCheck();
+        }
+      });
+
+      // Execute v3 Background Check
+      grecaptcha.ready(() => {
+        grecaptcha.execute('6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI', { action: 'challenge' })
+          .then((token: string) => {
+            this.v3Token = token;
+            this.isV3Verifying = false;
+            this.cdr.markForCheck();
+            console.log('v3 Token:', token);
+          })
+          .catch((err: any) => {
+            console.error('v3 Error:', err);
+            this.isV3Verifying = false;
+            this.cdr.markForCheck();
+          });
+      });
     } else {
-      setTimeout(() => this.renderCaptcha(), 100);
+      // Retry after 500ms if script not loaded yet
+      setTimeout(() => this.renderCaptcha(), 500);
     }
   }
 
-  onCaptchaComplete(response: string) {
-    this.captchaToken = response;
-  }
-
-  onCaptchaExpired() {
-    this.captchaToken = null;
-  }
-
   submitChallenge() {
-    if (!this.captchaToken) return;
-    
-    // POST to backend verify-challenge endpoint
-    this.http.post<{success: boolean}>(`${environment.apiUrl}/Auth/verify-challenge`, { token: this.captchaToken }, { withCredentials: true })
-      .subscribe({
-        next: (res) => {
-          if (res.success) {
-            sessionStorage.removeItem('security_challenge_active');
-            let prev = sessionStorage.getItem('pre_challenge_url') || '/departments';
-            this.router.navigate([prev]);
-          } else {
-            alert('Captcha verification failed on server.');
-          }
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Captcha verification failed.');
-        }
-      });
+    if (this.recaptchaToken) {
+      sessionStorage.removeItem('security_challenge_active');
+      let prev = sessionStorage.getItem('pre_challenge_url') || '/departments';
+      this.router.navigate([prev]);
+    } else {
+      this.hasError = true;
+    }
   }
 
   cancelAndLogout() {
-    this.auth.logout().subscribe(() => {
-       this.router.navigate(['/login']);
-    });
+    const logoutRes = this.auth.logout();
+    if (logoutRes && logoutRes.subscribe) {
+        logoutRes.subscribe(() => { this.router.navigate(['/login']); });
+    } else {
+        this.router.navigate(['/login']);
+    }
   }
 }

@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorTrackerService } from './behavior-tracker.service';
-import { Auth } from './auth-service'; // Assumed import based on app.ts constructor
 import { Subscription } from 'rxjs';
 
 export interface PredictResponse {
@@ -37,6 +36,12 @@ export class BehaviorPredictorService {
 
     this.subscription = this.tracker.snapshotComplete$.subscribe(snapshot => {
       this.checkPrediction(snapshot);
+    });
+
+    // Listen for urgent security anomalies (e.g., hacking strings)
+    this.tracker.urgentAnomalyDetected$.subscribe(reason => {
+      console.warn("URGENT SECURITY ANOMALY:", reason);
+      this.triggerSecurityChallenge();
     });
   }
 

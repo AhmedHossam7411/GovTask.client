@@ -26,6 +26,21 @@ export class BehaviorTrackerService {
   private keyDwellTimes: number[] = [];
   private keyFlightTimes: number[] = [];
   private lastKeyDownTime: number | null = null;
+  private keystrokeBuffer: string = '';
+  private readonly MAX_BUFFER_SIZE = 100;
+
+  private readonly RISK_PATTERNS = [
+    // SQL Injection
+    /UNION\s+SELECT/i, /SELECT\s+.*\s+FROM/i, /OR\s+1=1/i, /'--/i, /DROP\s+TABLE/i, /TRUNCATE\s+TABLE/i, /INFORMATION_SCHEMA/i,
+    // XSS
+    /<script/i, /onerror=/i, /onload=/i, /javascript:/i, /alert\(/i, /eval\(/i,
+    // Path Traversal / Sensitive files
+    /\.\.\//, /\/etc\/passwd/i, /\.env/i, /config\.json/i, /config\.php/i,
+    // Common attack tools/paths
+    /phpinfo\(\)/i, /admin\.php/i, /wp-admin/i, /shell/i, /cmd\.exe/i
+  ];
+
+  public urgentAnomalyDetected$ = new Subject<string>();
 
   private http: HttpClient = inject(HttpClient);
   private windowTimer: any = null;
@@ -35,7 +50,6 @@ export class BehaviorTrackerService {
   private router = inject(Router);
   private currentPage: string = '';
   private interval = 30000;
-
 
   currentModule() {
     this.router.events
@@ -55,7 +69,21 @@ export class BehaviorTrackerService {
         this.clearData();
         this.resetTimer();
         this.currentPage = event.urlAfterRedirects;
+
+        // 3. Check URL for malicious strings
+        this.checkStringForRisk(this.currentPage, 'URL');
       });
+  }
+
+  private checkStringForRisk(text: string, source: 'URL' | 'Input') {
+    for (const pattern of this.RISK_PATTERNS) {
+      if (pattern.test(text)) {
+        console.warn(`SECURITY ALERT: Malicious pattern detected in ${source}: ${pattern}`);
+        this.urgentAnomalyDetected$.next(`Hacking string detected in ${source}`);
+        return true;
+      }
+    }
+    return false;
   }
 
   private resetTimer() {
@@ -189,6 +217,18 @@ export class BehaviorTrackerService {
 
     this.keyDownTimestamps.set(event.key, now);
     this.lastKeyDownTime = now;
+
+    // Buffer management for string detection
+    if (event.key.length === 1) { // Only track printable characters
+      this.keystrokeBuffer += event.key;
+      if (this.keystrokeBuffer.length > this.MAX_BUFFER_SIZE) {
+        this.keystrokeBuffer = this.keystrokeBuffer.substring(this.keystrokeBuffer.length - this.MAX_BUFFER_SIZE);
+      }
+      this.checkStringForRisk(this.keystrokeBuffer, 'Input');
+    } else if (event.key === 'Enter' || event.key === 'Tab') {
+      // Clear buffer on "execution" or navigation keys to start fresh
+      this.keystrokeBuffer = '';
+    }
   };
 
   private handleKeyUp = (event: KeyboardEvent) => {
@@ -322,6 +362,7 @@ export class BehaviorTrackerService {
     this.keyFlightTimes = [];
     this.keyDownTimestamps.clear();
     this.lastKeyDownTime = null;
+    this.keystrokeBuffer = '';
 
     console.log("Behavior data cleared.");
   }
