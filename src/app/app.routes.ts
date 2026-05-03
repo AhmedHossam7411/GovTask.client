@@ -12,7 +12,7 @@ import { SecurityChallengeGuard } from './shared/guards/security-challenge.guard
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'challenge', component: SecurityChallengeComponent, canActivate: [AuthGuard] },
+  { path: 'challenge', component: SecurityChallengeComponent },
   {path: 'departments',component: DepartmentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'tasks',component: TasksContainer, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'documents',component: DocumentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
