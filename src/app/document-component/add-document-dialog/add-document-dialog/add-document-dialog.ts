@@ -34,8 +34,8 @@ export class AddDocumentDialog {
   addDocument(DocumentDto: any) {
     console.log(DocumentDto);
     this.DocumentService.postDocument(DocumentDto).subscribe({
-      next: () => {
-        this.closeDocumentDialog();
+      next: (created) => {
+        this.dialogRef.close(created);
       },
       error: (err) => console.error(err),
     });

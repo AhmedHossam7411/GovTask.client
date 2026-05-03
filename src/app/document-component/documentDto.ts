@@ -2,6 +2,6 @@ export interface documentDto {
  id: number;
  name:string;
  description:string;
- uploadDate: Date;
+  uploadDate: string;
  taskId: number;
 }

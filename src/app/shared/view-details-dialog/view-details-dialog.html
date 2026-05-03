@@ -1,0 +1,101 @@
+<div class="relative overflow-hidden rounded-2xl bg-white/80 backdrop-blur-xl border border-white shadow-2xl max-w-lg w-full">
+  <!-- Decorative Background -->
+  <div class="absolute -top-24 -right-24 w-48 h-48 rounded-full mix-blend-multiply filter blur-3xl opacity-20"
+       [ngClass]="{
+         'bg-indigo-400': data.type === 'Department',
+         'bg-emerald-400': data.type === 'Task',
+         'bg-rose-400': data.type === 'Document'
+       }"></div>
+
+  <!-- Header -->
+  <div class="relative p-6 border-b border-gray-100/50">
+    <div class="flex items-start justify-between">
+      <div class="flex items-center gap-4">
+        <div class="p-3 rounded-xl shadow-inner border" [ngClass]="colorClass">
+          @if (data.type === 'Department') {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          } @else if (data.type === 'Task') {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" /></svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+          }
+        </div>
+        <div>
+          <h2 class="text-xl font-black text-gray-900 leading-tight">{{title}}</h2>
+          <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mt-0.5">{{data.type}} Overview</p>
+        </div>
+      </div>
+      <button (click)="dialogRef.close()" class="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 space-y-6">
+    <!-- ID Badge -->
+    <div class="flex items-center justify-between">
+      <span class="text-xs font-black text-gray-400 uppercase tracking-tighter">System Reference</span>
+      <span class="px-3 py-1 bg-gray-900 text-white text-[10px] font-black rounded-full shadow-lg">#{{data.entity.id}}</span>
+    </div>
+
+    <!-- Details Grid -->
+    <div class="grid grid-cols-1 gap-4">
+      
+      @if (data.type === 'Document') {
+        <div class="p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+          <p class="text-[10px] font-black text-gray-400 uppercase mb-2">Metadata Summary</p>
+          <p class="text-sm text-gray-700 leading-relaxed font-medium">{{data.entity.description}}</p>
+        </div>
+        <div class="flex items-center gap-6">
+          <div class="flex-1">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Issue Date</p>
+            <p class="text-sm font-bold text-gray-900">{{data.entity.uploadDate | date:'longDate'}}</p>
+          </div>
+          <div class="flex-1">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Linkage</p>
+            <p class="text-sm font-bold text-indigo-600 underline">Task Ref: {{data.entity.taskId}}</p>
+          </div>
+        </div>
+      }
+
+      @if (data.type === 'Task') {
+        <div class="p-4 bg-emerald-50/30 rounded-xl border border-emerald-100/50">
+          <p class="text-[10px] font-black text-emerald-600/60 uppercase mb-2">Executive Summary</p>
+          <p class="text-sm text-gray-700 leading-relaxed font-medium">{{data.entity.description || 'No detailed description available for this execution block.'}}</p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Phase</p>
+            <span class="text-xs font-bold text-emerald-700">Operational</span>
+          </div>
+          <div class="p-3 bg-white rounded-lg border border-gray-100 shadow-sm">
+            <p class="text-[10px] font-black text-gray-400 uppercase mb-1">Dept ID</p>
+            <span class="text-xs font-bold text-gray-700">{{data.entity.departmentId}}</span>
+          </div>
+        </div>
+      }
+
+      @if (data.type === 'Department') {
+        <div class="p-8 text-center bg-indigo-50/30 rounded-2xl border border-indigo-100/50">
+          <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl font-black mx-auto mb-4 shadow-xl">
+            {{data.entity.name.substring(0,2).toUpperCase()}}
+          </div>
+          <h3 class="text-lg font-black text-gray-900">{{data.entity.name}}</h3>
+          <p class="text-sm text-gray-500 font-medium italic mt-1">Core Organizational Unit</p>
+        </div>
+      }
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="p-4 bg-gray-50/80 border-t border-gray-100 flex justify-center">
+    <button (click)="dialogRef.close()" 
+            class="px-8 py-2.5 bg-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-black transition-all shadow-md hover:shadow-lg active:scale-95">
+      Close Console
+    </button>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="h-screen w-full flex items-center justify-center bg-gray-50 p-4">
+  <div class="bg-white p-8 shadow-xl rounded-2xl text-center max-w-md w-full border border-gray-100">
+    <div class="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m0 0v2m0-2h2m-2 0H10m11 3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Security Verification</h1>
+    <p class="mb-8 text-gray-500">To maintain account security, please complete the human verification below.</p>
+
+    <div class="space-y-6">
+      <!-- v3 Background Analysis Status -->
+      <div class="text-xs text-gray-400 flex items-center justify-center gap-2">
+        <span class="relative flex h-2 w-2" *ngIf="isV3Verifying">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+        </span>
+        <svg *ngIf="!isV3Verifying" xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-green-500" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        {{ isV3Verifying ? 'Analyzing behavioral signals...' : 'Background analysis complete' }}
+      </div>
+
+      <!-- Google reCAPTCHA Container (v2 Checkbox) -->
+      <div class="flex justify-center">
+        <div #recaptchaContainer></div>
+      </div>
+      <p *ngIf="hasError" class="text-red-500 text-sm mt-2 font-medium">Please complete the verification.</p>
+
+      <!-- Action Buttons -->
+      <div class="grid grid-cols-2 gap-4">
+        <button 
+          (click)="cancelAndLogout()" 
+          class="w-full py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all active:scale-95"
+        >
+          Cancel
+        </button>
+        <button 
+          (click)="submitChallenge()" 
+          [disabled]="!recaptchaToken"
+          class="w-full py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Verify
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
