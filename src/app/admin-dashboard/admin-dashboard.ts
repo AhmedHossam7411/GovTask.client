@@ -68,11 +68,14 @@ export class AdminDashboardComponent implements OnInit {
   });
 
   protected categoryColors: Record<string, string> = {
-    'SQL Injection': 'bg-orange-100 text-orange-700 border-orange-200',
-    'XSS':           'bg-rose-100 text-rose-700 border-rose-200',
-    'Path Traversal':'bg-yellow-100 text-yellow-700 border-yellow-200',
-    'Attack Tools':  'bg-purple-100 text-purple-700 border-purple-200',
-    'Custom':        'bg-sky-100 text-sky-700 border-sky-200',
+    'SQL Injection':     'bg-orange-100 text-orange-700 border-orange-200',
+    'XSS':               'bg-rose-100 text-rose-700 border-rose-200',
+    'Path Traversal':    'bg-yellow-100 text-yellow-700 border-yellow-200',
+    'Attack Tools':      'bg-purple-100 text-purple-700 border-purple-200',
+    'Command Injection': 'bg-red-100 text-red-700 border-red-200',
+    'SSTI':              'bg-pink-100 text-pink-700 border-pink-200',
+    'XXE':               'bg-teal-100 text-teal-700 border-teal-200',
+    'Custom':            'bg-sky-100 text-sky-700 border-sky-200',
   };
 
   scanInputText = '';
