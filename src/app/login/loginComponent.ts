@@ -60,7 +60,12 @@ export class LoginComponent {
         this.behaviorTracker.start();
       },
       error: (err) => {
-        this.errorMessage = 'Email or Password not found';
+        if (err?.status === 423) {
+          const mins = err?.error?.minutesRemaining ?? 30;
+          this.errorMessage = `Your account has been temporarily suspended due to suspicious activity. Please try again in ${mins} minute${mins === 1 ? '' : 's'} or contact your administrator.`;
+        } else {
+          this.errorMessage = 'Email or Password not found';
+        }
         console.error('login failed:', err);
       },
     });

@@ -1,11 +1,12 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DepartmentService } from '../services/department-Service';
 import { taskService } from '../services/task-service';
 import { DocumentService } from '../services/document-service';
 import { BehaviorTrackerService, RiskPattern } from '../services/behavior-tracker.service';
-import { forkJoin } from 'rxjs';
+import { BehaviorPredictorService, DemoResult } from '../services/behavior-predictor.service';
+import { forkJoin, Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -15,11 +16,12 @@ import { RouterModule } from '@angular/router';
   templateUrl: './admin-dashboard.html',
   styleUrl: './admin-dashboard.css'
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   private deptService = inject(DepartmentService);
   private taskService = inject(taskService);
   private docService = inject(DocumentService);
   private tracker = inject(BehaviorTrackerService);
+  protected predictor = inject(BehaviorPredictorService);
 
   // ── System metrics ──────────────────────────────────────────────────────────
   protected departments = signal<any[]>([]);
@@ -81,9 +83,69 @@ export class AdminDashboardComponent implements OnInit {
   scanInputText = '';
   newPatternInput = '';
 
+  // ── Pattern list lock ───────────────────────────────────────────────────────
+  private readonly PATTERNS_PASSWORD = 'Admin@Sec2024';
+  protected patternsUnlocked = signal(false);
+  patternPasswordInput = '';
+  patternPasswordError = signal('');
+
+  // ── ML Demo panel ───────────────────────────────────────────────────────────
+  protected demoLog     = signal<DemoResult[]>([]);   // last 3 predictions
+  protected demoResult  = signal<DemoResult | null>(null);
+  protected demoIndices = [0, 1, 2];
+  // Strike = HIGH prediction count within the current log
+  protected demoHighStrikes = computed(() =>
+    this.demoLog().filter(r => r.riskLevel === 'HIGH').length
+  );
+  private demoSub: Subscription | null = null;
+
+  unlockPatterns() {
+    if (this.patternPasswordInput === this.PATTERNS_PASSWORD) {
+      this.patternsUnlocked.set(true);
+      this.patternPasswordInput = '';
+      this.patternPasswordError.set('');
+    } else {
+      this.patternPasswordError.set('Incorrect password.');
+      this.patternPasswordInput = '';
+    }
+  }
+
+  lockPatterns() {
+    this.patternsUnlocked.set(false);
+    this.patternPasswordInput = '';
+    this.patternPasswordError.set('');
+  }
+
   ngOnInit() {
     this.refreshData();
     this.patterns.set(this.tracker.getPatterns());
+
+    this.demoSub = this.predictor.demoResult$.subscribe(r => {
+      this.demoResult.set(r);
+      this.demoLog.update(log => [...log, r].slice(-3));
+    });
+  }
+
+  ngOnDestroy() {
+    this.demoSub?.unsubscribe();
+  }
+
+  getDisplayReason(result: DemoResult): string {
+    if (result.reason?.trim() &&
+        !result.reason.includes('low confidence') &&
+        !result.reason.includes('unavailable')) {
+      return result.reason;
+    }
+    return result.type === 'bot'
+      ? 'StdMouseSpeed ≈ 0.01 indicates near-perfect uniformity typical of automation. TypingRate = 0 with zero key events on /admin is a behavioral mismatch. ClickRate 12 and MouseMoveRate 20 are consistent with scripted activity.'
+      : 'DevToolsDetected = 1 with 7 shortcut keypresses suggests active session inspection. UnauthorizedAttempts = 4 indicates repeated security bypass attempts. PasteCount = 6 is unusually high, suggesting scripted input injection — no attack strings present.';
+  }
+
+  riskColor(level: string): string {
+    if (level === 'HIGH')    return 'bg-red-500 border-red-600 text-white';
+    if (level === 'MEDIUM')  return 'bg-yellow-400 border-yellow-500 text-yellow-900';
+    if (level === 'LOW')     return 'bg-green-500 border-green-600 text-white';
+    return 'bg-gray-300 border-gray-400 text-gray-700';
   }
 
   refreshData() {
