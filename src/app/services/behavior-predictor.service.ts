@@ -3,15 +3,30 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
 import { BehaviorTrackerService } from './behavior-tracker.service';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subject, Subscription } from 'rxjs';
+
+export interface DemoResult {
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
+  confidence: number;
+  reason: string;
+  type: 'bot' | 'malicious-user';
+  tabpfnScore: number;
+  tabpfnLabel: string;
+  tabpfnVerdict: string;
+}
 
 export interface PredictResponse {
   confidence: number;
+  tabpfn?: {
+    score: number;
+    label: string;    // "Anomaly" | "Normal"
+    verdict: string;
+  };
   analysis: {
     riskLevel: 'LOW' | 'MEDIUM' | 'HIGH' | 'UNKNOWN';
     reason: string;
     context?: any;
-  }
+  };
 }
 
 @Injectable({
@@ -23,6 +38,13 @@ export class BehaviorPredictorService {
   private tracker = inject(BehaviorTrackerService);
   private subscription: Subscription | null = null;
   private urgentSubscription: Subscription | null = null;
+
+  // ── Demo observables (consumed by AdminDashboard) ───────────────────────────
+  readonly strikeCount$ = new BehaviorSubject<number>(
+    parseInt(sessionStorage.getItem('behaviorHighRiskCount') || '0', 10)
+  );
+  readonly demoResult$ = new Subject<DemoResult>();
+  demoSending = false;
 
   start() {
     if (this.subscription) return;
@@ -60,17 +82,98 @@ export class BehaviorPredictorService {
   }
 
   private getHighRiskCount(): number {
-    return parseInt(sessionStorage.getItem('behaviorHighRiskCount') || '0', 10);
+    return this.strikeCount$.value;
   }
 
   private incrementHighRiskCount(): number {
-    const count = this.getHighRiskCount() + 1;
+    const count = this.strikeCount$.value + 1;
     sessionStorage.setItem('behaviorHighRiskCount', count.toString());
+    this.strikeCount$.next(count);
     return count;
   }
 
   private resetHighRiskCount(): void {
     sessionStorage.removeItem('behaviorHighRiskCount');
+    this.strikeCount$.next(0);
+  }
+
+  // ── Public demo API ─────────────────────────────────────────────────────────
+
+  sendDemoSnapshot(): void {
+    this.sendSnapshot({
+      // Robotic signature: near-zero mouse variance, no typing, high uniform rates
+      avgMouseSpeed: 2.5,   stdMouseSpeed: 0.01,
+      mouseMoveCount: 150,  avgMouseIdle: 10,
+      avgClickDuration: 50, clickCount: 100,
+      avgClickInterval: 200,
+      avgDwell: 2,          avgFlight: 2,
+      keyEventCount: 0,     typingRate: 0,
+      clickRate: 12,        mouseMoveRate: 20,
+      hackingStringDetected: 0, detectedPatterns: null,
+      pasteCount: 0,        suspiciousPasteDetected: 0,
+      devToolsShortcutCount: 0, abnormalInputDetected: 0,
+      devToolsDetected: 0,  unauthorizedAttempts: 0,
+      sessionId: `demo-bot-${Date.now()}`,
+      userId: null, context: 'postAuth', currentPage: '/admin',
+    }, 'bot');
+  }
+
+  sendMaliciousUserSnapshot(): void {
+    this.sendSnapshot({
+      // Human-like biometrics — no attack strings — but suspicious signals
+      avgMouseSpeed: 1.5,   stdMouseSpeed: 0.42,
+      mouseMoveCount: 38,   avgMouseIdle: 280,
+      avgClickDuration: 115, clickCount: 7,
+      avgClickInterval: 6200,
+      avgDwell: 145,        avgFlight: 310,
+      keyEventCount: 30,    typingRate: 1.1,
+      clickRate: 0.25,      mouseMoveRate: 1.6,
+      // Attack signals — no strings, only behaviour
+      hackingStringDetected: 0, detectedPatterns: null,
+      pasteCount: 6,            suspiciousPasteDetected: 0,
+      devToolsShortcutCount: 7, abnormalInputDetected: 0,
+      devToolsDetected: 1,      unauthorizedAttempts: 4,
+      sessionId: `demo-mal-${Date.now()}`,
+      userId: null, context: 'postAuth', currentPage: '/admin',
+    }, 'malicious-user');
+  }
+
+  private sendSnapshot(payload: Record<string, any>, type: DemoResult['type']): void {
+    if (this.demoSending) return;
+    this.demoSending = true;
+
+    this.http.post<PredictResponse>(
+      `${environment.apiUrl}/MLPrediction/predict`,
+      { data: [{ ...payload, timestamp: new Date().toISOString() }] },
+      { withCredentials: true }
+    ).subscribe({
+      next: (response) => {
+        this.demoSending = false;
+        const risk = response?.analysis?.riskLevel ?? 'UNKNOWN';
+
+        this.demoResult$.next({
+          riskLevel: risk,
+          confidence: response?.confidence ?? 0,
+          reason: response?.analysis?.reason ?? '',
+          type,
+          tabpfnScore:   response?.tabpfn?.score   ?? response?.confidence ?? 0,
+          tabpfnLabel:   response?.tabpfn?.label   ?? (response?.confidence >= 0.5 ? 'Anomaly' : 'Normal'),
+          tabpfnVerdict: response?.tabpfn?.verdict ?? '',
+        });
+
+        if (risk === 'HIGH') {
+          const strikes = this.incrementHighRiskCount();
+          if (strikes >= 3) {
+            this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${strikes}/3)`);
+          }
+        }
+      },
+      error: () => { this.demoSending = false; }
+    });
+  }
+
+  resetDemo(): void {
+    this.resetHighRiskCount();
   }
 
   private checkPrediction(snapshot: any) {
@@ -200,6 +303,7 @@ export class BehaviorPredictorService {
 
     sessionStorage.setItem('security_challenge_active', 'true');
     sessionStorage.setItem('pre_challenge_url', this.router.url);
+    sessionStorage.setItem('challenge_reason', reason);
 
     this.router.navigate(['/challenge']);
   }
