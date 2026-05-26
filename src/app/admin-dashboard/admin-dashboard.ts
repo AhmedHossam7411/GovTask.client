@@ -23,7 +23,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   private tracker = inject(BehaviorTrackerService);
   protected predictor = inject(BehaviorPredictorService);
 
-  // ── System metrics ──────────────────────────────────────────────────────────
+
   protected departments = signal<any[]>([]);
   protected tasks = signal<any[]>([]);
   protected documents = signal<any[]>([]);
@@ -54,7 +54,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return dist;
   });
 
-  // ── Security monitor ────────────────────────────────────────────────────────
+
   protected patterns = signal<RiskPattern[]>([]);
   protected scanResults = signal<{ label: string; category: string }[]>([]);
   protected scanHasRun = signal(false);
@@ -83,13 +83,13 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   scanInputText = '';
   newPatternInput = '';
 
-  // ── Pattern list lock ───────────────────────────────────────────────────────
+
   private readonly PATTERNS_PASSWORD = 'Admin@Sec2024';
   protected patternsUnlocked = signal(false);
   patternPasswordInput = '';
   patternPasswordError = signal('');
 
-  // ── ML Demo panel ───────────────────────────────────────────────────────────
+
   protected demoLog     = signal<DemoResult[]>([]);   // last 3 predictions
   protected demoResult  = signal<DemoResult | null>(null);
   protected demoIndices = [0, 1, 2];

@@ -24,7 +24,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   private router = inject(Router);
   private http   = inject(HttpClient);
 
-  // ── General state ───────────────────────────────────────────────────────────
+
   triggerReason = 'Suspicious behavior detected';
   timeLeft      = 60;
   attempts      = 0;
@@ -33,11 +33,11 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   errorMessage  = '';
   isSuspending  = false;
 
-  // ── Code challenge ──────────────────────────────────────────────────────────
+
   private verificationCode = '';
   userInput = '';
 
-  // ── Slider challenge ────────────────────────────────────────────────────────
+
   private readonly BG_W  = 300;
   private readonly BG_H  = 100;
   private readonly GAP_W = 52;
@@ -53,7 +53,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
   private timer: ReturnType<typeof setInterval> | null = null;
 
-  // ── Lifecycle ───────────────────────────────────────────────────────────────
+
 
   ngOnInit() {
     this.triggerReason    = sessionStorage.getItem('challenge_reason') || 'Suspicious behavior detected';
@@ -71,7 +71,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.clearTimer();
   }
 
-  // ── Slider ──────────────────────────────────────────────────────────────────
+
 
   private drawSlider(): void {
     const bg    = this.bgCanvas.nativeElement;
@@ -181,7 +181,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-  // ── Code canvas ─────────────────────────────────────────────────────────────
+
 
   private generateCode(): string {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -250,7 +250,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     setTimeout(() => this.drawCode(), 0);
   }
 
-  // ── Countdown ───────────────────────────────────────────────────────────────
+
 
   private startCountdown(): void {
     this.timer = setInterval(() => {
@@ -263,7 +263,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     if (this.timer !== null) { clearInterval(this.timer); this.timer = null; }
   }
 
-  // ── Verify ──────────────────────────────────────────────────────────────────
+
 
   get canVerify(): boolean {
     return this.sliderSolved && this.userInput.trim().length === 6;
@@ -293,7 +293,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.router.navigate([sessionStorage.getItem('pre_challenge_url') || '/departments']);
   }
 
-  // ── Suspend ─────────────────────────────────────────────────────────────────
+
 
   private suspendAndLogout(): void {
     this.isSuspending = true;
@@ -308,7 +308,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     else { this.router.navigate(['/login']); }
   }
 
-  // ── Helpers ─────────────────────────────────────────────────────────────────
+
 
   private rand(min: number, max: number): number {
     return Math.random() * (max - min) + min;

@@ -37,7 +37,7 @@ export class BehaviorTrackerService {
   private readonly ABNORMAL_INPUT_THRESHOLD = 500;
   private detectedPatterns: string[] = [];
 
-  // ── Attack signal counters (reset every 30s window) ──────────────────────────
+  
   private pasteCount = 0;
   private suspiciousPasteDetected = false;
   private devToolsShortcutCount = 0;
@@ -46,7 +46,7 @@ export class BehaviorTrackerService {
 
   private riskPatterns: RiskPattern[] = [
 
-    // ── SQL Injection ───────────────────────────────────────────────────────────
+    // SQL Injection
     { regex: /UNION\s+SELECT/i,          label: 'UNION SELECT',        category: 'SQL Injection', removable: false },
     { regex: /UNION\s+ALL\s+SELECT/i,    label: 'UNION ALL SELECT',    category: 'SQL Injection', removable: false },
     { regex: /SELECT\s+.+\s+FROM/i,      label: 'SELECT...FROM',       category: 'SQL Injection', removable: false },
@@ -70,7 +70,7 @@ export class BehaviorTrackerService {
     { regex: /ASCII\s*\(\s*SUBSTRING/i,   label: 'ASCII(SUBSTRING)',    category: 'SQL Injection', removable: false },
     { regex: /CHAR\s*\(\d+\)/i,           label: 'CHAR(n) bypass',      category: 'SQL Injection', removable: false },
 
-    // ── XSS — HTML injection tags ──────────────────────────────────────────────
+    // XSS - HTML injection tags
     { regex: /<script/i,                        label: '<script>',                category: 'XSS', removable: false },
     { regex: /<\/script>/i,                     label: '</script>',               category: 'XSS', removable: false },
     { regex: /<iframe/i,                        label: '<iframe>',                category: 'XSS', removable: false },
@@ -98,7 +98,7 @@ export class BehaviorTrackerService {
     { regex: /<link[^>]*href[^>]*javascript/i,  label: '<link href=javascript:>', category: 'XSS', removable: false },
     { regex: /<form[^>]*action[^>]*javascript/i,label: '<form action=javascript:>',category: 'XSS', removable: false },
 
-    // ── XSS — event handlers ──────────────────────────────────────────────────
+    // XSS - event handlers
     { regex: /onerror\s*=/i,                    label: 'onerror=',                category: 'XSS', removable: false },
     { regex: /onload\s*=/i,                     label: 'onload=',                 category: 'XSS', removable: false },
     { regex: /onfocus\s*=/i,                    label: 'onfocus=',                category: 'XSS', removable: false },
@@ -136,7 +136,7 @@ export class BehaviorTrackerService {
     { regex: /onpointerdown\s*=/i,              label: 'onpointerdown=',          category: 'XSS', removable: false },
     { regex: /onpointerover\s*=/i,              label: 'onpointerover=',          category: 'XSS', removable: false },
 
-    // ── XSS — protocol & URI schemes ─────────────────────────────────────────
+    // XSS - protocol and URI schemes
     { regex: /javascript:/i,                    label: 'javascript:',             category: 'XSS', removable: false },
     { regex: /vbscript:/i,                      label: 'vbscript:',               category: 'XSS', removable: false },
     { regex: /livescript:/i,                    label: 'livescript:',             category: 'XSS', removable: false },
@@ -145,7 +145,7 @@ export class BehaviorTrackerService {
     { regex: /data:,<script/i,                  label: 'data:,<script>',          category: 'XSS', removable: false },
     { regex: /data:[^,]*base64/i,               label: 'data:base64',             category: 'XSS', removable: false },
 
-    // ── XSS — DOM sinks ───────────────────────────────────────────────────────
+    // XSS - DOM sinks
     { regex: /eval\s*\(/i,                      label: 'eval(',                   category: 'XSS', removable: false },
     { regex: /Function\s*\(/i,                  label: 'Function( constructor',   category: 'XSS', removable: false },
     { regex: /setTimeout\s*\(\s*["'`]/i,        label: 'setTimeout(string)',      category: 'XSS', removable: false },
@@ -174,7 +174,7 @@ export class BehaviorTrackerService {
     { regex: /localStorage\.setItem\s*\(/i,     label: 'localStorage.setItem(',   category: 'XSS', removable: false },
     { regex: /sessionStorage\.setItem\s*\(/i,   label: 'sessionStorage.setItem(', category: 'XSS', removable: false },
 
-    // ── XSS — JS execution & obfuscation ─────────────────────────────────────
+    // XSS - JS execution and obfuscation
     { regex: /alert\s*\(/i,                     label: 'alert(',                  category: 'XSS', removable: false },
     { regex: /confirm\s*\(/i,                   label: 'confirm(',                category: 'XSS', removable: false },
     { regex: /prompt\s*\(/i,                    label: 'prompt(',                 category: 'XSS', removable: false },
@@ -196,7 +196,7 @@ export class BehaviorTrackerService {
     { regex: /-moz-binding/i,                   label: '-moz-binding CSS XSS',    category: 'XSS', removable: false },
     { regex: /behavior\s*:\s*url\s*\(/i,        label: 'behavior:url( CSS XSS',   category: 'XSS', removable: false },
 
-    // ── Command Injection ───────────────────────────────────────────────────────
+    // Command Injection
     { regex: /;\s*(cat|ls|id|whoami|uname|pwd|ifconfig|ipconfig)\b/i, label: '; unix-cmd',    category: 'Command Injection', removable: false },
     { regex: /\|\s*(cat|ls|id|whoami|curl|wget|bash|sh)\b/i,          label: '| pipe-cmd',   category: 'Command Injection', removable: false },
     { regex: /\$\s*\(\s*(cat|ls|id|whoami|uname)/i,                   label: '$(cmd-subst)', category: 'Command Injection', removable: false },
@@ -210,13 +210,13 @@ export class BehaviorTrackerService {
     { regex: /cmd\s*\/c\s+/i,                                         label: 'cmd /c',       category: 'Command Injection', removable: false },
     { regex: /cat\s+\/etc\//i,                                        label: 'cat /etc/',    category: 'Command Injection', removable: false },
 
-    // ── SSTI ────────────────────────────────────────────────────────────────────
+    // SSTI
     { regex: /\{\{[\s\S]*?\}\}/,  label: '{{...}} Jinja2/Twig',  category: 'SSTI', removable: false },
     { regex: /\$\{[^}]+\}/,       label: '${...} Java EL',       category: 'SSTI', removable: false },
     { regex: /<%=[\s\S]*?%>/,     label: '<%= %> ERB/JSP',       category: 'SSTI', removable: false },
     { regex: /#\{[^}]+\}/,        label: '#{...} Thymeleaf',     category: 'SSTI', removable: false },
 
-    // ── Path Traversal ──────────────────────────────────────────────────────────
+    // Path Traversal
     { regex: /\.\.\//,             label: '../',                  category: 'Path Traversal', removable: false },
     { regex: /\.\.\\\\/,           label: '..\\',                 category: 'Path Traversal', removable: false },
     { regex: /\.\.\.\.\//,         label: '..../ (bypass)',       category: 'Path Traversal', removable: false },
@@ -237,7 +237,7 @@ export class BehaviorTrackerService {
     { regex: /\/etc\/hosts/i,      label: '/etc/hosts',           category: 'Path Traversal', removable: false },
     { regex: /\/etc\/shadow/i,     label: '/etc/shadow',          category: 'Path Traversal', removable: false },
 
-    // ── Command Injection — BLNS additions ─────────────────────────────────────
+    // Command Injection - additional patterns
     // Shellshock (CVE-2014-6271): bash env-variable code execution
     { regex: /\(\)\s*\{\s*[^}]*;\s*/,                    label: 'Shellshock () {',        category: 'Command Injection', removable: false },
     // Backtick shell execution: `ls -al /`
@@ -253,13 +253,13 @@ export class BehaviorTrackerService {
     // Format string attacks — multiple consecutive specifiers signal a probe
     { regex: /(%[sdnxp]){2,}/i,                          label: 'format string %s%n',     category: 'Command Injection', removable: false },
 
-    // ── XXE — XML External Entity ────────────────────────────────────────────────
+    // XXE
     { regex: /<!DOCTYPE[^>]*\[/i,                        label: '<!DOCTYPE [...]>',       category: 'XXE', removable: false },
     { regex: /<!ENTITY\s+\w/i,                           label: '<!ENTITY>',              category: 'XXE', removable: false },
     { regex: /SYSTEM\s+["']file:/i,                      label: 'XXE SYSTEM file://',     category: 'XXE', removable: false },
     { regex: /&xxe;/i,                                   label: '&xxe; entity ref',       category: 'XXE', removable: false },
 
-    // ── Attack Tools ────────────────────────────────────────────────────────────
+    // Attack Tools
     { regex: /phpinfo\s*\(\)/i,    label: 'phpinfo()',            category: 'Attack Tools', removable: false },
     { regex: /admin\.php/i,        label: 'admin.php',            category: 'Attack Tools', removable: false },
     { regex: /wp-admin/i,          label: 'wp-admin',             category: 'Attack Tools', removable: false },
@@ -308,7 +308,7 @@ export class BehaviorTrackerService {
     });
   }
 
-  // ── Pattern management ──────────────────────────────────────────────────────
+  
 
   getPatterns(): RiskPattern[] {
     return [...this.riskPatterns];
@@ -331,9 +331,9 @@ export class BehaviorTrackerService {
       .filter(p => p.regex.test(decoded))
       .map(p => ({ label: p.label, category: p.category }));
     if (matches.length) {
-      console.warn(`[DEV] ${matches.length} match(es) for "${text}":`, matches.map(m => m.label).join(', '));
+      
     } else {
-      console.log(`[DEV] No patterns matched for "${text}"`);
+      
     }
     return matches;
   }
@@ -346,7 +346,7 @@ export class BehaviorTrackerService {
     return this.checkStringForRisk(this.safeDecode(url), 'URL');
   }
 
-  // ── Private helpers ─────────────────────────────────────────────────────────
+  
 
   private safeDecode(text: string): string {
     try { return decodeURIComponent(text); } catch { return text; }
