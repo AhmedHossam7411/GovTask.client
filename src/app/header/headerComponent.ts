@@ -11,7 +11,7 @@ import { Auth } from '../services/auth-service';
 })
 export class Header implements OnInit {
   protected auth = inject(Auth);
-  protected title = 'Task Management System';
+  protected title = 'BehaviourShield';
   imgSrc = signal('assets/logo.jpg');
 
   protected isLoggedIn = signal(false);

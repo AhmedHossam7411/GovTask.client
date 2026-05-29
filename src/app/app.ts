@@ -15,7 +15,7 @@ import { BehaviorPredictorService } from './services/behavior-predictor.service'
 })
 export class App implements OnInit {
 
-  protected readonly title = signal('Task Management System');
+  protected readonly title = signal('BehaviourShield');
 
   constructor(
     private behaviorTracker: BehaviorTrackerService,
