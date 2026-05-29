@@ -23,112 +23,176 @@
            [ngClass]="timerBg">
         <span class="text-sm font-medium text-gray-600">Time remaining</span>
         <span class="text-2xl font-mono font-extrabold tabular-nums" [ngClass]="timerColor">
-          0:{{ timeLeft < 10 ? '0' + timeLeft : timeLeft }}
+          {{ timeLeft >= 60 ? '1' : '0' }}:{{ (timeLeft % 60) < 10 ? '0' + (timeLeft % 60) : (timeLeft % 60) }}
         </span>
       </div>
 
-      <!-- ── STEP 1: Slider puzzle ─────────────────────────────────────── -->
-      <div class="space-y-2">
-        <div class="flex items-center justify-between">
+      <!-- ── STEP 1: Company knowledge ───────────────────────────────────── -->
+      @if (currentStep === 1) {
+        <div class="space-y-4">
           <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
-            <span class="w-5 h-5 rounded-full text-white flex items-center justify-center text-[10px] font-black"
-                  [ngClass]="sliderSolved ? 'bg-green-500' : 'bg-slate-700'">1</span>
-            Drag the piece to fill the gap
+            <span class="w-5 h-5 rounded-full bg-slate-700 text-white flex items-center justify-center text-[10px] font-black">1</span>
+            Company Knowledge Verification
           </p>
-          @if (sliderSolved) {
-            <span class="text-xs font-bold text-green-600 flex items-center gap-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+
+          @if (fetchingQuestions) {
+            <div class="flex items-center justify-center gap-2 py-4 text-gray-400">
+              <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
               </svg>
-              Solved
-            </span>
+              <span class="text-sm">Loading…</span>
+            </div>
+          } @else {
+            <div class="space-y-1.5">
+              <label class="block text-sm font-semibold text-gray-700">{{ questions?.q1 }}</label>
+              <input
+                type="text"
+                [(ngModel)]="answer1"
+                (keyup.enter)="canVerifyKnowledge && verifyKnowledge()"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Your answer"
+                class="w-full px-4 py-2.5 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors text-sm"
+              />
+            </div>
+
+            <div class="space-y-1.5">
+              <label class="block text-sm font-semibold text-gray-700">{{ questions?.q2 }}</label>
+              <input
+                type="text"
+                [(ngModel)]="answer2"
+                (keyup.enter)="canVerifyKnowledge && verifyKnowledge()"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="Your answer"
+                class="w-full px-4 py-2.5 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors text-sm"
+              />
+            </div>
+
+            @if (knowledgeError) {
+              <p class="text-red-600 text-sm font-medium">{{ knowledgeError }}</p>
+            }
+
+            @if (isSuspending) {
+              <div class="flex items-center justify-center gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+                <svg class="animate-spin h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span class="text-red-700 text-sm font-semibold">Suspending account and logging out…</span>
+              </div>
+            } @else {
+              <div class="grid grid-cols-2 gap-3">
+                <button (click)="logout()"
+                  class="py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all active:scale-95 text-sm">
+                  Cancel &amp; Logout
+                </button>
+                <button (click)="verifyKnowledge()" [disabled]="!canVerifyKnowledge"
+                  class="py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+                  Continue
+                </button>
+              </div>
+            }
+          }
+        </div>
+      }
+
+      <!-- ── STEPS 2 + 3: Slider + Code (shown after knowledge verified) ── -->
+      @if (currentStep >= 2) {
+
+        <!-- STEP 2: Click-in-order challenge -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
+              <span class="w-5 h-5 rounded-full text-white flex items-center justify-center text-[10px] font-black"
+                    [ngClass]="orderSolved ? 'bg-green-500' : 'bg-slate-700'">2</span>
+              Click the numbers in order
+            </p>
+            @if (orderSolved) {
+              <span class="text-xs font-bold text-green-600 flex items-center gap-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                Done
+              </span>
+            }
+          </div>
+
+          <div class="flex justify-center">
+            <canvas #clickCanvas
+              class="rounded-xl border-2 block"
+              [ngClass]="orderSolved ? 'border-green-400 cursor-default' : 'border-gray-300 cursor-pointer'"
+              style="width:300px; height:130px;"
+              (click)="onCanvasClick($event)">
+            </canvas>
+          </div>
+
+          @if (!orderSolved) {
+            <p class="text-center text-xs text-gray-400">Click circles 1 → {{ TARGET_COUNT }} in order. Wrong click resets.</p>
           }
         </div>
 
-        <!-- Slider container -->
-        <div class="flex justify-center">
-          <div class="relative rounded-xl overflow-hidden border-2"
-               [ngClass]="sliderSolved ? 'border-green-400' : 'border-gray-300'"
-               style="width:300px; height:100px;">
-            <!-- Background canvas -->
-            <canvas #bgCanvas class="absolute inset-0 w-full h-full"></canvas>
-            <!-- Draggable piece -->
-            <canvas #pieceCanvas
-              class="absolute z-10 rounded shadow-xl border-2 transition-[border-color]"
-              [ngClass]="sliderSolved ? 'border-green-400 cursor-default' : 'border-blue-400 cursor-grab active:cursor-grabbing'"
-              [style.left.px]="sliderX"
-              [style.top.px]="GAP_Y"
-              (mousedown)="onDragStart($event)"
-              (touchstart)="onTouchStart($event)"
-              (touchmove)="onTouchMove($event)"
-              (touchend)="onTouchEnd()">
-            </canvas>
+        <!-- STEP 3: Canvas code -->
+        <div class="space-y-3" [ngClass]="{ 'opacity-40 pointer-events-none': !orderSolved }">
+          <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
+            <span class="w-5 h-5 rounded-full text-white flex items-center justify-center text-[10px] font-black"
+                  [ngClass]="orderSolved ? 'bg-slate-700' : 'bg-gray-300'">3</span>
+            Type the characters you see
+          </p>
+
+          <div class="flex flex-col items-center gap-2">
+            <canvas #codeCanvas class="rounded-xl border-2 border-gray-300 select-none" style="max-width:100%"></canvas>
+            <button (click)="refreshCode()" type="button"
+              class="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+              </svg>
+              Can't read it? Refresh
+            </button>
           </div>
+
+          <input
+            type="text"
+            [(ngModel)]="userInput"
+            (keyup.enter)="verify()"
+            maxlength="6"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter code"
+            class="w-full text-center text-xl font-mono tracking-widest px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors uppercase"
+            [ngClass]="{ 'border-red-400 bg-red-50': hasError }"
+          />
         </div>
 
-        @if (!sliderSolved) {
-          <p class="text-center text-xs text-gray-400">← Drag the piece to the correct position →</p>
+        <!-- Error -->
+        @if (hasError && !isSuspending) {
+          <p class="text-red-600 text-sm font-medium text-center -mt-2">{{ errorMessage }}</p>
         }
-      </div>
 
-      <!-- ── STEP 2: Canvas code ───────────────────────────────────────── -->
-      <div class="space-y-3" [ngClass]="{ 'opacity-40 pointer-events-none': !sliderSolved }">
-        <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
-          <span class="w-5 h-5 rounded-full text-white flex items-center justify-center text-[10px] font-black"
-                [ngClass]="sliderSolved ? 'bg-slate-700' : 'bg-gray-300'">2</span>
-          Type the characters you see
-        </p>
-
-        <div class="flex flex-col items-center gap-2">
-          <canvas #codeCanvas class="rounded-xl border-2 border-gray-300 select-none" style="max-width:100%"></canvas>
-          <button (click)="refreshCode()" type="button"
-            class="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-gray-600 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+        <!-- Suspending / action buttons -->
+        @if (isSuspending) {
+          <div class="flex items-center justify-center gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
+            <svg class="animate-spin h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
             </svg>
-            Can't read it? Refresh
-          </button>
-        </div>
+            <span class="text-red-700 text-sm font-semibold">Suspending account and logging out…</span>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 gap-3">
+            <button (click)="logout()"
+              class="py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all active:scale-95 text-sm">
+              Cancel &amp; Logout
+            </button>
+            <button (click)="verify()" [disabled]="!canVerify"
+              class="py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+              Verify
+            </button>
+          </div>
+        }
 
-        <input
-          type="text"
-          [(ngModel)]="userInput"
-          (keyup.enter)="verify()"
-          maxlength="6"
-          autocomplete="off"
-          spellcheck="false"
-          placeholder="Enter code"
-          class="w-full text-center text-xl font-mono tracking-widest px-4 py-3 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:border-blue-500 transition-colors uppercase"
-          [ngClass]="{ 'border-red-400 bg-red-50': hasError }"
-        />
-      </div>
-
-      <!-- Error -->
-      @if (hasError && !isSuspending) {
-        <p class="text-red-600 text-sm font-medium text-center -mt-2">{{ errorMessage }}</p>
-      }
-
-      <!-- Suspending -->
-      @if (isSuspending) {
-        <div class="flex items-center justify-center gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
-          <svg class="animate-spin h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-          </svg>
-          <span class="text-red-700 text-sm font-semibold">Suspending account and logging out…</span>
-        </div>
-      } @else {
-        <div class="grid grid-cols-2 gap-3">
-          <button (click)="logout()"
-            class="py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all active:scale-95 text-sm">
-            Cancel &amp; Logout
-          </button>
-          <button (click)="verify()" [disabled]="!canVerify"
-            class="py-3 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed text-sm">
-            Verify
-          </button>
-        </div>
       }
 
       <!-- Attempt dots -->

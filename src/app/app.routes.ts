@@ -8,6 +8,7 @@ import { DocumentContainerComponent } from './document-container-component/docum
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard';
 import { SecurityChallengeComponent } from './security-challenge/security-challenge.component';
 import { SecurityChallengeGuard } from './shared/guards/security-challenge.guard';
+import { AdminGuard } from './shared/guards/admin.guard';
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
@@ -16,6 +17,6 @@ export const routes: Routes = [
   {path: 'departments',component: DepartmentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'tasks',component: TasksContainer, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'documents',component: DocumentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
-  {path: 'admin',component: AdminDashboardComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
+  {path: 'admin',component: AdminDashboardComponent, canActivate: [SecurityChallengeGuard, AuthGuard, AdminGuard]},
   { path: '', redirectTo: 'login', pathMatch: 'full' }
 ];

@@ -8,6 +8,18 @@ import { BehaviorTrackerService, RiskPattern } from '../services/behavior-tracke
 import { BehaviorPredictorService, DemoResult } from '../services/behavior-predictor.service';
 import { forkJoin, Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+
+interface SecurityAlertEntry {
+  id: number;
+  type: string;
+  severity: string;
+  url: string;
+  timestamp: string;
+  userId: string | null;
+  isResolved: boolean;
+}
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -21,6 +33,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   private taskService = inject(taskService);
   private docService = inject(DocumentService);
   private tracker = inject(BehaviorTrackerService);
+  private http = inject(HttpClient);
   protected predictor = inject(BehaviorPredictorService);
 
 
@@ -98,6 +111,34 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     this.demoLog().filter(r => r.riskLevel === 'HIGH').length
   );
   private demoSub: Subscription | null = null;
+  private alertsPoller: ReturnType<typeof setInterval> | null = null;
+
+  // Security alerts
+  protected securityAlerts = signal<SecurityAlertEntry[]>([]);
+  protected alertsLoading = signal(false);
+  protected revokedUsers = signal<Set<string>>(new Set());
+
+  loadAlerts(showSpinner = false) {
+    if (showSpinner) this.alertsLoading.set(true);
+    this.http.get<SecurityAlertEntry[]>(`${environment.apiUrl}/Security/alerts`, { withCredentials: true })
+      .subscribe({
+        next: (alerts) => {
+          this.securityAlerts.set(alerts);
+          this.alertsLoading.set(false);
+        },
+        error: () => this.alertsLoading.set(false)
+      });
+  }
+
+  revokeUser(userId: string) {
+    this.http.post(`${environment.apiUrl}/Security/revoke-user`, JSON.stringify(userId), {
+      withCredentials: true,
+      headers: { 'Content-Type': 'application/json' }
+    }).subscribe({
+      next: () => this.revokedUsers.update(s => new Set([...s, userId])),
+      error: (err) => console.error('Revoke failed:', err)
+    });
+  }
 
   unlockPatterns() {
     if (this.patternPasswordInput === this.PATTERNS_PASSWORD) {
@@ -119,6 +160,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.refreshData();
     this.patterns.set(this.tracker.getPatterns());
+    this.loadAlerts(true);
+
+    this.alertsPoller = setInterval(() => this.loadAlerts(), 10000);
 
     this.demoSub = this.predictor.demoResult$.subscribe(r => {
       this.demoResult.set(r);
@@ -128,6 +172,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.demoSub?.unsubscribe();
+    if (this.alertsPoller) clearInterval(this.alertsPoller);
   }
 
   getDisplayReason(result: DemoResult): string {

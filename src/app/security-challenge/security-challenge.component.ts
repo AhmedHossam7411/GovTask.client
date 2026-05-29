@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit,
-  ViewChild, ElementRef, HostListener, inject
+  ViewChild, ElementRef, inject
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -16,40 +16,44 @@ import { environment } from '../../environments/environment';
   templateUrl: './security-challenge.component.html'
 })
 export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('bgCanvas')    bgCanvas!:    ElementRef<HTMLCanvasElement>;
-  @ViewChild('pieceCanvas') pieceCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('clickCanvas') clickCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('codeCanvas')  codeCanvas!:  ElementRef<HTMLCanvasElement>;
 
   private auth   = inject(Auth);
   private router = inject(Router);
   private http   = inject(HttpClient);
 
-
   triggerReason = 'Suspicious behavior detected';
-  timeLeft      = 60;
+  timeLeft      = 120;
   attempts      = 0;
   readonly maxAttempts = 3;
   hasError      = false;
   errorMessage  = '';
   isSuspending  = false;
 
+  // Step 1 | 2 (click-order) | 3 (code)
+  currentStep: 1 | 2 | 3 = 1;
 
+  // Step 1: company knowledge
+  questions: { q1: string; q2: string } | null = null;
+  private challengeAnswers: { a1: string; a2: string } | null = null;
+  fetchingQuestions = true;
+  answer1 = '';
+  answer2 = '';
+  knowledgeError = '';
+
+  // Step 2: click-in-order challenge
+  readonly TARGET_COUNT = 5;
+  clickTargets: Array<{ x: number; y: number; num: number; hit: boolean }> = [];
+  nextExpected = 1;
+  orderSolved  = false;
+  private readonly CLICK_W = 300;
+  private readonly CLICK_H = 130;
+  private readonly RADIUS  = 20;
+
+  // Step 3: canvas code
   private verificationCode = '';
   userInput = '';
-
-
-  private readonly BG_W  = 300;
-  private readonly BG_H  = 100;
-  private readonly GAP_W = 52;
-  private readonly GAP_H = 84;
-  readonly GAP_Y         = 8;   // (BG_H - GAP_H) / 2
-
-  private gapX          = 0;
-  sliderX               = 8;    // current piece left offset
-  isDragging            = false;
-  sliderSolved          = false;
-  private dragStartMouseX  = 0;
-  private dragStartSliderX = 0;
 
   private timer: ReturnType<typeof setInterval> | null = null;
 
@@ -59,13 +63,28 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.triggerReason    = sessionStorage.getItem('challenge_reason') || 'Suspicious behavior detected';
     this.verificationCode = this.generateCode();
     this.startCountdown();
+    this.loadConfig();
   }
 
-  ngAfterViewInit() {
-    this.gapX = Math.floor(this.rand(this.GAP_W + 30, this.BG_W - this.GAP_W - 10));
-    this.drawSlider();
-    this.drawCode();
+  // Native fetch bypasses the auth/token HttpInterceptor — this is a plain
+  // static asset, not an authenticated API call, so it must not be intercepted.
+  private async loadConfig(): Promise<void> {
+    try {
+      const res = await fetch('assets/challenge-config.json', { cache: 'no-store' });
+      if (!res.ok) throw new Error('config not found');
+      const cfg = await res.json();
+      this.questions        = { q1: cfg.q1, q2: cfg.q2 };
+      this.challengeAnswers = { a1: cfg.a1, a2: cfg.a2 };
+    } catch {
+      this.questions        = { q1: 'Config missing — copy challenge-config.example.json to challenge-config.json', q2: '' };
+      this.challengeAnswers = { a1: '', a2: '' };
+    } finally {
+      this.fetchingQuestions = false;
+    }
   }
+
+  // Canvases are conditionally rendered; drawing is deferred until step 2 is entered
+  ngAfterViewInit() {}
 
   ngOnDestroy() {
     this.clearTimer();
@@ -73,111 +92,150 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
 
 
-  private drawSlider(): void {
-    const bg    = this.bgCanvas.nativeElement;
-    const piece = this.pieceCanvas.nativeElement;
-
-    bg.width     = this.BG_W;
-    bg.height    = this.BG_H;
-    piece.width  = this.GAP_W;
-    piece.height = this.GAP_H;
-
-    // Draw full texture on offscreen canvas first
-    const off    = document.createElement('canvas');
-    off.width    = this.BG_W;
-    off.height   = this.BG_H;
-    const offCtx = off.getContext('2d')!;
-    this.drawBgTexture(offCtx, this.BG_W, this.BG_H);
-
-    // Copy notch region to piece canvas
-    const pieceData = offCtx.getImageData(this.gapX, this.GAP_Y, this.GAP_W, this.GAP_H);
-    piece.getContext('2d')!.putImageData(pieceData, 0, 0);
-
-    // Draw background + notch hole on main canvas
-    const bgCtx = bg.getContext('2d')!;
-    bgCtx.drawImage(off, 0, 0);
-
-    bgCtx.fillStyle   = 'rgba(0,0,0,0.45)';
-    bgCtx.fillRect(this.gapX, this.GAP_Y, this.GAP_W, this.GAP_H);
-    bgCtx.strokeStyle = 'rgba(255,255,255,0.6)';
-    bgCtx.lineWidth   = 1.5;
-    bgCtx.setLineDash([4, 3]);
-    bgCtx.strokeRect(this.gapX, this.GAP_Y, this.GAP_W, this.GAP_H);
-    bgCtx.setLineDash([]);
+  get canVerifyKnowledge(): boolean {
+    return this.answer1.trim().length > 0 && this.answer2.trim().length > 0 && !this.fetchingQuestions;
   }
 
-  private drawBgTexture(ctx: CanvasRenderingContext2D, w: number, h: number): void {
-    const grad = ctx.createLinearGradient(0, 0, w, h);
+  verifyKnowledge(): void {
+    const cfg = this.challengeAnswers;
+    const ok  = !!cfg &&
+      this.answer1.trim().toLowerCase() === cfg.a1.trim().toLowerCase() &&
+      this.answer2.trim().toLowerCase() === cfg.a2.trim().toLowerCase();
+
+    if (ok) {
+      this.currentStep = 2;
+      setTimeout(() => { this.initClickChallenge(); this.drawCode(); }, 0);
+      return;
+    }
+
+    this.answer1 = '';
+    this.answer2 = '';
+    this.attempts++;
+    if (this.attempts >= this.maxAttempts) {
+      this.clearTimer();
+      this.suspendAndLogout();
+      return;
+    }
+    const left = this.maxAttempts - this.attempts;
+    this.knowledgeError = `Incorrect answers. ${left} attempt${left === 1 ? '' : 's'} remaining.`;
+  }
+
+
+
+  private initClickChallenge(): void {
+    this.clickTargets = [];
+    this.nextExpected = 1;
+    this.orderSolved  = false;
+
+    const margin   = this.RADIUS + 10;
+    const minDist  = this.RADIUS * 2 + 12;
+
+    for (let n = 1; n <= this.TARGET_COUNT; n++) {
+      let placed = false;
+      for (let attempt = 0; attempt < 300; attempt++) {
+        const x = this.rand(margin, this.CLICK_W - margin);
+        const y = this.rand(margin, this.CLICK_H - margin);
+        if (!this.clickTargets.some(t => Math.hypot(t.x - x, t.y - y) < minDist)) {
+          this.clickTargets.push({ x, y, num: n, hit: false });
+          placed = true;
+          break;
+        }
+      }
+      if (!placed) {
+        // Fallback: evenly spaced row
+        const spacing = (this.CLICK_W - margin * 2) / (this.TARGET_COUNT - 1);
+        this.clickTargets.push({ x: margin + (n - 1) * spacing, y: this.CLICK_H / 2, num: n, hit: false });
+      }
+    }
+
+    this.drawClickCanvas();
+  }
+
+  private drawClickCanvas(): void {
+    const canvas = this.clickCanvas?.nativeElement;
+    if (!canvas) return;
+
+    canvas.width  = this.CLICK_W;
+    canvas.height = this.CLICK_H;
+    const ctx = canvas.getContext('2d')!;
+
+    // Background
+    const grad = ctx.createLinearGradient(0, 0, this.CLICK_W, this.CLICK_H);
     grad.addColorStop(0, '#1e3a5f');
     grad.addColorStop(1, '#0f2040');
     ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, w, h);
+    ctx.fillRect(0, 0, this.CLICK_W, this.CLICK_H);
 
-    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    // Subtle grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.05)';
     ctx.lineWidth   = 1;
-    for (let x = 0; x < w; x += 18) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,h); ctx.stroke(); }
-    for (let y = 0; y < h; y += 18) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(w,y); ctx.stroke(); }
+    for (let x = 0; x < this.CLICK_W; x += 20) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, this.CLICK_H); ctx.stroke(); }
+    for (let y = 0; y < this.CLICK_H; y += 20) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(this.CLICK_W, y); ctx.stroke(); }
 
-    for (let i = 0; i < 10; i++) {
+    // Draw circles
+    for (const t of this.clickTargets) {
+      const isNext = t.num === this.nextExpected && !this.orderSolved;
+
+      // Glow for the next target
+      if (isNext) {
+        ctx.shadowColor = 'rgba(59,130,246,0.7)';
+        ctx.shadowBlur  = 14;
+      }
+
       ctx.beginPath();
-      ctx.arc(this.rand(0,w), this.rand(0,h), this.rand(3,15), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${this.rand(0.04,0.12).toFixed(2)})`;
+      ctx.arc(t.x, t.y, this.RADIUS, 0, Math.PI * 2);
+
+      if (t.hit) {
+        ctx.fillStyle   = '#22c55e';
+        ctx.strokeStyle = '#16a34a';
+      } else if (isNext) {
+        ctx.fillStyle   = '#3b82f6';
+        ctx.strokeStyle = '#93c5fd';
+      } else {
+        ctx.fillStyle   = 'rgba(255,255,255,0.12)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
+      }
+
+      ctx.lineWidth = 2.5;
       ctx.fill();
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // Number label
+      ctx.font         = `bold 15px monospace`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle    = t.hit ? 'white' : (isNext ? 'white' : 'rgba(255,255,255,0.6)');
+      ctx.fillText(t.num.toString(), t.x, t.y);
     }
-    for (let i = 0; i < 50; i++) {
-      ctx.fillStyle = `rgba(255,255,255,${this.rand(0.1,0.4).toFixed(2)})`;
-      ctx.fillRect(this.rand(0,w), this.rand(0,h), 1, 1);
-    }
   }
 
-  onDragStart(e: MouseEvent): void {
-    e.preventDefault();
-    if (this.sliderSolved) return;
-    this.isDragging       = true;
-    this.dragStartMouseX  = e.clientX;
-    this.dragStartSliderX = this.sliderX;
-  }
+  onCanvasClick(e: MouseEvent): void {
+    if (this.orderSolved) return;
 
-  onTouchStart(e: TouchEvent): void {
-    e.preventDefault();
-    if (this.sliderSolved) return;
-    this.isDragging       = true;
-    this.dragStartMouseX  = e.touches[0].clientX;
-    this.dragStartSliderX = this.sliderX;
-  }
+    const canvas = this.clickCanvas.nativeElement;
+    const rect   = canvas.getBoundingClientRect();
+    const scaleX = this.CLICK_W / rect.width;
+    const scaleY = this.CLICK_H / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top)  * scaleY;
 
-  @HostListener('document:mousemove', ['$event'])
-  onDocMouseMove(e: MouseEvent): void {
-    if (!this.isDragging) return;
-    this.sliderX = Math.max(0, Math.min(
-      this.BG_W - this.GAP_W,
-      this.dragStartSliderX + (e.clientX - this.dragStartMouseX)
-    ));
-  }
-
-  onTouchMove(e: TouchEvent): void {
-    if (!this.isDragging) return;
-    this.sliderX = Math.max(0, Math.min(
-      this.BG_W - this.GAP_W,
-      this.dragStartSliderX + (e.touches[0].clientX - this.dragStartMouseX)
-    ));
-  }
-
-  @HostListener('document:mouseup')
-  onDocMouseUp(): void {
-    if (!this.isDragging) return;
-    this.endDrag();
-  }
-
-  onTouchEnd(): void { this.endDrag(); }
-
-  private endDrag(): void {
-    this.isDragging = false;
-    if (Math.abs(this.sliderX - this.gapX) <= 12) {
-      this.sliderSolved = true;
-      this.sliderX      = this.gapX;
-    } else {
-      this.sliderX = 8;
+    for (const t of this.clickTargets) {
+      if (Math.hypot(mx - t.x, my - t.y) <= this.RADIUS) {
+        if (t.num === this.nextExpected) {
+          t.hit = true;
+          this.nextExpected++;
+          if (this.nextExpected > this.TARGET_COUNT) {
+            this.orderSolved = true;
+          }
+        } else {
+          // Wrong order — reset hit state, keep positions
+          this.clickTargets.forEach(c => c.hit = false);
+          this.nextExpected = 1;
+        }
+        this.drawClickCanvas();
+        return;
+      }
     }
   }
 
@@ -244,9 +302,9 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
   refreshCode(): void {
     this.verificationCode = this.generateCode();
-    this.userInput    = '';
-    this.hasError     = false;
-    this.errorMessage = '';
+    this.userInput        = '';
+    this.hasError         = false;
+    this.errorMessage     = '';
     setTimeout(() => this.drawCode(), 0);
   }
 
@@ -266,13 +324,13 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
 
   get canVerify(): boolean {
-    return this.sliderSolved && this.userInput.trim().length === 6;
+    return this.orderSolved && this.userInput.trim().length === 6;
   }
 
   verify(): void {
-    if (!this.sliderSolved) {
+    if (!this.orderSolved) {
       this.hasError     = true;
-      this.errorMessage = 'Complete the slider puzzle first.';
+      this.errorMessage = 'Complete the number challenge first.';
       return;
     }
     if (this.userInput.trim().toUpperCase() !== this.verificationCode) {
@@ -281,10 +339,8 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
       this.userInput = '';
       if (this.attempts >= this.maxAttempts) { this.clearTimer(); this.suspendAndLogout(); return; }
       this.errorMessage = `Incorrect code. ${this.maxAttempts - this.attempts} attempt${this.maxAttempts - this.attempts === 1 ? '' : 's'} remaining.`;
-      // Reset both challenges on wrong code — forces full re-solve
       this.refreshCode();
-      this.sliderSolved = false;
-      this.sliderX      = 8;
+      this.initClickChallenge();
       return;
     }
     this.clearTimer();
@@ -315,14 +371,14 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   }
 
   get timerColor(): string {
-    if (this.timeLeft > 30) return 'text-yellow-600';
-    if (this.timeLeft > 10) return 'text-orange-600';
+    if (this.timeLeft > 60) return 'text-yellow-600';
+    if (this.timeLeft > 20) return 'text-orange-600';
     return 'text-red-600';
   }
 
   get timerBg(): string {
-    if (this.timeLeft > 30) return 'bg-yellow-50 border-yellow-200';
-    if (this.timeLeft > 10) return 'bg-orange-50 border-orange-200';
+    if (this.timeLeft > 60) return 'bg-yellow-50 border-yellow-200';
+    if (this.timeLeft > 20) return 'bg-orange-50 border-orange-200';
     return 'bg-red-50 border-red-200 animate-pulse';
   }
 }

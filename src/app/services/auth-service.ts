@@ -85,4 +85,40 @@ export class Auth {
     return localStorage.getItem(this.accessTokenKey);
   }
 
+  private decodeToken(): any {
+    const token = this.getToken();
+    if (!token) return null;
+    try { return JSON.parse(atob(token.split('.')[1])); }
+    catch { return null; }
+  }
+
+  getUserName(): string {
+    const p = this.decodeToken();
+    if (!p) return '';
+    return p['unique_name']
+      ?? p['name']
+      ?? p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name']
+      ?? '';
+  }
+
+  getUserRole(): string {
+    const p = this.decodeToken();
+    if (!p) return 'User';
+    return p['role']
+      ?? p['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']
+      ?? 'User';
+  }
+
+  isAdmin(): boolean {
+    return this.getUserRole() === 'Admin';
+  }
+
+  getInitials(): string {
+    return this.getUserName()
+      .split(/[\s._-]+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map(w => w[0].toUpperCase())
+      .join('') || '?';
+  }
 }

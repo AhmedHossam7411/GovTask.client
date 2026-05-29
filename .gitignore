@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 .vercel
 .claude/settings.local.json
+
+# Security challenge config — contains company Q&A, never commit
+/src/assets/challenge-config.json

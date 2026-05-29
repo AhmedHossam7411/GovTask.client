@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
@@ -38,13 +38,14 @@ export class BehaviorPredictorService {
   private tracker = inject(BehaviorTrackerService);
   private subscription: Subscription | null = null;
   private urgentSubscription: Subscription | null = null;
+  private demoHttpSub: Subscription | null = null;
 
 
   readonly strikeCount$ = new BehaviorSubject<number>(
     parseInt(sessionStorage.getItem('behaviorHighRiskCount') || '0', 10)
   );
   readonly demoResult$ = new Subject<DemoResult>();
-  demoSending = false;
+  readonly demoSending = signal(false);
 
   start() {
     if (this.subscription) return;
@@ -115,25 +116,25 @@ export class BehaviorPredictorService {
       clickRate: 0.25,      mouseMoveRate: 1.6,
       // Attack signals — no strings, only behaviour
       hackingStringDetected: 0, detectedPatterns: null,
-      pasteCount: 6,            suspiciousPasteDetected: 0,
-      devToolsShortcutCount: 7, abnormalInputDetected: 0,
-      devToolsDetected: 1,      unauthorizedAttempts: 4,
+      pasteCount: 8,            suspiciousPasteDetected: 0,
+      devToolsShortcutCount: 12, abnormalInputDetected: 0,
+      devToolsDetected: 1,       unauthorizedAttempts: 7,
       sessionId: `demo-mal-${Date.now()}`,
       userId: null, context: 'postAuth', currentPage: '/admin',
     }, 'malicious-user');
   }
 
   private sendSnapshot(payload: Record<string, any>, type: DemoResult['type']): void {
-    if (this.demoSending) return;
-    this.demoSending = true;
+    this.demoHttpSub?.unsubscribe();
+    this.demoSending.set(true);
 
-    this.http.post<PredictResponse>(
+    this.demoHttpSub = this.http.post<PredictResponse>(
       `${environment.apiUrl}/MLPrediction/predict`,
       { data: [{ ...payload, timestamp: new Date().toISOString() }] },
       { withCredentials: true }
     ).subscribe({
       next: (response) => {
-        this.demoSending = false;
+        this.demoSending.set(false);
         const risk = response?.analysis?.riskLevel ?? 'UNKNOWN';
 
         this.demoResult$.next({
@@ -153,7 +154,7 @@ export class BehaviorPredictorService {
           }
         }
       },
-      error: () => { this.demoSending = false; }
+      error: () => this.demoSending.set(false)
     });
   }
 
@@ -162,6 +163,7 @@ export class BehaviorPredictorService {
   }
 
   private checkPrediction(snapshot: any) {
+    if (this.demoSending()) return;
     this.http.post<PredictResponse>(`${environment.apiUrl}/MLPrediction/predict`, { data: [snapshot] }, { withCredentials: true })
       .subscribe({
         next: (response) => {
@@ -270,5 +272,10 @@ export class BehaviorPredictorService {
       this.urgentSubscription.unsubscribe();
       this.urgentSubscription = null;
     }
+    if (this.demoHttpSub) {
+      this.demoHttpSub.unsubscribe();
+      this.demoHttpSub = null;
+    }
+    this.demoSending.set(false);
   }
 }

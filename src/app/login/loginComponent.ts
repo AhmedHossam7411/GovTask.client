@@ -61,8 +61,12 @@ export class LoginComponent {
       },
       error: (err) => {
         if (err?.status === 423) {
-          const mins = err?.error?.minutesRemaining ?? 30;
-          this.errorMessage = `Your account has been temporarily suspended due to suspicious activity. Please try again in ${mins} minute${mins === 1 ? '' : 's'} or contact your administrator.`;
+          if (err?.error?.error === 'ACCOUNT_REVOKED') {
+            this.errorMessage = 'Your account has been revoked by an administrator due to security violations. Please contact your system administrator.';
+          } else {
+            const mins = err?.error?.minutesRemaining ?? 30;
+            this.errorMessage = `Your account has been temporarily suspended due to suspicious activity. Please try again in ${mins} minute${mins === 1 ? '' : 's'} or contact your administrator.`;
+          }
         } else {
           this.errorMessage = 'Email or Password not found';
         }
