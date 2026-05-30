@@ -9,11 +9,12 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard';
 import { SecurityChallengeComponent } from './security-challenge/security-challenge.component';
 import { SecurityChallengeGuard } from './shared/guards/security-challenge.guard';
 import { AdminGuard } from './shared/guards/admin.guard';
+import { ChallengeGuard } from './shared/guards/challenge.guard';
 
 export const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
-  { path: 'challenge', component: SecurityChallengeComponent },
+  { path: 'challenge', component: SecurityChallengeComponent, canActivate: [ChallengeGuard] },
   {path: 'departments',component: DepartmentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'tasks',component: TasksContainer, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'documents',component: DocumentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
