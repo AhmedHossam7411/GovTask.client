@@ -62,15 +62,19 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   ngOnInit() {
     this.triggerReason    = sessionStorage.getItem('challenge_reason') || 'Suspicious behavior detected';
     this.verificationCode = this.generateCode();
-    this.startCountdown();
+    // Countdown is deliberately NOT started here — loadConfig() starts it once
+    // the challenge is actually ready, so loading time isn't deducted from the clock.
     this.loadConfig();
   }
 
   // Native fetch bypasses the auth/token HttpInterceptor — this is a plain
   // static asset, not an authenticated API call, so it must not be intercepted.
   private async loadConfig(): Promise<void> {
+    // Bound the load so a stalled fetch can never hang the screen indefinitely.
+    const controller = new AbortController();
+    const bail = setTimeout(() => controller.abort(), 8000);
     try {
-      const res = await fetch('assets/challenge-config.json', { cache: 'no-store' });
+      const res = await fetch('assets/challenge-config.json', { cache: 'no-store', signal: controller.signal });
       if (!res.ok) throw new Error('config not found');
       const cfg = await res.json();
       this.questions        = { q1: cfg.q1, q2: cfg.q2 };
@@ -79,7 +83,10 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
       this.questions        = { q1: 'Config missing — copy challenge-config.example.json to challenge-config.json', q2: '' };
       this.challengeAnswers = { a1: '', a2: '' };
     } finally {
+      clearTimeout(bail);
       this.fetchingQuestions = false;
+      // Start the clock only now that the challenge is rendered and answerable.
+      this.startCountdown();
     }
   }
 
@@ -311,6 +318,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
 
   private startCountdown(): void {
+    if (this.timer !== null) return;
     this.timer = setInterval(() => {
       this.timeLeft--;
       if (this.timeLeft <= 0) { this.clearTimer(); this.suspendAndLogout(); }
@@ -368,6 +376,12 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
 
   private rand(min: number, max: number): number {
     return Math.random() * (max - min) + min;
+  }
+
+  get formattedTime(): string {
+    const m = Math.floor(this.timeLeft / 60);
+    const s = this.timeLeft % 60;
+    return `${m}:${s < 10 ? '0' + s : s}`;
   }
 
   get timerColor(): string {

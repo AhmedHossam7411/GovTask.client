@@ -5,4 +5,5 @@ export interface taskDto
     description : string 
     dueDate : string
     departmentId? : number
+    creatorId? : number | string
 }

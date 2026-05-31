@@ -1,6 +1,7 @@
 import { Component, inject, input} from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
 import { taskService } from '../../services/task-service';
+import { Auth } from '../../services/auth-service';
 import { taskDto } from '../taskDto';
 import{
   FormGroup,
@@ -19,6 +20,7 @@ import{
 export class AddTaskDialog {
   task = input.required<taskDto>();
   private taskService = inject(taskService);
+  private auth = inject(Auth);
   private dialogRef = inject(MatDialogRef);
   #fb = inject(NonNullableFormBuilder);
 
@@ -36,8 +38,13 @@ export class AddTaskDialog {
   });
 
   addtask(taskDto: any) {
-    console.log(taskDto);
-    this.taskService.postTask(taskDto).subscribe({
+    const userId = this.auth.getUserId();
+    const payload = {
+      ...taskDto,
+      creatorId: /^\d+$/.test(userId) ? Number(userId) : userId,
+    };
+    console.log(payload);
+    this.taskService.postTask(payload).subscribe({
       next: (created) => {
         this.dialogRef.close(created);
       },

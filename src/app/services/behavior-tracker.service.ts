@@ -16,8 +16,8 @@ export interface RiskPattern {
 })
 export class BehaviorTrackerService {
   public snapshotComplete$ = new Subject<any>();
-  private lastClickTime: number | null = null;
   private mouseDownTime: number | null = null;
+  private lastClickTime: number | null = null;
 
   private clickIntervals: number[] = [];
   private clickDurations: number[] = [];
@@ -83,7 +83,7 @@ export class BehaviorTrackerService {
     { regex: /<body[^>]*onload/i,               label: '<body onload>',           category: 'XSS', removable: false },
     { regex: /<details[^>]*ontoggle/i,          label: '<details ontoggle>',      category: 'XSS', removable: false },
     { regex: /<input[^>]*autofocus[^>]*onfocus/i, label: '<input autofocus onfocus>', category: 'XSS', removable: false },
-    { regex: /<video[^>]*(onerror|onload|src)/i,label: '<video src/event>',       category: 'XSS', removable: false },
+    { regex: /<video[^>]*(onerror|onload|src)/i,label: '<video src=event>',       category: 'XSS', removable: false },
     { regex: /<audio[^>]*(onerror|onload)/i,    label: '<audio onerror>',         category: 'XSS', removable: false },
     { regex: /<source[^>]*onerror/i,            label: '<source onerror>',        category: 'XSS', removable: false },
     { regex: /<img[^>]*onerror/i,               label: '<img onerror>',           category: 'XSS', removable: false },
@@ -584,16 +584,14 @@ export class BehaviorTrackerService {
       avgFlight: this.average(this.keyFlightTimes),
       stdFlight: this.std(this.keyFlightTimes),
       keyEventCount: this.keyDwellTimes.length,
-      clickRate: this.clickDurations.length / windowSeconds,
       mouseMoveRate: this.mouseSpeeds.length / windowSeconds,
+      clickRate: this.clickDurations.length / windowSeconds,
       typingRate: this.keyDwellTimes.length / windowSeconds,
       sessionDuration: windowSeconds,
 
-      // Attack string detection — set by checkStringForRisk during this window
       hackingStringDetected: this.detectedPatterns.length > 0,
       detectedPatterns: this.detectedPatterns.join('; '),
 
-      // Extended attack signals
       pasteCount: this.pasteCount,
       suspiciousPasteDetected: this.suspiciousPasteDetected,
       devToolsShortcutCount: this.devToolsShortcutCount,

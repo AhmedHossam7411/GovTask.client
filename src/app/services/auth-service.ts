@@ -101,6 +101,15 @@ export class Auth {
       ?? '';
   }
 
+  getUserId(): string {
+    const p = this.decodeToken();
+    if (!p) return '';
+    return p['nameid']
+      ?? p['sub']
+      ?? p['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier']
+      ?? '';
+  }
+
   getUserRole(): string {
     const p = this.decodeToken();
     if (!p) return 'User';

@@ -41,6 +41,9 @@ export class BehaviorPredictorService {
   private demoHttpSub: Subscription | null = null;
 
 
+  // Number of HIGH-risk strikes that triggers the security challenge.
+  private readonly maxStrikes = 2;
+
   readonly strikeCount$ = new BehaviorSubject<number>(
     parseInt(sessionStorage.getItem('behaviorHighRiskCount') || '0', 10)
   );
@@ -149,8 +152,8 @@ export class BehaviorPredictorService {
 
         if (risk === 'HIGH') {
           const strikes = this.incrementHighRiskCount();
-          if (strikes >= 3) {
-            this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${strikes}/3)`);
+          if (strikes >= this.maxStrikes) {
+            this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${strikes}/${this.maxStrikes})`);
           }
         }
       },
@@ -164,15 +167,24 @@ export class BehaviorPredictorService {
 
   private checkPrediction(snapshot: any) {
     if (this.demoSending()) return;
+
     this.http.post<PredictResponse>(`${environment.apiUrl}/MLPrediction/predict`, { data: [snapshot] }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          if (response?.analysis?.riskLevel === 'HIGH') {
+          // DevTools open counts as one HIGH strike, exactly like an ML HIGH verdict.
+          // Two HIGH strikes (any mix of DevTools / ML) reach maxStrikes and trigger.
+          const devToolsOpen = !!snapshot?.devToolsDetected;
+          const riskLevel = devToolsOpen ? 'HIGH' : response?.analysis?.riskLevel;
+
+          if (riskLevel === 'HIGH') {
             const currentStrikes = this.incrementHighRiskCount();
-            if (currentStrikes >= 3) {
-              this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${currentStrikes}/3)`);
+            if (currentStrikes >= this.maxStrikes) {
+              const reason = devToolsOpen
+                ? `DEVTOOLS_OPEN_DETECTED (Strike ${currentStrikes}/${this.maxStrikes})`
+                : `HIGH_RISK_ML_BEHAVIOR (Strike ${currentStrikes}/${this.maxStrikes})`;
+              this.triggerSecurityChallenge(reason);
             }
-          } else if (response?.analysis?.riskLevel === 'LOW') {
+          } else if (riskLevel === 'LOW') {
             const current = this.getHighRiskCount();
             if (current > 0) {
               sessionStorage.setItem('behaviorHighRiskCount', (current - 1).toString());
@@ -210,8 +222,8 @@ export class BehaviorPredictorService {
           const risk = response?.analysis?.riskLevel;
           if (risk === 'HIGH') {
             const strikes = this.incrementHighRiskCount();
-            if (strikes >= 3) {
-              this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${strikes}/3)`);
+            if (strikes >= this.maxStrikes) {
+              this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${strikes}/${this.maxStrikes})`);
               return;
             }
           }
