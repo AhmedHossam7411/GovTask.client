@@ -1,7 +1,6 @@
 <div class="min-h-screen w-full flex items-center justify-center bg-gray-950 p-4">
   <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md border border-gray-200 overflow-hidden">
 
-    <!-- Red header -->
     <div class="bg-red-600 px-6 py-4 flex items-center gap-3">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -12,13 +11,11 @@
 
     <div class="p-6 space-y-5">
 
-      <!-- Trigger reason -->
       <div class="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3">
         <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Trigger Reason</p>
         <p class="text-sm text-gray-800 font-medium break-words">{{ triggerReason }}</p>
       </div>
 
-      <!-- Countdown -->
       <div class="flex items-center justify-between rounded-lg border px-4 py-3 transition-all duration-500"
            [ngClass]="timerBg">
         <span class="text-sm font-medium text-gray-600">Time remaining</span>
@@ -27,7 +24,6 @@
         </span>
       </div>
 
-      <!-- ── STEP 1: Company knowledge ───────────────────────────────────── -->
       @if (currentStep === 1) {
         <div class="space-y-4">
           <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
@@ -98,10 +94,8 @@
         </div>
       }
 
-      <!-- ── STEPS 2 + 3: Slider + Code (shown after knowledge verified) ── -->
       @if (currentStep >= 2) {
 
-        <!-- STEP 2: Click-in-order challenge -->
         <div class="space-y-2">
           <div class="flex items-center justify-between">
             <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
@@ -133,7 +127,6 @@
           }
         </div>
 
-        <!-- STEP 3: Canvas code -->
         <div class="space-y-3" [ngClass]="{ 'opacity-40 pointer-events-none': !orderSolved }">
           <p class="text-xs font-bold text-gray-600 uppercase tracking-wider flex items-center gap-1.5">
             <span class="w-5 h-5 rounded-full text-white flex items-center justify-center text-[10px] font-black"
@@ -166,12 +159,10 @@
           />
         </div>
 
-        <!-- Error -->
         @if (hasError && !isSuspending) {
           <p class="text-red-600 text-sm font-medium text-center -mt-2">{{ errorMessage }}</p>
         }
 
-        <!-- Suspending / action buttons -->
         @if (isSuspending) {
           <div class="flex items-center justify-center gap-2 bg-red-50 border border-red-200 rounded-lg p-3">
             <svg class="animate-spin h-4 w-4 text-red-600" fill="none" viewBox="0 0 24 24">
@@ -195,7 +186,6 @@
 
       }
 
-      <!-- Attempt dots -->
       <div class="flex items-center justify-center gap-2">
         <span class="text-xs text-gray-400">Attempts:</span>
         @for (i of [0, 1, 2]; track i) {

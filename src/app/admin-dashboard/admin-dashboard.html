@@ -1,6 +1,6 @@
 <div class="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
-    <!-- Header -->
+
     <div
       class="bg-cream-50/90 backdrop-blur-md rounded-2xl shadow-sm border border-ink-900/10 p-6 mb-8 flex items-center justify-between">
       <div>
@@ -43,9 +43,9 @@
       <p class="text-stone2-500 max-w-xs mx-auto mt-1">{{errorMessage()}}</p>
     </div>
     } @else {
-    <!-- Metric Cards Grid -->
+
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <!-- Departments Card -->
+
       <div
         class="relative overflow-hidden bg-gradient-to-br from-ink-700 to-ink-900 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/departments">
@@ -70,7 +70,6 @@
         </div>
       </div>
 
-      <!-- Tasks Card -->
       <div
         class="relative overflow-hidden bg-gradient-to-br from-sage-500 to-sage-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/tasks">
@@ -94,7 +93,6 @@
         </div>
       </div>
 
-      <!-- Documents Card -->
       <div
         class="relative overflow-hidden bg-gradient-to-br from-bronze-500 to-bronze-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/documents">
@@ -120,10 +118,8 @@
       </div>
     </div>
 
-    <!-- Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-      <!-- Task Distribution Chart -->
       <div class="bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 p-6">
         <h3 class="text-lg font-bold text-ink-900 mb-6 flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sage-500" fill="none" viewBox="0 0 24 24"
@@ -154,7 +150,6 @@
         </div>
       </div>
 
-      <!-- Recent Activity Feed -->
       <div class="bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 p-6 overflow-hidden">
         <h3 class="text-lg font-bold text-ink-900 mb-6 flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -213,9 +208,8 @@
     </div>
     }
 
-    <!-- Security Pattern Monitor -->
     <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
-      <!-- Panel Header -->
+
       <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-ink-800 to-ink-700 text-white">
         <h3 class="text-lg font-bold flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -228,7 +222,6 @@
 
       <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <!-- LEFT: Scanner -->
         <div class="space-y-5">
           <div>
             <h4 class="text-sm font-bold text-ink-700 mb-3 uppercase tracking-wider">Test Input / URL</h4>
@@ -245,7 +238,6 @@
             </div>
           </div>
 
-          <!-- Scan Results -->
           @if (scanHasRun()) {
             <div class="rounded-xl border overflow-hidden"
               [class]="scanResults().length ? 'border-red-200 bg-red-50' : 'border-green-200 bg-green-50'">
@@ -276,7 +268,6 @@
             </div>
           }
 
-          <!-- Add Custom Pattern -->
           <div>
             <h4 class="text-sm font-bold text-ink-700 mb-3 uppercase tracking-wider">Add Custom Pattern</h4>
             <div class="flex gap-2">
@@ -296,10 +287,9 @@
           </div>
         </div>
 
-        <!-- RIGHT: Pattern List (password-protected) -->
         <div>
           @if (!patternsUnlocked()) {
-            <!-- Lock screen -->
+
             <div class="flex flex-col items-center justify-center h-full min-h-[260px] rounded-xl border-2 border-dashed border-ink-900/10 bg-cream-100 p-8 text-center gap-4">
               <div class="w-14 h-14 rounded-full bg-ink-100 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-ink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -329,7 +319,7 @@
               </div>
             </div>
           } @else {
-            <!-- Unlocked: pattern list -->
+
             <div class="flex items-center justify-between mb-3">
               <span class="text-xs font-bold text-green-600 uppercase tracking-wider flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -376,7 +366,6 @@
       </div>
     </div>
 
-    <!-- Security Alerts & Account Revocation -->
     <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
 
       <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-bronze-800 to-bronze-700 text-white">
@@ -462,10 +451,8 @@
       </div>
     </div>
 
-    <!-- ML Behavioral Detection Demo -->
     <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
 
-      <!-- Header -->
       <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-sage-900 to-sage-800 text-white">
         <h3 class="text-lg font-bold flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sage-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -478,10 +465,8 @@
 
       <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-        <!-- LEFT: Controls -->
         <div class="space-y-5">
 
-          <!-- Intro — two paths -->
           <div class="space-y-2 text-sm text-stone2-600">
             <p>Two distinct anomaly types are detected <span class="font-semibold text-ink-800">purely through behavior</span> — no attack strings involved:</p>
             <ul class="space-y-1 pl-3 border-l-2 border-sage-200">
@@ -491,7 +476,6 @@
             <p class="text-xs text-stone2-400">Three <span class="font-semibold text-red-500">HIGH</span> risk predictions from either type triggers the security challenge.</p>
           </div>
 
-          <!-- Prediction log (fills on every send, not just HIGH) -->
           <div>
             <div class="flex items-center justify-between mb-2">
               <p class="text-xs font-bold text-stone2-500 uppercase tracking-wider">Prediction History</p>
@@ -524,7 +508,6 @@
             </div>
           </div>
 
-          <!-- Action buttons -->
           <div class="space-y-2">
             <button (click)="predictor.sendDemoSnapshot()"
               [disabled]="predictor.demoSending() || demoLog().length >= 3"
@@ -567,7 +550,6 @@
           </div>
         </div>
 
-        <!-- RIGHT: Last prediction detail -->
         <div>
           <p class="text-xs font-bold text-stone2-500 uppercase tracking-wider mb-3">Last Prediction — AI Analysis</p>
 
@@ -581,13 +563,11 @@
           } @else {
             <div class="space-y-3">
 
-              <!-- Detection type pill -->
               <span class="inline-block text-xs font-black px-2.5 py-1 rounded-full"
                     [ngClass]="demoResult()!.type === 'bot' ? 'bg-sage-100 text-sage-700' : 'bg-bronze-100 text-bronze-700'">
                 {{ demoResult()!.type === 'bot' ? 'Bot Behavior' : 'Malicious User' }}
               </span>
 
-              <!-- ① TabPFN card -->
               <div class="rounded-xl border-2 p-3 space-y-2"
                    [ngClass]="demoResult()!.tabpfnLabel === 'Anomaly'
                      ? 'border-orange-300 bg-orange-50'
@@ -612,7 +592,6 @@
                 </p>
               </div>
 
-              <!-- ② Groq analysis card -->
               <div class="rounded-xl border-2 p-3 space-y-2"
                    [ngClass]="{
                      'border-red-300 bg-red-50':      demoResult()!.riskLevel === 'HIGH',
@@ -655,7 +634,6 @@
       </div>
     </div>
 
-    <!-- Security Warning Footer -->
     <div
       class="mt-8 flex items-center justify-center gap-2 text-[10px] text-cream-100/40 uppercase tracking-widest font-black">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">

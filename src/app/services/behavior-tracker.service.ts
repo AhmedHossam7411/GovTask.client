@@ -46,7 +46,7 @@ export class BehaviorTrackerService {
 
   private riskPatterns: RiskPattern[] = [
 
-    // SQL Injection
+    
     { regex: /UNION\s+SELECT/i,          label: 'UNION SELECT',        category: 'SQL Injection', removable: false },
     { regex: /UNION\s+ALL\s+SELECT/i,    label: 'UNION ALL SELECT',    category: 'SQL Injection', removable: false },
     { regex: /SELECT\s+.+\s+FROM/i,      label: 'SELECT...FROM',       category: 'SQL Injection', removable: false },
@@ -70,7 +70,7 @@ export class BehaviorTrackerService {
     { regex: /ASCII\s*\(\s*SUBSTRING/i,   label: 'ASCII(SUBSTRING)',    category: 'SQL Injection', removable: false },
     { regex: /CHAR\s*\(\d+\)/i,           label: 'CHAR(n) bypass',      category: 'SQL Injection', removable: false },
 
-    // XSS - HTML injection tags
+    
     { regex: /<script/i,                        label: '<script>',                category: 'XSS', removable: false },
     { regex: /<\/script>/i,                     label: '</script>',               category: 'XSS', removable: false },
     { regex: /<iframe/i,                        label: '<iframe>',                category: 'XSS', removable: false },
@@ -98,7 +98,7 @@ export class BehaviorTrackerService {
     { regex: /<link[^>]*href[^>]*javascript/i,  label: '<link href=javascript:>', category: 'XSS', removable: false },
     { regex: /<form[^>]*action[^>]*javascript/i,label: '<form action=javascript:>',category: 'XSS', removable: false },
 
-    // XSS - event handlers
+    
     { regex: /onerror\s*=/i,                    label: 'onerror=',                category: 'XSS', removable: false },
     { regex: /onload\s*=/i,                     label: 'onload=',                 category: 'XSS', removable: false },
     { regex: /onfocus\s*=/i,                    label: 'onfocus=',                category: 'XSS', removable: false },
@@ -136,7 +136,7 @@ export class BehaviorTrackerService {
     { regex: /onpointerdown\s*=/i,              label: 'onpointerdown=',          category: 'XSS', removable: false },
     { regex: /onpointerover\s*=/i,              label: 'onpointerover=',          category: 'XSS', removable: false },
 
-    // XSS - protocol and URI schemes
+    
     { regex: /javascript:/i,                    label: 'javascript:',             category: 'XSS', removable: false },
     { regex: /vbscript:/i,                      label: 'vbscript:',               category: 'XSS', removable: false },
     { regex: /livescript:/i,                    label: 'livescript:',             category: 'XSS', removable: false },
@@ -145,7 +145,7 @@ export class BehaviorTrackerService {
     { regex: /data:,<script/i,                  label: 'data:,<script>',          category: 'XSS', removable: false },
     { regex: /data:[^,]*base64/i,               label: 'data:base64',             category: 'XSS', removable: false },
 
-    // XSS - DOM sinks
+    
     { regex: /eval\s*\(/i,                      label: 'eval(',                   category: 'XSS', removable: false },
     { regex: /Function\s*\(/i,                  label: 'Function( constructor',   category: 'XSS', removable: false },
     { regex: /setTimeout\s*\(\s*["'`]/i,        label: 'setTimeout(string)',      category: 'XSS', removable: false },
@@ -174,7 +174,7 @@ export class BehaviorTrackerService {
     { regex: /localStorage\.setItem\s*\(/i,     label: 'localStorage.setItem(',   category: 'XSS', removable: false },
     { regex: /sessionStorage\.setItem\s*\(/i,   label: 'sessionStorage.setItem(', category: 'XSS', removable: false },
 
-    // XSS - JS execution and obfuscation
+    
     { regex: /alert\s*\(/i,                     label: 'alert(',                  category: 'XSS', removable: false },
     { regex: /confirm\s*\(/i,                   label: 'confirm(',                category: 'XSS', removable: false },
     { regex: /prompt\s*\(/i,                    label: 'prompt(',                 category: 'XSS', removable: false },
@@ -196,7 +196,7 @@ export class BehaviorTrackerService {
     { regex: /-moz-binding/i,                   label: '-moz-binding CSS XSS',    category: 'XSS', removable: false },
     { regex: /behavior\s*:\s*url\s*\(/i,        label: 'behavior:url( CSS XSS',   category: 'XSS', removable: false },
 
-    // Command Injection
+    
     { regex: /;\s*(cat|ls|id|whoami|uname|pwd|ifconfig|ipconfig)\b/i, label: '; unix-cmd',    category: 'Command Injection', removable: false },
     { regex: /\|\s*(cat|ls|id|whoami|curl|wget|bash|sh)\b/i,          label: '| pipe-cmd',   category: 'Command Injection', removable: false },
     { regex: /\$\s*\(\s*(cat|ls|id|whoami|uname)/i,                   label: '$(cmd-subst)', category: 'Command Injection', removable: false },
@@ -210,13 +210,13 @@ export class BehaviorTrackerService {
     { regex: /cmd\s*\/c\s+/i,                                         label: 'cmd /c',       category: 'Command Injection', removable: false },
     { regex: /cat\s+\/etc\//i,                                        label: 'cat /etc/',    category: 'Command Injection', removable: false },
 
-    // SSTI
+    
     { regex: /\{\{[\s\S]*?\}\}/,  label: '{{...}} Jinja2/Twig',  category: 'SSTI', removable: false },
     { regex: /\$\{[^}]+\}/,       label: '${...} Java EL',       category: 'SSTI', removable: false },
     { regex: /<%=[\s\S]*?%>/,     label: '<%= %> ERB/JSP',       category: 'SSTI', removable: false },
     { regex: /#\{[^}]+\}/,        label: '#{...} Thymeleaf',     category: 'SSTI', removable: false },
 
-    // Path Traversal
+    
     { regex: /\.\.\//,             label: '../',                  category: 'Path Traversal', removable: false },
     { regex: /\.\.\\\\/,           label: '..\\',                 category: 'Path Traversal', removable: false },
     { regex: /\.\.\.\.\//,         label: '..../ (bypass)',       category: 'Path Traversal', removable: false },
@@ -237,29 +237,29 @@ export class BehaviorTrackerService {
     { regex: /\/etc\/hosts/i,      label: '/etc/hosts',           category: 'Path Traversal', removable: false },
     { regex: /\/etc\/shadow/i,     label: '/etc/shadow',          category: 'Path Traversal', removable: false },
 
-    // Command Injection - additional patterns
-    // Shellshock (CVE-2014-6271): bash env-variable code execution
+    
+    
     { regex: /\(\)\s*\{\s*[^}]*;\s*/,                    label: 'Shellshock () {',        category: 'Command Injection', removable: false },
-    // Backtick shell execution: `ls -al /`
+    
     { regex: /`[^`]+[\/\|;]/,                            label: 'backtick execution',     category: 'Command Injection', removable: false },
-    // Ruby/Perl system calls
+    
     { regex: /Kernel\.(exec|exit|system)\s*\(/i,         label: 'Kernel.exec/system',     category: 'Command Injection', removable: false },
     { regex: /\bSystem\s*\(\s*["']/i,                    label: 'System() call',          category: 'Command Injection', removable: false },
     { regex: /%x\s*[\([']/i,                             label: '%x() Ruby shell',        category: 'Command Injection', removable: false },
     { regex: /@\{\s*\[system\s/i,                        label: '@{[system]} Perl',       category: 'Command Injection', removable: false },
-    // Environment variable injection
+    
     { regex: /\$(?:HOME|USER|PATH|SHELL|IFS)\b/,         label: '$HOME/$USER env var',    category: 'Command Injection', removable: false },
     { regex: /\$ENV\s*\{/i,                              label: '$ENV{} interpolation',   category: 'Command Injection', removable: false },
-    // Format string attacks — multiple consecutive specifiers signal a probe
+    
     { regex: /(%[sdnxp]){2,}/i,                          label: 'format string %s%n',     category: 'Command Injection', removable: false },
 
-    // XXE
+    
     { regex: /<!DOCTYPE[^>]*\[/i,                        label: '<!DOCTYPE [...]>',       category: 'XXE', removable: false },
     { regex: /<!ENTITY\s+\w/i,                           label: '<!ENTITY>',              category: 'XXE', removable: false },
     { regex: /SYSTEM\s+["']file:/i,                      label: 'XXE SYSTEM file://',     category: 'XXE', removable: false },
     { regex: /&xxe;/i,                                   label: '&xxe; entity ref',       category: 'XXE', removable: false },
 
-    // Attack Tools
+    
     { regex: /phpinfo\s*\(\)/i,    label: 'phpinfo()',            category: 'Attack Tools', removable: false },
     { regex: /admin\.php/i,        label: 'admin.php',            category: 'Attack Tools', removable: false },
     { regex: /wp-admin/i,          label: 'wp-admin',             category: 'Attack Tools', removable: false },
@@ -286,12 +286,12 @@ export class BehaviorTrackerService {
   currentModule() {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationStart) {
-        // Check the raw URL before Angular guards or redirects process it.
-        // This is the only place where the original typed URL is still intact.
+        
+        
         this.checkStringForRisk(this.safeDecode(event.url), 'URL', event.url);
 
       } else if (event instanceof NavigationEnd) {
-        // Flush the behavior snapshot for the page being left
+        
         const snapshot = this.getBehaviorSnapshot();
         if (snapshot.mouseMoveCount >= 5 || snapshot.keyEventCount > 3) {
           console.log(`Flushing behavior snapshot for old page before navigating...`);
@@ -324,7 +324,7 @@ export class BehaviorTrackerService {
     if (idx !== -1) this.riskPatterns.splice(idx, 1);
   }
 
-  // Returns matched patterns — used by admin panel and console testInput/checkPatterns
+  
   checkPatterns(text: string): { label: string; category: string }[] {
     const decoded = this.safeDecode(text);
     const matches = this.riskPatterns
@@ -352,8 +352,8 @@ export class BehaviorTrackerService {
     try { return decodeURIComponent(text); } catch { return text; }
   }
 
-  // DevTools detection via window dimension gap — docked DevTools enlarges the gap
-  // between outer and inner dimensions by >160px
+  
+  
   private isDevToolsOpen(): boolean {
     return (
       window.outerWidth - window.innerWidth > 160 ||
@@ -361,7 +361,7 @@ export class BehaviorTrackerService {
     );
   }
 
-  // Called by SecurityChallengeGuard when it blocks navigation during an active challenge
+  
   public recordUnauthorizedAttempt(): void {
     this.unauthorizedAttempts++;
   }
@@ -372,7 +372,7 @@ export class BehaviorTrackerService {
         const label = `[${p.category}] ${p.label} in ${source}`;
         console.warn(`SECURITY ALERT: ${label}`);
 
-        // Record the pattern so it travels with the next snapshot to the DB
+        
         if (!this.detectedPatterns.includes(label)) {
           this.detectedPatterns.push(label);
         }
@@ -490,8 +490,8 @@ export class BehaviorTrackerService {
     this.keyDownTimestamps.set(event.key, now);
     this.lastKeyDownTime = now;
 
-    // DevTools shortcut detection — F12, Ctrl+Shift+I/J/C, Ctrl+U
-    // These are the first keys an attacker presses to inspect tokens or DOM
+    
+    
     if (
       event.key === 'F12' ||
       (event.ctrlKey && event.shiftKey && ['i', 'j', 'c'].includes(event.key.toLowerCase())) ||
@@ -507,7 +507,7 @@ export class BehaviorTrackerService {
       }
       this.checkStringForRisk(this.keystrokeBuffer, 'Input', this.currentPage);
 
-      // Abnormal input length — nobody legitimately types 500+ chars into a form field
+      
       const target = event.target as HTMLInputElement | HTMLTextAreaElement;
       if (target && 'value' in target && (target.value?.length ?? 0) > this.ABNORMAL_INPUT_THRESHOLD) {
         this.abnormalInputDetected = true;
@@ -517,17 +517,17 @@ export class BehaviorTrackerService {
     }
   };
 
-  // Paste detection — attackers paste payloads to bypass keystroke-by-keystroke buffer checks
+  
   private handlePaste = (event: ClipboardEvent) => {
     this.pasteCount++;
     const text = event.clipboardData?.getData('text/plain') ?? '';
 
-    // Long paste = fuzzing / buffer overflow attempt
+    
     if (text.length > this.ABNORMAL_INPUT_THRESHOLD) {
       this.abnormalInputDetected = true;
     }
 
-    // Check pasted content against attack patterns — fires urgentAnomalyDetected$ if matched
+    
     if (text && this.checkStringForRisk(text, 'Input', this.currentPage)) {
       this.suspiciousPasteDetected = true;
     }
@@ -662,7 +662,7 @@ export class BehaviorTrackerService {
     this.devToolsShortcutCount = 0;
     this.abnormalInputDetected = false;
     this.unauthorizedAttempts = 0;
-    // devToolsDetected is computed live via isDevToolsOpen(), no reset needed
+    
     console.log('Behavior data cleared.');
   }
 }

@@ -19,7 +19,7 @@ export interface PredictResponse {
   confidence: number;
   tabpfn?: {
     score: number;
-    label: string;    // "Anomaly" | "Normal"
+    label: string;
     verdict: string;
   };
   analysis: {
@@ -84,11 +84,9 @@ export class BehaviorPredictorService {
     this.strikeCount$.next(0);
   }
 
-  // Public demo API
-
   sendDemoSnapshot(): void {
     this.sendSnapshot({
-      // Robotic signature: near-zero mouse variance, no typing, high uniform rates
+
       avgMouseSpeed: 2.5,   stdMouseSpeed: 0.01,
       mouseMoveCount: 150,  avgMouseIdle: 10,
       avgClickDuration: 50, clickCount: 100,

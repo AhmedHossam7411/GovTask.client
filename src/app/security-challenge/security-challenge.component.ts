@@ -32,10 +32,8 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   errorMessage  = '';
   isSuspending  = false;
 
-  // Step 1 | 2 (click-order) | 3 (code)
   currentStep: 1 | 2 | 3 = 1;
 
-  // Step 1: company knowledge
   questions: { q1: string; q2: string } | null = null;
   private challengeAnswers: { a1: string; a2: string } | null = null;
   fetchingQuestions = true;
@@ -43,7 +41,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   answer2 = '';
   knowledgeError = '';
 
-  // Step 2: click-in-order challenge
   readonly TARGET_COUNT = 5;
   clickTargets: Array<{ x: number; y: number; num: number; hit: boolean }> = [];
   nextExpected = 1;
@@ -52,26 +49,20 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   private readonly CLICK_H = 130;
   private readonly RADIUS  = 20;
 
-  // Step 3: canvas code
   private verificationCode = '';
   userInput = '';
 
   private timer: ReturnType<typeof setInterval> | null = null;
 
-
-
   ngOnInit() {
     this.triggerReason    = sessionStorage.getItem('challenge_reason') || 'Suspicious behavior detected';
     this.verificationCode = this.generateCode();
-    // Countdown is deliberately NOT started here — loadConfig() starts it once
-    // the challenge is actually ready, so loading time isn't deducted from the clock.
+
     this.loadConfig();
   }
 
-  // Native fetch bypasses the auth/token HttpInterceptor — this is a plain
-  // static asset, not an authenticated API call, so it must not be intercepted.
   private async loadConfig(): Promise<void> {
-    // Bound the load so a stalled fetch can never hang the screen indefinitely.
+
     const controller = new AbortController();
     const bail = setTimeout(() => controller.abort(), 8000);
     try {
@@ -86,23 +77,18 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     } finally {
       clearTimeout(bail);
       this.fetchingQuestions = false;
-      // Start the clock only now that the challenge is rendered and answerable.
+
       this.startCountdown();
-      // Zoneless change detection: the native fetch above runs outside Angular's
-      // awareness, so the resolved questions won't render until something else
-      // triggers CD. Notify Angular explicitly so the form appears immediately.
+
       this.cdr.markForCheck();
     }
   }
 
-  // Canvases are conditionally rendered; drawing is deferred until step 2 is entered
   ngAfterViewInit() {}
 
   ngOnDestroy() {
     this.clearTimer();
   }
-
-
 
   get canVerifyKnowledge(): boolean {
     return this.answer1.trim().length > 0 && this.answer2.trim().length > 0 && !this.fetchingQuestions;
@@ -131,8 +117,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     const left = this.maxAttempts - this.attempts;
     this.knowledgeError = `Incorrect answers. ${left} attempt${left === 1 ? '' : 's'} remaining.`;
   }
-
-
 
   private initClickChallenge(): void {
     this.clickTargets = [];
@@ -251,8 +235,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     }
   }
 
-
-
   private generateCode(): string {
     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
@@ -320,8 +302,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     setTimeout(() => this.drawCode(), 0);
   }
 
-
-
   private startCountdown(): void {
     if (this.timer !== null) return;
     this.timer = setInterval(() => {
@@ -336,8 +316,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   private clearTimer(): void {
     if (this.timer !== null) { clearInterval(this.timer); this.timer = null; }
   }
-
-
 
   get canVerify(): boolean {
     return this.orderSolved && this.userInput.trim().length === 6;
@@ -365,8 +343,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.router.navigate([sessionStorage.getItem('pre_challenge_url') || '/departments']);
   }
 
-
-
   private suspendAndLogout(): void {
     this.isSuspending = true;
     this.http.post(`${environment.apiUrl}/Security/suspend-user`, {}, { withCredentials: true })
@@ -379,8 +355,6 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     if (res?.subscribe) { res.subscribe({ complete: () => this.router.navigate(['/login']) }); }
     else { this.router.navigate(['/login']); }
   }
-
-
 
   private rand(min: number, max: number): number {
     return Math.random() * (max - min) + min;

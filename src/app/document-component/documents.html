@@ -1,7 +1,7 @@
 <div
   class="bg-cream-50 shadow-sm border border-ink-900/10 overflow-hidden transition-all duration-300 hover:shadow-lg hover:border-sage-300">
   <div class="flex items-start bg-cream-100 border-b border-ink-900/10 p-4">
-    <!-- File-type / initials tile -->
+
     <div
       class="bg-ink-900 w-12 h-12 flex shrink-0 items-center justify-center text-cream-50 font-bold text-[11px] uppercase tracking-wide shadow-sm">
       @if (fileInfo()?.fileType) {
@@ -22,7 +22,7 @@
       <p class="text-sm text-stone2-600 mt-2 line-clamp-2"><span class="font-semibold text-ink-800">Summary:</span> {{ document().description }}</p>
 
       <div class="flex flex-wrap items-center gap-2 mt-3">
-        <!-- Clickable tracking status -->
+
         <button type="button" (click)="advanceStatus()" [title]="'Click to advance status'"
           class="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 border transition-colors {{ statusClass() }}">
           ● {{ status() }}

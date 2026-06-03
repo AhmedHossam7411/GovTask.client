@@ -26,7 +26,7 @@ export class Tasks implements OnInit {
     console.log('Tasks component initialized with task:', this.task());
   }
 
-  /** Whole days from today until the task's due date (negative = overdue). */
+  
   daysUntilDue(): number | null {
     const d = this.task().dueDate;
     if (!d) return null;

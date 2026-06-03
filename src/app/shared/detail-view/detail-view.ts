@@ -26,7 +26,6 @@ export class DetailViewComponent implements OnInit {
   protected entity = signal<any>(null);
   protected loading = signal(true);
 
-  // Document file rendering
   protected file = signal<VaultEntry | null>(null);
   protected fileMode = signal<'text' | 'image' | 'pdf' | 'other' | 'none'>('none');
   protected textContent = signal<string>('');

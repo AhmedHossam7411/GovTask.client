@@ -36,7 +36,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   protected predictor = inject(BehaviorPredictorService);
 
-
   protected departments = signal<any[]>([]);
   protected tasks = signal<any[]>([]);
   protected documents = signal<any[]>([]);
@@ -67,7 +66,6 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
     return dist;
   });
 
-
   protected patterns = signal<RiskPattern[]>([]);
   protected scanResults = signal<{ label: string; category: string }[]>([]);
   protected scanHasRun = signal(false);
@@ -96,24 +94,21 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   scanInputText = '';
   newPatternInput = '';
 
-
   private readonly PATTERNS_PASSWORD = 'Admin@Sec2024';
   protected patternsUnlocked = signal(false);
   patternPasswordInput = '';
   patternPasswordError = signal('');
 
-
-  protected demoLog     = signal<DemoResult[]>([]);   // last 3 predictions
+  protected demoLog     = signal<DemoResult[]>([]);
   protected demoResult  = signal<DemoResult | null>(null);
   protected demoIndices = [0, 1, 2];
-  // Strike = HIGH prediction count within the current log
+
   protected demoHighStrikes = computed(() =>
     this.demoLog().filter(r => r.riskLevel === 'HIGH').length
   );
   private demoSub: Subscription | null = null;
   private alertsPoller: ReturnType<typeof setInterval> | null = null;
 
-  // Security alerts
   protected securityAlerts = signal<SecurityAlertEntry[]>([]);
   protected alertsLoading = signal(false);
   protected revokedUsers = signal<Set<string>>(new Set());

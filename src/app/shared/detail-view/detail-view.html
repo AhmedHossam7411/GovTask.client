@@ -1,7 +1,6 @@
 <div class="min-h-screen">
   <div class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-10">
 
-    <!-- Back -->
     <button (click)="back()"
       class="inline-flex items-center gap-2 text-cream-100/70 hover:text-cream-50 text-xs font-semibold uppercase tracking-wider mb-6 transition-colors">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,7 +18,7 @@
       </div>
     } @else {
       <div class="bg-cream-50 border border-ink-900/10 shadow-sm">
-        <!-- Header band -->
+
         <div class="flex items-start gap-5 p-8 border-b border-ink-900/10 bg-cream-100">
           <div class="bg-ink-900 w-16 h-16 flex shrink-0 items-center justify-center text-cream-50 font-bold text-xl shadow-sm">
             {{ entity().name?.charAt(0)?.toUpperCase() }}{{ entity().name?.charAt(1)?.toUpperCase() }}
@@ -31,7 +30,6 @@
           </div>
         </div>
 
-        <!-- Fields -->
         <dl class="divide-y divide-ink-900/5">
           @for (f of fields(); track f.label) {
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 px-8 py-4">
@@ -41,7 +39,6 @@
           }
         </dl>
 
-        <!-- Document file viewer -->
         @if (type() === 'document') {
           <div class="border-t border-ink-900/10 p-8">
             <div class="flex items-center justify-between mb-4">

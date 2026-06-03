@@ -24,7 +24,7 @@ export class Documents implements OnInit{
   @Output() itemEdited = new EventEmitter<documentDto>();
   @Output() itemDeleted = new EventEmitter<number>();
 
-  // Tracking state, hydrated from the local vault.
+  
   protected fileInfo = signal<VaultEntry | null>(null);
   protected status = signal<string>('On file');
 

@@ -1,22 +1,14 @@
 import { Injectable } from '@angular/core';
 
-/**
- * Client-side vault for real document files + lifecycle tracking.
- * The backend only persists document metadata (name/description/date/taskId),
- * so the actual uploaded file and its review status are stored locally in
- * localStorage, keyed by the document's id. Purely additive — documents with
- * no vault entry (legacy/metadata-only) still render fine.
- */
 export interface VaultEntry {
   fileName?: string;
   fileType?: string;
-  size?: number;       // bytes
-  dataUrl?: string;    // base64 data URL of the file
-  status: string;      // tracking status
+  size?: number;
+  dataUrl?: string;
+  status: string;
   history: { status: string; at: string }[];
 }
 
-/** A fully-populated file payload produced by readFile(). */
 export interface FilePayload {
   fileName: string;
   fileType: string;
@@ -28,7 +20,7 @@ export interface FilePayload {
 @Injectable({ providedIn: 'root' })
 export class DocumentVaultService {
   private readonly KEY = 'doc-vault-v1';
-  /** Max file size kept locally (localStorage is ~5 MB total). */
+
   readonly MAX_BYTES = 1.5 * 1024 * 1024;
   readonly STATUSES = ['Uploaded', 'In Review', 'Approved', 'Archived'];
 
@@ -64,7 +56,6 @@ export class DocumentVaultService {
     return next;
   }
 
-  /** Read a File into a payload (base64). Rejects oversize files. */
   readFile(file: File): Promise<FilePayload> {
     return new Promise((resolve, reject) => {
       if (file.size > this.MAX_BYTES) {

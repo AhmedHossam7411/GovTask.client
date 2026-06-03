@@ -26,20 +26,20 @@ export class DeleteDocumentDialog implements OnInit {
       this.taskService.getTasks().subscribe({
         next: (tasks) => {
           if (tasks && Array.isArray(tasks)) {
-            // Use loose comparison in case data.taskId is a string
+            
             const matchingTask = tasks.find(t => t.id == this.data.taskId);
             this.associatedTaskName = matchingTask ? matchingTask.name : 'Unknown Task';
           } else {
             this.associatedTaskName = 'Unknown Task';
           }
           this.isLoadingTask = false;
-          this.cdr.detectChanges(); // Force UI update
+          this.cdr.detectChanges(); 
         },
         error: (err) => {
           console.error('Failed to fetch tasks', err);
           this.associatedTaskName = 'Unknown Task';
           this.isLoadingTask = false;
-          this.cdr.detectChanges(); // Force UI update
+          this.cdr.detectChanges(); 
         }
       });
     }

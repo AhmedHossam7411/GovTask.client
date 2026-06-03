@@ -18,7 +18,7 @@ export class AddDocumentDialog {
   private dialogRef = inject(MatDialogRef);
   #fb = inject(NonNullableFormBuilder);
 
-  // Picked file (held until the document is created, then saved to the vault)
+  
   protected pickedFile = signal<{ fileName: string; fileType: string; size: number; dataUrl: string; status: string } | null>(null);
   protected fileError = signal('');
   protected dragging = signal(false);
@@ -56,7 +56,7 @@ export class AddDocumentDialog {
     try {
       const entry = await this.vault.readFile(file);
       this.pickedFile.set(entry);
-      // Auto-fill the name from the file (without extension) if still empty.
+      
       if (!this.form.controls.name.value) {
         const base = file.name.replace(/\.[^.]+$/, '');
         this.form.controls.name.setValue(base.length >= 6 ? base : (base + ' document'));

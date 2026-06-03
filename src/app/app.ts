@@ -35,10 +35,6 @@ export class App implements OnInit {
     this.behaviorTracker.start();
     this.behaviorPredictor.start();
 
-    // Global security-challenge lock. While a challenge is active, force EVERY
-    // navigation (nav links, back/forward, typed URLs, guarded or not) back to
-    // /challenge. This is the single, reliable source of truth for the lock —
-    // it does not depend on per-route guards firing correctly under zoneless CD.
     this.router.events.subscribe(event => {
       if (
         event instanceof NavigationStart &&

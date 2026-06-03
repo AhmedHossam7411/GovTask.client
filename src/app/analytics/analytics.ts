@@ -7,10 +7,6 @@ import { DepartmentService } from '../services/department-Service';
 import { taskDto } from '../tasks/taskDto';
 import { documentDto } from '../document-component/documentDto';
 
-/**
- * View-only analytics dashboard. Every figure is derived live from the real
- * Task / Document / Department data (auto-refreshed). No mock data.
- */
 @Component({
   selector: 'app-analytics',
   standalone: true,
@@ -33,7 +29,7 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.load(true);
-    this.poll = setInterval(() => this.load(false), 20_000); // live refresh
+    this.poll = setInterval(() => this.load(false), 20_000);
   }
   ngOnDestroy(): void {
     if (this.poll) clearInterval(this.poll);
@@ -66,7 +62,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
     return Math.ceil((due - today.getTime()) / 86_400_000);
   }
 
-  // ── KPI cards (real) ───────────────────────────────────────────────────
   protected overdue = computed(() =>
     this.tasks().filter(t => { const n = this.daysUntil(t.dueDate); return n !== null && n < 0; }).length);
 
@@ -78,7 +73,6 @@ export class AnalyticsComponent implements OnInit, OnDestroy {
   ]);
   protected kpiMax = computed(() => Math.max(1, ...this.kpis().map(k => k.value)));
 
-  // ── Task status donut (real, derived from due dates) ───────────────────
   protected statusData = computed(() => {
     let overdue = 0, week = 0, upcoming = 0, none = 0;
     for (const t of this.tasks()) {

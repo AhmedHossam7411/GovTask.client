@@ -1,7 +1,6 @@
 <div class="min-h-screen">
   <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-12">
 
-    <!-- Title -->
     <div class="mb-8 flex flex-wrap items-end justify-between gap-3">
       <div>
         <p class="text-bronze-400 text-[11px] font-semibold uppercase tracking-luxe mb-1">Insights</p>
@@ -34,7 +33,6 @@
       </div>
     } @else {
 
-    <!-- ── KPI cards ─────────────────────────────────────────────────────── -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-6">
       @for (k of kpis(); track k.label) {
         <div class="bg-cream-50 border border-ink-900/10 shadow-sm p-5">
@@ -47,10 +45,8 @@
       }
     </div>
 
-    <!-- ── Status donut + Tasks-by-month ─────────────────────────────────── -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 
-      <!-- Donut -->
       <div class="bg-cream-50 border border-ink-900/10 shadow-sm p-6">
         <h3 class="text-lg font-display font-semibold text-ink-900 mb-4">Task Status</h3>
         @if (statusTotal() === 0) {
@@ -86,7 +82,6 @@
         }
       </div>
 
-      <!-- Tasks by due month -->
       <div class="lg:col-span-2 bg-cream-50 border border-ink-900/10 shadow-sm p-6">
         <h3 class="text-lg font-display font-semibold text-ink-900 mb-1">Tasks by Due Month</h3>
         <p class="text-xs text-stone2-500 mb-5">Distribution of task deadlines</p>
@@ -106,10 +101,8 @@
       </div>
     </div>
 
-    <!-- ── Department workload + Documents-by-month ──────────────────────── -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
 
-      <!-- Department workload -->
       <div class="bg-cream-50 border border-ink-900/10 shadow-sm p-6">
         <h3 class="text-lg font-display font-semibold text-ink-900 mb-1">Workload by Department</h3>
         <p class="text-xs text-stone2-500 mb-5">Tasks assigned per department</p>
@@ -132,7 +125,6 @@
         }
       </div>
 
-      <!-- Documents by month -->
       <div class="bg-cream-50 border border-ink-900/10 shadow-sm p-6">
         <h3 class="text-lg font-display font-semibold text-ink-900 mb-1">Documents by Upload Month</h3>
         <p class="text-xs text-stone2-500 mb-5">Records added over time</p>
@@ -152,7 +144,6 @@
       </div>
     </div>
 
-    <!-- ── Top creators ──────────────────────────────────────────────────── -->
     <div class="bg-cream-50 border border-ink-900/10 shadow-sm p-6">
       <h3 class="text-lg font-display font-semibold text-ink-900 mb-1">Top Task Creators</h3>
       <p class="text-xs text-stone2-500 mb-5">By number of tasks created</p>

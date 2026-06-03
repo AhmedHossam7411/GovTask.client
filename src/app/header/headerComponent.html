@@ -1,6 +1,5 @@
 <header class="flex items-center justify-between absolute top-0 left-0 right-0 z-50 px-6 sm:px-8 py-4 bg-transparent">
 
-  <!-- Left: logo + title + user avatar (only when logged in) -->
   <div class="flex items-center gap-4">
     <img class="h-10 w-auto object-contain" [src]="imgSrc()" alt="logo">
     <a routerLink="/" class="font-display font-semibold text-2xl tracking-wide text-cream-50">{{title}}</a>
@@ -22,7 +21,6 @@
     }
   </div>
 
-  <!-- Right: nav links -->
   <div class="flex items-center space-x-5 text-sm font-medium text-cream-100/80">
     @if (isLoggedIn() && isAdmin) {
       <a routerLink="/admin"
