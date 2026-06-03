@@ -7,14 +7,12 @@ export const SecurityChallengeGuard: CanActivateFn = (route: ActivatedRouteSnaps
   const tracker = inject(BehaviorTrackerService);
   const isChallengeActive = sessionStorage.getItem('security_challenge_active') === 'true';
 
-  if (isChallengeActive) {
-    if (state.url !== '/challenge') {
-      // User is trying to navigate away while a challenge is active — record as bypass attempt
-      tracker.recordUnauthorizedAttempt();
-      router.navigate(['/challenge']);
-      return false;
-    }
-    return true;
+  if (isChallengeActive && state.url !== '/challenge') {
+    // User is trying to navigate away while a challenge is active — record as a
+    // bypass attempt and redirect. Returning a UrlTree makes the redirect part
+    // of this navigation (atomic), rather than racing an imperative navigate().
+    tracker.recordUnauthorizedAttempt();
+    return router.parseUrl('/challenge');
   }
 
   return true;

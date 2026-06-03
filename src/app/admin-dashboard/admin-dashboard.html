@@ -1,22 +1,22 @@
-<div class="min-h-screen bg-gray-50 bg-app bg-cover bg-fixed bg-center py-8 px-4 sm:px-6 lg:px-8">
+<div class="min-h-screen pt-24 pb-8 px-4 sm:px-6 lg:px-8">
   <div class="max-w-7xl mx-auto">
     <!-- Header -->
     <div
-      class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200 p-6 mb-8 flex items-center justify-between">
+      class="bg-cream-50/90 backdrop-blur-md rounded-2xl shadow-sm border border-ink-900/10 p-6 mb-8 flex items-center justify-between">
       <div>
-        <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight flex items-center gap-3">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24"
+        <h1 class="text-3xl font-extrabold text-ink-900 tracking-tight flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sage-600" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
           </svg>
           Admin Command Center
         </h1>
-        <p class="mt-1 text-sm text-gray-500 font-medium italic">Consolidated System Metrics & Operational Overview</p>
+        <p class="mt-1 text-sm text-stone2-500 font-medium italic">Consolidated System Metrics & Operational Overview</p>
       </div>
 
       <button (click)="refreshData()"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-50 transition-all shadow-sm border border-gray-200">
+        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-ink-700 text-sm font-semibold rounded-lg hover:bg-cream-100 transition-all shadow-sm border border-ink-900/10">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" [class.animate-spin]="isLoading()" fill="none"
           viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -27,27 +27,27 @@
     </div>
 
     @if (isLoading()) {
-    <div class="p-20 flex flex-col items-center justify-center text-gray-500">
-      <div class="w-12 h-12 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+    <div class="p-20 flex flex-col items-center justify-center text-cream-100/60">
+      <div class="w-12 h-12 border-4 border-sage-500 border-t-transparent rounded-full animate-spin mb-4"></div>
       <p class="font-medium">Synchronizing system data...</p>
     </div>
     } @else if (errorMessage()) {
     <div class="p-20 text-center">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-100 text-rose-600 mb-4">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-bronze-100 text-bronze-600 mb-4">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
       </div>
-      <h3 class="text-lg font-bold text-gray-800">Connection Failed</h3>
-      <p class="text-gray-500 max-w-xs mx-auto mt-1">{{errorMessage()}}</p>
+      <h3 class="text-lg font-bold text-ink-800">Connection Failed</h3>
+      <p class="text-stone2-500 max-w-xs mx-auto mt-1">{{errorMessage()}}</p>
     </div>
     } @else {
     <!-- Metric Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <!-- Departments Card -->
       <div
-        class="relative overflow-hidden bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
+        class="relative overflow-hidden bg-gradient-to-br from-ink-700 to-ink-900 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/departments">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24"
@@ -57,7 +57,7 @@
           </svg>
         </div>
         <div class="relative z-10">
-          <p class="text-indigo-100 text-sm font-bold uppercase tracking-wider mb-1">Total Departments</p>
+          <p class="text-sage-100 text-sm font-bold uppercase tracking-wider mb-1">Total Departments</p>
           <h2 class="text-4xl font-black">{{totalDepts()}}</h2>
           <div class="mt-4 flex items-center gap-1.5 text-xs font-semibold bg-white/20 w-fit px-2 py-1 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
@@ -72,7 +72,7 @@
 
       <!-- Tasks Card -->
       <div
-        class="relative overflow-hidden bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
+        class="relative overflow-hidden bg-gradient-to-br from-sage-500 to-sage-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/tasks">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24"
@@ -82,7 +82,7 @@
           </svg>
         </div>
         <div class="relative z-10">
-          <p class="text-emerald-50 text-sm font-bold uppercase tracking-wider mb-1">Active Tasks</p>
+          <p class="text-sage-50 text-sm font-bold uppercase tracking-wider mb-1">Active Tasks</p>
           <h2 class="text-4xl font-black">{{totalTasks()}}</h2>
           <div class="mt-4 flex items-center gap-1.5 text-xs font-semibold bg-white/20 w-fit px-2 py-1 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
@@ -96,7 +96,7 @@
 
       <!-- Documents Card -->
       <div
-        class="relative overflow-hidden bg-gradient-to-br from-rose-500 to-rose-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
+        class="relative overflow-hidden bg-gradient-to-br from-bronze-500 to-bronze-600 rounded-2xl shadow-lg p-6 text-white group cursor-pointer hover:scale-[1.02] transition-transform"
         routerLink="/documents">
         <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24" fill="none" viewBox="0 0 24 24"
@@ -106,7 +106,7 @@
           </svg>
         </div>
         <div class="relative z-10">
-          <p class="text-rose-50 text-sm font-bold uppercase tracking-wider mb-1">Stored Documents</p>
+          <p class="text-bronze-50 text-sm font-bold uppercase tracking-wider mb-1">Stored Documents</p>
           <h2 class="text-4xl font-black">{{totalDocs()}}</h2>
           <div class="mt-4 flex items-center gap-1.5 text-xs font-semibold bg-white/20 w-fit px-2 py-1 rounded-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
@@ -124,9 +124,9 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
       <!-- Task Distribution Chart -->
-      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6">
-        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-500" fill="none" viewBox="0 0 24 24"
+      <div class="bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 p-6">
+        <h3 class="text-lg font-bold text-ink-900 mb-6 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sage-500" fill="none" viewBox="0 0 24 24"
             stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
@@ -140,42 +140,42 @@
           @for (item of taskDistribution(); track item.name) {
           <div class="space-y-1.5">
             <div class="flex justify-between text-sm font-bold">
-              <span class="text-gray-700">{{item.name}}</span>
-              <span class="text-gray-500">{{item.count}} tasks</span>
+              <span class="text-ink-700">{{item.name}}</span>
+              <span class="text-stone2-500">{{item.count}} tasks</span>
             </div>
-            <div class="h-3 w-full bg-gray-100 rounded-full overflow-hidden shadow-inner border border-gray-50">
+            <div class="h-3 w-full bg-cream-200 rounded-full overflow-hidden shadow-inner border border-cream-100">
               <div class="h-full transition-all duration-1000 ease-out rounded-full"
                 [style.width.%]="(item.count / totalTasks()) * 100" [style.background-color]="item.color"></div>
             </div>
           </div>
           } @empty {
-          <p class="text-center text-gray-400 italic py-10">No task distribution data available.</p>
+          <p class="text-center text-stone2-400 italic py-10">No task distribution data available.</p>
           }
         </div>
       </div>
 
       <!-- Recent Activity Feed -->
-      <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 p-6 overflow-hidden">
-        <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center justify-between">
+      <div class="bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 p-6 overflow-hidden">
+        <h3 class="text-lg font-bold text-ink-900 mb-6 flex items-center justify-between">
           <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24"
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-bronze-500" fill="none" viewBox="0 0 24 24"
               stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Recent System Activity
           </div>
-          <span class="text-[10px] text-gray-400 uppercase tracking-widest font-black">Live Data</span>
+          <span class="text-[10px] text-stone2-400 uppercase tracking-widest font-black">Live Data</span>
         </h3>
 
         <div class="space-y-4">
           @for (act of recentActivity(); track act.id) {
           <div
-            class="flex gap-4 p-3 rounded-xl hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 items-center">
+            class="flex gap-4 p-3 rounded-xl hover:bg-cream-100 transition-all border border-transparent hover:border-cream-200 items-center">
             <div class="p-2.5 rounded-lg shrink-0" [ngClass]="{
-                       'bg-indigo-100 text-indigo-600': act.type === 'Department',
-                       'bg-emerald-100 text-emerald-600': act.type === 'Task',
-                       'bg-rose-100 text-rose-600': act.type === 'Document'
+                       'bg-ink-100 text-ink-700': act.type === 'Department',
+                       'bg-sage-100 text-sage-600': act.type === 'Task',
+                       'bg-bronze-100 text-bronze-600': act.type === 'Document'
                      }">
               @if (act.type === 'Department') {
               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -198,15 +198,15 @@
               }
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-gray-900 truncate">{{act.name}}</p>
-              <p class="text-xs text-gray-500 font-medium italic">New {{act.type}} recorded</p>
+              <p class="text-sm font-bold text-ink-900 truncate">{{act.name}}</p>
+              <p class="text-xs text-stone2-500 font-medium italic">New {{act.type}} recorded</p>
             </div>
-            <div class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">
+            <div class="text-[10px] text-stone2-400 font-bold uppercase tracking-tight">
               ID: {{act.id}}
             </div>
           </div>
           } @empty {
-          <p class="text-center text-gray-400 italic py-10">Waiting for system events...</p>
+          <p class="text-center text-stone2-400 italic py-10">Waiting for system events...</p>
           }
         </div>
       </div>
@@ -214,16 +214,16 @@
     }
 
     <!-- Security Pattern Monitor -->
-    <div class="mt-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+    <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
       <!-- Panel Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-slate-800 to-slate-700 text-white">
+      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-ink-800 to-ink-700 text-white">
         <h3 class="text-lg font-bold flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           Security Pattern Monitor
         </h3>
-        <span class="text-[10px] uppercase tracking-widest font-black text-slate-400">{{ patterns().length }} active patterns</span>
+        <span class="text-[10px] uppercase tracking-widest font-black text-ink-400">{{ patterns().length }} active patterns</span>
       </div>
 
       <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -231,15 +231,15 @@
         <!-- LEFT: Scanner -->
         <div class="space-y-5">
           <div>
-            <h4 class="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Test Input / URL</h4>
+            <h4 class="text-sm font-bold text-ink-700 mb-3 uppercase tracking-wider">Test Input / URL</h4>
             <div class="flex gap-2">
               <input
                 [(ngModel)]="scanInputText"
                 (keydown.enter)="scan()"
                 placeholder="Type or paste a string to scan..."
-                class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 font-mono bg-gray-50" />
+                class="flex-1 px-4 py-2.5 text-sm border border-stone2-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-500 font-mono bg-cream-100" />
               <button (click)="scan()"
-                class="px-4 py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg hover:bg-slate-700 transition-colors whitespace-nowrap">
+                class="px-4 py-2.5 bg-ink-800 text-white text-sm font-bold rounded-lg hover:bg-ink-700 transition-colors whitespace-nowrap">
                 Scan
               </button>
             </div>
@@ -267,7 +267,7 @@
                 <div class="px-4 pb-3 flex flex-wrap gap-2">
                   @for (r of scanResults(); track r.label) {
                     <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border"
-                      [class]="categoryColors[r.category] || 'bg-gray-100 text-gray-700'">
+                      [class]="categoryColors[r.category] || 'bg-cream-200 text-ink-700'">
                       {{ r.category }} · {{ r.label }}
                     </span>
                   }
@@ -278,15 +278,15 @@
 
           <!-- Add Custom Pattern -->
           <div>
-            <h4 class="text-sm font-bold text-gray-700 mb-3 uppercase tracking-wider">Add Custom Pattern</h4>
+            <h4 class="text-sm font-bold text-ink-700 mb-3 uppercase tracking-wider">Add Custom Pattern</h4>
             <div class="flex gap-2">
               <input
                 [(ngModel)]="newPatternInput"
                 (keydown.enter)="addPattern()"
                 placeholder="Regex or plain string, e.g. exec\("
-                class="flex-1 px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 font-mono bg-gray-50" />
+                class="flex-1 px-4 py-2.5 text-sm border border-stone2-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage-500 font-mono bg-cream-100" />
               <button (click)="addPattern()"
-                class="px-4 py-2.5 bg-sky-600 text-white text-sm font-bold rounded-lg hover:bg-sky-500 transition-colors">
+                class="px-4 py-2.5 bg-sage-600 text-white text-sm font-bold rounded-lg hover:bg-sage-500 transition-colors">
                 Add
               </button>
             </div>
@@ -300,15 +300,15 @@
         <div>
           @if (!patternsUnlocked()) {
             <!-- Lock screen -->
-            <div class="flex flex-col items-center justify-center h-full min-h-[260px] rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 p-8 text-center gap-4">
-              <div class="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="flex flex-col items-center justify-center h-full min-h-[260px] rounded-xl border-2 border-dashed border-ink-900/10 bg-cream-100 p-8 text-center gap-4">
+              <div class="w-14 h-14 rounded-full bg-ink-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-ink-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
               <div>
-                <p class="text-sm font-bold text-gray-700">Pattern List Restricted</p>
-                <p class="text-xs text-gray-400 mt-0.5">Enter the admin password to view detection strings</p>
+                <p class="text-sm font-bold text-ink-700">Pattern List Restricted</p>
+                <p class="text-xs text-stone2-400 mt-0.5">Enter the admin password to view detection strings</p>
               </div>
               <div class="w-full max-w-xs space-y-2">
                 <input
@@ -316,14 +316,14 @@
                   [(ngModel)]="patternPasswordInput"
                   (keydown.enter)="unlockPatterns()"
                   placeholder="Admin password"
-                  class="w-full px-4 py-2.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-slate-500 text-center tracking-widest"
+                  class="w-full px-4 py-2.5 text-sm border border-stone2-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-ink-500 text-center tracking-widest"
                   [class.border-red-400]="patternPasswordError()"
                 />
                 @if (patternPasswordError()) {
                   <p class="text-xs text-red-500 font-medium">{{ patternPasswordError() }}</p>
                 }
                 <button (click)="unlockPatterns()"
-                  class="w-full py-2.5 bg-slate-800 text-white text-sm font-bold rounded-lg hover:bg-slate-700 transition-colors">
+                  class="w-full py-2.5 bg-ink-800 text-white text-sm font-bold rounded-lg hover:bg-ink-700 transition-colors">
                   Unlock
                 </button>
               </div>
@@ -338,7 +338,7 @@
                 Unlocked
               </span>
               <button (click)="lockPatterns()"
-                class="text-xs text-gray-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1">
+                class="text-xs text-stone2-400 hover:text-red-500 font-semibold transition-colors flex items-center gap-1">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
@@ -350,19 +350,19 @@
                 <div>
                   <div class="flex items-center gap-2 mb-2">
                     <span class="text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-full border"
-                      [class]="categoryColors[group.category] || 'bg-gray-100 text-gray-700'">
+                      [class]="categoryColors[group.category] || 'bg-cream-200 text-ink-700'">
                       {{ group.category }}
                     </span>
-                    <span class="text-xs text-gray-400 font-medium">{{ group.patterns.length }} pattern(s)</span>
+                    <span class="text-xs text-stone2-400 font-medium">{{ group.patterns.length }} pattern(s)</span>
                   </div>
                   <div class="flex flex-wrap gap-1.5">
                     @for (p of group.patterns; track p.label) {
                       <div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-mono font-semibold"
-                        [class]="p.removable ? 'bg-sky-50 border-sky-200 text-sky-800' : 'bg-gray-50 border-gray-200 text-gray-700'">
+                        [class]="p.removable ? 'bg-sage-50 border-sage-200 text-sage-800' : 'bg-cream-100 border-ink-900/10 text-ink-700'">
                         {{ p.label }}
                         @if (p.removable) {
                           <button (click)="removePattern(p.label)"
-                            class="ml-0.5 text-sky-400 hover:text-red-500 transition-colors font-bold leading-none">×</button>
+                            class="ml-0.5 text-sage-400 hover:text-red-500 transition-colors font-bold leading-none">×</button>
                         }
                       </div>
                     }
@@ -377,24 +377,24 @@
     </div>
 
     <!-- Security Alerts & Account Revocation -->
-    <div class="mt-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+    <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
 
-      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-rose-800 to-rose-700 text-white">
+      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-bronze-800 to-bronze-700 text-white">
         <h3 class="text-lg font-bold flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-rose-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-bronze-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
           </svg>
           Security Alerts — Account Management
         </h3>
         <button (click)="loadAlerts(true)"
-          class="text-[10px] uppercase tracking-widest font-black text-rose-300 hover:text-white transition-colors">
+          class="text-[10px] uppercase tracking-widest font-black text-bronze-300 hover:text-white transition-colors">
           Refresh
         </button>
       </div>
 
       <div class="p-6">
         @if (alertsLoading()) {
-          <div class="flex items-center justify-center py-10 gap-2 text-gray-400">
+          <div class="flex items-center justify-center py-10 gap-2 text-stone2-400">
             <svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
@@ -402,12 +402,12 @@
             Loading alerts...
           </div>
         } @else if (securityAlerts().length === 0) {
-          <p class="text-center text-gray-400 italic py-8">No security alerts recorded yet.</p>
+          <p class="text-center text-stone2-400 italic py-8">No security alerts recorded yet.</p>
         } @else {
           <div class="overflow-x-auto">
             <table class="w-full text-sm">
               <thead>
-                <tr class="border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                <tr class="border-b border-ink-900/10 text-xs font-bold text-stone2-500 uppercase tracking-wider">
                   <th class="text-left pb-3 pr-4">Type</th>
                   <th class="text-left pb-3 pr-4">User ID</th>
                   <th class="text-left pb-3 pr-4">URL</th>
@@ -416,9 +416,9 @@
                   <th class="text-left pb-3">Action</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
+              <tbody class="divide-y divide-cream-200">
                 @for (alert of securityAlerts(); track alert.id) {
-                  <tr class="hover:bg-gray-50 transition-colors">
+                  <tr class="hover:bg-cream-100 transition-colors">
                     <td class="py-3 pr-4">
                       <span class="px-2 py-1 rounded-full text-xs font-bold"
                             [ngClass]="alert.type === 'HIGH_RISK_ML_BEHAVIOR'
@@ -427,18 +427,18 @@
                         {{ alert.type === 'HIGH_RISK_ML_BEHAVIOR' ? 'ML Anomaly' : 'Pattern Detected' }}
                       </span>
                     </td>
-                    <td class="py-3 pr-4 font-mono text-xs text-gray-600 max-w-[120px] truncate">
+                    <td class="py-3 pr-4 font-mono text-xs text-stone2-600 max-w-[120px] truncate">
                       {{ alert.userId ?? 'Unauthenticated' }}
                     </td>
-                    <td class="py-3 pr-4 text-xs text-gray-500 max-w-[150px] truncate" [title]="alert.url">
+                    <td class="py-3 pr-4 text-xs text-stone2-500 max-w-[150px] truncate" [title]="alert.url">
                       {{ alert.url }}
                     </td>
-                    <td class="py-3 pr-4 text-xs text-gray-500 whitespace-nowrap">
+                    <td class="py-3 pr-4 text-xs text-stone2-500 whitespace-nowrap">
                       {{ alert.timestamp | date:'dd/MM/yy HH:mm' }}
                     </td>
                     <td class="py-3 pr-4">
                       @if (alert.userId && revokedUsers().has(alert.userId)) {
-                        <span class="px-2 py-1 rounded-full text-xs font-bold bg-gray-200 text-gray-600">Revoked</span>
+                        <span class="px-2 py-1 rounded-full text-xs font-bold bg-ink-900/10 text-stone2-600">Revoked</span>
                       } @else if (alert.isResolved) {
                         <span class="px-2 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">Resolved</span>
                       } @else {
@@ -448,7 +448,7 @@
                     <td class="py-3">
                       @if (alert.userId && !revokedUsers().has(alert.userId)) {
                         <button (click)="revokeUser(alert.userId)"
-                          class="px-3 py-1.5 bg-rose-600 text-white text-xs font-bold rounded-lg hover:bg-rose-700 transition-colors active:scale-95">
+                          class="px-3 py-1.5 bg-bronze-600 text-white text-xs font-bold rounded-lg hover:bg-bronze-700 transition-colors active:scale-95">
                           Revoke Account
                         </button>
                       }
@@ -463,17 +463,17 @@
     </div>
 
     <!-- ML Behavioral Detection Demo -->
-    <div class="mt-8 bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+    <div class="mt-8 bg-cream-50/95 backdrop-blur-sm rounded-2xl shadow-xl border border-ink-900/10 overflow-hidden">
 
       <!-- Header -->
-      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-indigo-900 to-indigo-800 text-white">
+      <div class="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-sage-900 to-sage-800 text-white">
         <h3 class="text-lg font-bold flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-sage-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
           </svg>
           ML Behavioral Anomaly Detection — Live Demo
         </h3>
-        <span class="text-[10px] uppercase tracking-widest font-black text-indigo-400">No attack strings required</span>
+        <span class="text-[10px] uppercase tracking-widest font-black text-sage-400">No attack strings required</span>
       </div>
 
       <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -482,21 +482,21 @@
         <div class="space-y-5">
 
           <!-- Intro — two paths -->
-          <div class="space-y-2 text-sm text-gray-600">
-            <p>Two distinct anomaly types are detected <span class="font-semibold text-gray-800">purely through behavior</span> — no attack strings involved:</p>
-            <ul class="space-y-1 pl-3 border-l-2 border-indigo-200">
-              <li><span class="font-semibold text-indigo-700">Bot</span> — near-zero mouse variance, zero typing, robotic click rate. Caught by behavioral biometrics.</li>
-              <li><span class="font-semibold text-rose-700">Malicious User</span> — human-like movement but DevTools open, repeated bypass attempts, high paste frequency. Caught by attack signal features.</li>
+          <div class="space-y-2 text-sm text-stone2-600">
+            <p>Two distinct anomaly types are detected <span class="font-semibold text-ink-800">purely through behavior</span> — no attack strings involved:</p>
+            <ul class="space-y-1 pl-3 border-l-2 border-sage-200">
+              <li><span class="font-semibold text-sage-700">Bot</span> — near-zero mouse variance, zero typing, robotic click rate. Caught by behavioral biometrics.</li>
+              <li><span class="font-semibold text-bronze-700">Malicious User</span> — human-like movement but DevTools open, repeated bypass attempts, high paste frequency. Caught by attack signal features.</li>
             </ul>
-            <p class="text-xs text-gray-400">Three <span class="font-semibold text-red-500">HIGH</span> risk predictions from either type triggers the security challenge.</p>
+            <p class="text-xs text-stone2-400">Three <span class="font-semibold text-red-500">HIGH</span> risk predictions from either type triggers the security challenge.</p>
           </div>
 
           <!-- Prediction log (fills on every send, not just HIGH) -->
           <div>
             <div class="flex items-center justify-between mb-2">
-              <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Prediction History</p>
+              <p class="text-xs font-bold text-stone2-500 uppercase tracking-wider">Prediction History</p>
               <span class="text-xs font-bold tabular-nums"
-                    [ngClass]="demoHighStrikes() >= 3 ? 'text-red-600' : demoHighStrikes() > 0 ? 'text-orange-500' : 'text-gray-300'">
+                    [ngClass]="demoHighStrikes() >= 3 ? 'text-red-600' : demoHighStrikes() > 0 ? 'text-orange-500' : 'text-stone2-300'">
                 {{ demoHighStrikes() }}/3 HIGH strikes
               </span>
             </div>
@@ -510,14 +510,14 @@
                       <span class="text-[10px] opacity-80">{{ (demoLog()[i].confidence * 100).toFixed(0) }}%</span>
                     </div>
                     <span class="text-[10px] font-semibold text-center leading-tight"
-                          [ngClass]="demoLog()[i].type === 'bot' ? 'text-indigo-500' : 'text-rose-500'">
+                          [ngClass]="demoLog()[i].type === 'bot' ? 'text-sage-500' : 'text-bronze-500'">
                       {{ demoLog()[i].type === 'bot' ? 'Bot' : 'Mal. User' }}
                     </span>
                   } @else {
-                    <div class="w-full py-3 rounded-lg border-2 border-dashed border-gray-200 bg-gray-50 flex items-center justify-center">
-                      <span class="text-gray-300 font-black text-sm">{{ i + 1 }}</span>
+                    <div class="w-full py-3 rounded-lg border-2 border-dashed border-ink-900/10 bg-cream-100 flex items-center justify-center">
+                      <span class="text-stone2-300 font-black text-sm">{{ i + 1 }}</span>
                     </div>
-                    <span class="text-[10px] text-gray-300 font-semibold">Pending</span>
+                    <span class="text-[10px] text-stone2-300 font-semibold">Pending</span>
                   }
                 </div>
               }
@@ -528,7 +528,7 @@
           <div class="space-y-2">
             <button (click)="predictor.sendDemoSnapshot()"
               [disabled]="predictor.demoSending() || demoLog().length >= 3"
-              class="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-indigo-600 text-white text-sm font-bold rounded-xl hover:bg-indigo-700 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-indigo-200">
+              class="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-sage-600 text-white text-sm font-bold rounded-xl hover:bg-sage-700 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-sage-200">
               @if (predictor.demoSending()) {
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -545,7 +545,7 @@
 
             <button (click)="predictor.sendMaliciousUserSnapshot()"
               [disabled]="predictor.demoSending() || demoLog().length >= 3"
-              class="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-rose-600 text-white text-sm font-bold rounded-xl hover:bg-rose-700 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-rose-200">
+              class="w-full inline-flex items-center justify-center gap-2 py-2.5 bg-bronze-600 text-white text-sm font-bold rounded-xl hover:bg-bronze-700 transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed shadow-md shadow-bronze-200">
               @if (predictor.demoSending()) {
                 <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -561,7 +561,7 @@
             </button>
 
             <button (click)="predictor.resetDemo(); demoLog.set([]); demoResult.set(null)"
-              class="w-full py-2 bg-gray-100 text-gray-600 text-sm font-bold rounded-xl hover:bg-gray-200 transition-all active:scale-95">
+              class="w-full py-2 bg-cream-200 text-stone2-600 text-sm font-bold rounded-xl hover:bg-ink-900/10 transition-all active:scale-95">
               Reset
             </button>
           </div>
@@ -569,10 +569,10 @@
 
         <!-- RIGHT: Last prediction detail -->
         <div>
-          <p class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Last Prediction — AI Analysis</p>
+          <p class="text-xs font-bold text-stone2-500 uppercase tracking-wider mb-3">Last Prediction — AI Analysis</p>
 
           @if (!demoResult()) {
-            <div class="flex flex-col items-center justify-center h-48 rounded-xl border-2 border-dashed border-gray-200 bg-gray-50 text-gray-400 text-sm gap-2">
+            <div class="flex flex-col items-center justify-center h-48 rounded-xl border-2 border-dashed border-ink-900/10 bg-cream-100 text-stone2-400 text-sm gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
               </svg>
@@ -583,7 +583,7 @@
 
               <!-- Detection type pill -->
               <span class="inline-block text-xs font-black px-2.5 py-1 rounded-full"
-                    [ngClass]="demoResult()!.type === 'bot' ? 'bg-indigo-100 text-indigo-700' : 'bg-rose-100 text-rose-700'">
+                    [ngClass]="demoResult()!.type === 'bot' ? 'bg-sage-100 text-sage-700' : 'bg-bronze-100 text-bronze-700'">
                 {{ demoResult()!.type === 'bot' ? 'Bot Behavior' : 'Malicious User' }}
               </span>
 
@@ -594,7 +594,7 @@
                      : 'border-green-300 bg-green-50'">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">TabPFN</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-stone2-500">TabPFN</span>
                     <span class="text-[10px] px-2 py-0.5 rounded-full font-black uppercase"
                           [ngClass]="demoResult()!.tabpfnLabel === 'Anomaly'
                             ? 'bg-orange-500 text-white'
@@ -607,7 +607,7 @@
                     {{ (demoResult()!.tabpfnScore * 100).toFixed(0) }}%
                   </span>
                 </div>
-                <p class="text-xs text-gray-600 leading-relaxed">
+                <p class="text-xs text-stone2-600 leading-relaxed">
                   {{ demoResult()!.tabpfnVerdict || 'Tabular classifier produced a raw anomaly probability score.' }}
                 </p>
               </div>
@@ -618,17 +618,17 @@
                      'border-red-300 bg-red-50':      demoResult()!.riskLevel === 'HIGH',
                      'border-yellow-300 bg-yellow-50': demoResult()!.riskLevel === 'MEDIUM',
                      'border-green-300 bg-green-50':  demoResult()!.riskLevel === 'LOW',
-                     'border-gray-300 bg-gray-50':    demoResult()!.riskLevel === 'UNKNOWN'
+                     'border-stone2-300 bg-cream-100':    demoResult()!.riskLevel === 'UNKNOWN'
                    }">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-black uppercase tracking-widest text-gray-500">Groq LLM</span>
+                    <span class="text-[10px] font-black uppercase tracking-widest text-stone2-500">Groq LLM</span>
                     <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase"
                           [ngClass]="{
                             'bg-red-500 text-white':         demoResult()!.riskLevel === 'HIGH',
                             'bg-yellow-400 text-yellow-900': demoResult()!.riskLevel === 'MEDIUM',
                             'bg-green-500 text-white':       demoResult()!.riskLevel === 'LOW',
-                            'bg-gray-400 text-white':        demoResult()!.riskLevel === 'UNKNOWN'
+                            'bg-stone2-400 text-white':        demoResult()!.riskLevel === 'UNKNOWN'
                           }">
                       {{ demoResult()!.riskLevel }}
                     </span>
@@ -638,12 +638,12 @@
                           'text-red-600':    demoResult()!.riskLevel === 'HIGH',
                           'text-yellow-600': demoResult()!.riskLevel === 'MEDIUM',
                           'text-green-600':  demoResult()!.riskLevel === 'LOW',
-                          'text-gray-500':   demoResult()!.riskLevel === 'UNKNOWN'
+                          'text-stone2-500':   demoResult()!.riskLevel === 'UNKNOWN'
                         }">
                     {{ (demoResult()!.confidence * 100).toFixed(0) }}%
                   </span>
                 </div>
-                <p class="text-xs text-gray-700 leading-relaxed">
+                <p class="text-xs text-ink-700 leading-relaxed">
                   {{ getDisplayReason(demoResult()!) }}
                 </p>
               </div>
@@ -657,7 +657,7 @@
 
     <!-- Security Warning Footer -->
     <div
-      class="mt-8 flex items-center justify-center gap-2 text-[10px] text-gray-400 uppercase tracking-widest font-black">
+      class="mt-8 flex items-center justify-center gap-2 text-[10px] text-cream-100/40 uppercase tracking-widest font-black">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />

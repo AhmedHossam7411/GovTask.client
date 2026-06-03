@@ -1,0 +1,115 @@
+<!-- ── HERO ─────────────────────────────────────────────────────────────── -->
+<section class="relative min-h-[90vh] flex flex-col bg-gradient-to-br from-ink-900 via-ink-800 to-sage-900 overflow-hidden">
+  <!-- soft light + vignette -->
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 0%, rgba(137,156,120,0.20), transparent 55%);"></div>
+  <div class="absolute inset-0" style="background:radial-gradient(ellipse at 50% 120%, rgba(0,0,0,0.55), transparent 55%);"></div>
+
+  <div class="relative flex-1 flex flex-col items-center justify-center text-center px-6 py-20">
+    <p class="text-bronze-400 text-[11px] sm:text-xs font-semibold uppercase tracking-luxe mb-7">
+      Government-grade behavioural security
+    </p>
+
+    <h1 class="font-display text-cream-50 text-6xl sm:text-7xl md:text-[7rem] font-medium leading-[0.95] tracking-tight">
+      Behaviour<span class="text-sage-300">Shield</span>
+    </h1>
+
+    <div class="mt-7 h-px w-24 bg-bronze-500/70"></div>
+
+    <p class="mt-8 max-w-xl text-sage-100/80 text-base sm:text-lg leading-relaxed font-light">
+      Continuous, population-level behavioural analysis that detects bots and malicious
+      intent in real time — protecting sensitive government workflows without slowing
+      legitimate work.
+    </p>
+
+    <div class="mt-11 flex flex-wrap items-center justify-center gap-4">
+      <a routerLink="/login"
+         class="px-9 py-3.5 bg-sage-500 text-cream-50 text-xs font-semibold uppercase tracking-[0.18em] hover:bg-sage-400 transition-colors shadow-xl">
+        Enter Portal
+      </a>
+      <a routerLink="/register"
+         class="px-9 py-3.5 border border-cream-100/30 text-cream-100 text-xs font-semibold uppercase tracking-[0.18em] hover:bg-cream-50/10 transition-colors">
+        Request Access
+      </a>
+    </div>
+  </div>
+
+  <!-- ── KIMI-style feature strip ──────────────────────────────────────── -->
+  <div class="relative grid grid-cols-1 md:grid-cols-3 gap-px bg-cream-50/10 border-t border-cream-50/10">
+    <div class="bg-ink-900/50 backdrop-blur-sm px-7 py-8">
+      <p class="text-bronze-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Behavioural biometrics</p>
+      <h3 class="font-display text-cream-50 text-2xl mb-2">Spot bots & automation</h3>
+      <p class="text-sage-100/60 text-sm leading-relaxed">
+        Mouse, keystroke and interaction dynamics expose scripted, non-human activity that
+        signature rules alone miss.
+      </p>
+    </div>
+    <div class="bg-ink-900/50 backdrop-blur-sm px-7 py-8">
+      <p class="text-bronze-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Real-time ML</p>
+      <h3 class="font-display text-cream-50 text-2xl mb-2">Detect malicious intent</h3>
+      <p class="text-sage-100/60 text-sm leading-relaxed">
+        A hybrid model flags injection attempts, suspicious pastes and evasion the moment they
+        appear, then challenges the session.
+      </p>
+    </div>
+    <div class="bg-ink-900/50 backdrop-blur-sm px-7 py-8">
+      <p class="text-bronze-400 text-[11px] font-semibold uppercase tracking-wider mb-2">Frictionless</p>
+      <h3 class="font-display text-cream-50 text-2xl mb-2">Stay out of the way</h3>
+      <p class="text-sage-100/60 text-sm leading-relaxed">
+        Legitimate staff work uninterrupted; only anomalous behaviour ever triggers a
+        verification challenge.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS (light) ─────────────────────────────────────────────── -->
+<section class="bg-cream-100 px-6 py-24">
+  <div class="max-w-5xl mx-auto text-center">
+    <p class="text-sage-600 text-xs font-semibold uppercase tracking-luxe mb-4">How it works</p>
+    <h2 class="font-display text-ink-900 text-4xl sm:text-5xl font-medium mb-16">
+      Quiet protection, continuously
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-left">
+      <div class="border-t-2 border-bronze-500 pt-6">
+        <span class="font-display text-bronze-500 text-3xl">01</span>
+        <h3 class="font-display text-ink-900 text-2xl mt-2 mb-2">Observe</h3>
+        <p class="text-stone2-600 text-sm leading-relaxed">
+          Every session's behavioural signature is captured in 30-second windows — movement,
+          timing, paste and inspection activity.
+        </p>
+      </div>
+      <div class="border-t-2 border-bronze-500 pt-6">
+        <span class="font-display text-bronze-500 text-3xl">02</span>
+        <h3 class="font-display text-ink-900 text-2xl mt-2 mb-2">Assess</h3>
+        <p class="text-stone2-600 text-sm leading-relaxed">
+          A machine-learning model, backed by a hard-rule safety net, scores each window for
+          anomalous or malicious intent.
+        </p>
+      </div>
+      <div class="border-t-2 border-bronze-500 pt-6">
+        <span class="font-display text-bronze-500 text-3xl">03</span>
+        <h3 class="font-display text-ink-900 text-2xl mt-2 mb-2">Respond</h3>
+        <p class="text-stone2-600 text-sm leading-relaxed">
+          Repeated high-risk behaviour raises a layered security challenge, suspending the
+          account if it cannot be resolved.
+        </p>
+      </div>
+    </div>
+
+    <div class="mt-16">
+      <a routerLink="/login"
+         class="inline-block px-10 py-3.5 bg-ink-900 text-cream-50 text-xs font-semibold uppercase tracking-[0.18em] hover:bg-ink-700 transition-colors">
+        Enter the Portal
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ───────────────────────────────────────────────────────────── -->
+<footer class="bg-ink-900 px-6 py-8 border-t border-sage-900">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+    <span class="font-display text-cream-50 text-xl tracking-wide">Behaviour<span class="text-sage-300">Shield</span></span>
+    <span class="text-sage-100/40 text-xs uppercase tracking-wider">© {{ year }} · Government Task Management</span>
+  </div>
+</footer>

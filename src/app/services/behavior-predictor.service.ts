@@ -40,8 +40,6 @@ export class BehaviorPredictorService {
   private urgentSubscription: Subscription | null = null;
   private demoHttpSub: Subscription | null = null;
 
-
-  // Number of HIGH-risk strikes that triggers the security challenge.
   private readonly maxStrikes = 2;
 
   readonly strikeCount$ = new BehaviorSubject<number>(
@@ -168,23 +166,29 @@ export class BehaviorPredictorService {
   private checkPrediction(snapshot: any) {
     if (this.demoSending()) return;
 
+    const devToolsOpen = !!snapshot?.devToolsDetected;
+
+    if (devToolsOpen) {
+      const strikes = this.incrementHighRiskCount();
+      if (strikes >= this.maxStrikes) {
+        this.triggerSecurityChallenge(`DEVTOOLS_OPEN_DETECTED (Strike ${strikes}/${this.maxStrikes})`);
+        return;
+      }
+    }
+
     this.http.post<PredictResponse>(`${environment.apiUrl}/MLPrediction/predict`, { data: [snapshot] }, { withCredentials: true })
       .subscribe({
         next: (response) => {
-          // DevTools open counts as one HIGH strike, exactly like an ML HIGH verdict.
-          // Two HIGH strikes (any mix of DevTools / ML) reach maxStrikes and trigger.
-          const devToolsOpen = !!snapshot?.devToolsDetected;
-          const riskLevel = devToolsOpen ? 'HIGH' : response?.analysis?.riskLevel;
+          // DevTools was already scored above — don't let the ML verdict double-count
+          // it (HIGH) or undo it (LOW) for this snapshot.
+          if (devToolsOpen) return;
 
-          if (riskLevel === 'HIGH') {
+          if (response?.analysis?.riskLevel === 'HIGH') {
             const currentStrikes = this.incrementHighRiskCount();
             if (currentStrikes >= this.maxStrikes) {
-              const reason = devToolsOpen
-                ? `DEVTOOLS_OPEN_DETECTED (Strike ${currentStrikes}/${this.maxStrikes})`
-                : `HIGH_RISK_ML_BEHAVIOR (Strike ${currentStrikes}/${this.maxStrikes})`;
-              this.triggerSecurityChallenge(reason);
+              this.triggerSecurityChallenge(`HIGH_RISK_ML_BEHAVIOR (Strike ${currentStrikes}/${this.maxStrikes})`);
             }
-          } else if (riskLevel === 'LOW') {
+          } else if (response?.analysis?.riskLevel === 'LOW') {
             const current = this.getHighRiskCount();
             if (current > 0) {
               sessionStorage.setItem('behaviorHighRiskCount', (current - 1).toString());

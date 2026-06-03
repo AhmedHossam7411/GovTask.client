@@ -4,7 +4,7 @@ import { DepartmentService } from '../services/department-Service';
 import { EditForm } from "./edit-form/edit-form";
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DeleteConfirmDialog } from './deleteDept-dialog/deleteDept-dialog';
-import { ViewDetailsDialog } from '../shared/view-details-dialog/view-details-dialog';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-department-component',
   imports: [MatDialogModule],
@@ -17,6 +17,7 @@ export class DepartmentComponent {
   protected editingId: number | null = null;
   protected formIsVisible = false;
   private dialogRef = inject(MatDialog);
+  private router = inject(Router);
   
   @Output() itemEdited = new EventEmitter<DepartmentDto>();
   @Output() itemDeleted = new EventEmitter<number>();
@@ -45,10 +46,7 @@ export class DepartmentComponent {
   } 
 
   openViewDialog(department: DepartmentDto) {
-    this.dialogRef.open(ViewDetailsDialog, {
-      data: { entity: department, type: 'Department' },
-      panelClass: 'custom-dialog-container'
-    });
+    this.router.navigate(['/view', 'department', department.id], { state: { entity: department } });
   }
 
 }

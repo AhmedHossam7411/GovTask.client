@@ -1,0 +1,87 @@
+<div class="min-h-screen">
+  <div class="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 pb-10">
+
+    <!-- Back -->
+    <button (click)="back()"
+      class="inline-flex items-center gap-2 text-cream-100/70 hover:text-cream-50 text-xs font-semibold uppercase tracking-wider mb-6 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+      </svg>
+      Back
+    </button>
+
+    @if (loading()) {
+      <div class="bg-cream-50 border border-ink-900/10 p-16 text-center text-stone2-400">Loading…</div>
+    } @else if (!entity()) {
+      <div class="bg-cream-50 border border-ink-900/10 p-16 text-center">
+        <p class="font-display text-2xl text-ink-900/70">Not found</p>
+        <p class="text-sm text-stone2-500 mt-1">This record may have been removed.</p>
+      </div>
+    } @else {
+      <div class="bg-cream-50 border border-ink-900/10 shadow-sm">
+        <!-- Header band -->
+        <div class="flex items-start gap-5 p-8 border-b border-ink-900/10 bg-cream-100">
+          <div class="bg-ink-900 w-16 h-16 flex shrink-0 items-center justify-center text-cream-50 font-bold text-xl shadow-sm">
+            {{ entity().name?.charAt(0)?.toUpperCase() }}{{ entity().name?.charAt(1)?.toUpperCase() }}
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-bronze-500 text-[11px] font-semibold uppercase tracking-luxe mb-1">{{ typeLabel() }}</p>
+            <h1 class="font-display font-semibold text-ink-900 text-4xl leading-tight break-words">{{ entity().name }}</h1>
+            <span class="inline-block mt-2 text-[10px] font-semibold uppercase tracking-wider px-2 py-1 bg-cream-200 text-stone2-600 border border-ink-900/10">ID {{ entity().id }}</span>
+          </div>
+        </div>
+
+        <!-- Fields -->
+        <dl class="divide-y divide-ink-900/5">
+          @for (f of fields(); track f.label) {
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 px-8 py-4">
+              <dt class="text-xs font-semibold uppercase tracking-wider text-stone2-500">{{ f.label }}</dt>
+              <dd class="sm:col-span-2 text-sm text-ink-800 whitespace-pre-wrap break-words">{{ f.value || '—' }}</dd>
+            </div>
+          }
+        </dl>
+
+        <!-- Document file viewer -->
+        @if (type() === 'document') {
+          <div class="border-t border-ink-900/10 p-8">
+            <div class="flex items-center justify-between mb-4">
+              <p class="text-xs font-semibold uppercase tracking-luxe text-bronze-500">Attached file</p>
+              @if (file()?.dataUrl) {
+                <button (click)="download()"
+                  class="inline-flex items-center gap-2 text-sage-700 hover:bg-sage-50 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" /></svg>
+                  Download {{ prettySize(file()!.size) }}
+                </button>
+              }
+            </div>
+
+            @switch (fileMode()) {
+              @case ('text') {
+                <pre class="bg-ink-900 text-cream-100 text-xs leading-relaxed p-5 overflow-auto max-h-[60vh] whitespace-pre-wrap break-words">{{ textContent() }}</pre>
+              }
+              @case ('image') {
+                <div class="bg-ink-900/90 p-4 flex justify-center">
+                  <img [src]="imageUrl()" [alt]="file()?.fileName" class="max-h-[60vh] max-w-full object-contain shadow-lg" />
+                </div>
+              }
+              @case ('pdf') {
+                <iframe [src]="pdfUrl()" class="w-full h-[70vh] border border-ink-900/10 bg-white"></iframe>
+              }
+              @case ('other') {
+                <div class="bg-cream-100 border border-dashed border-ink-900/20 p-10 text-center">
+                  <p class="font-display text-xl text-ink-900/70">{{ file()?.fileName }}</p>
+                  <p class="text-sm text-stone2-500 mt-1">Preview not available for this file type — use Download to open it.</p>
+                </div>
+              }
+              @default {
+                <div class="bg-cream-100 border border-dashed border-ink-900/20 p-10 text-center text-stone2-500">
+                  <p class="text-sm">No file attached to this document <span class="italic">(metadata only)</span>.</p>
+                </div>
+              }
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

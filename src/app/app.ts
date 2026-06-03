@@ -1,5 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationStart } from '@angular/router';
 import { Header } from "./header/headerComponent";
 import { MatDialogModule } from '@angular/material/dialog';
 import { BehaviorTrackerService } from './services/behavior-tracker.service';
@@ -21,6 +21,7 @@ export class App implements OnInit {
     private behaviorTracker: BehaviorTrackerService,
     private behaviorPredictor: BehaviorPredictorService,
     private auth: Auth,
+    private router: Router,
   ) { }
 
   ngOnInit(): void {
@@ -33,5 +34,20 @@ export class App implements OnInit {
     });
     this.behaviorTracker.start();
     this.behaviorPredictor.start();
+
+    // Global security-challenge lock. While a challenge is active, force EVERY
+    // navigation (nav links, back/forward, typed URLs, guarded or not) back to
+    // /challenge. This is the single, reliable source of truth for the lock —
+    // it does not depend on per-route guards firing correctly under zoneless CD.
+    this.router.events.subscribe(event => {
+      if (
+        event instanceof NavigationStart &&
+        event.url !== '/challenge' &&
+        sessionStorage.getItem('security_challenge_active') === 'true'
+      ) {
+        this.behaviorTracker.recordUnauthorizedAttempt();
+        this.router.navigateByUrl('/challenge');
+      }
+    });
   }
 }

@@ -2,11 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply font-serif;
-}
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", system-ui, sans-serif;
+  /* Dark old-money canvas behind every page (matches the landing hero) */
+  background-color: #15180f;
+  background-image: linear-gradient(135deg, #15180f 0%, #23271f 45%, #30392b 100%);
+  background-attachment: fixed;
+  color: #23271f;                   /* ink — cards set their own colours */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Elegant serif display for hero / headings that opt in via .font-display or font-serif */
+.font-display, .font-serif {
+  font-family: "Cormorant Garamond", Merriweather, Georgia, serif;
+}
+
+::selection {
+  background: #58694b;              /* sage */
+  color: #f4f1ea;
+}

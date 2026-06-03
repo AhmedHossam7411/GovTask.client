@@ -1,6 +1,6 @@
 import {
   Component, OnInit, OnDestroy, AfterViewInit,
-  ViewChild, ElementRef, inject
+  ViewChild, ElementRef, inject, ChangeDetectorRef
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -22,6 +22,7 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   private auth   = inject(Auth);
   private router = inject(Router);
   private http   = inject(HttpClient);
+  private cdr    = inject(ChangeDetectorRef);
 
   triggerReason = 'Suspicious behavior detected';
   timeLeft      = 120;
@@ -87,6 +88,10 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
       this.fetchingQuestions = false;
       // Start the clock only now that the challenge is rendered and answerable.
       this.startCountdown();
+      // Zoneless change detection: the native fetch above runs outside Angular's
+      // awareness, so the resolved questions won't render until something else
+      // triggers CD. Notify Angular explicitly so the form appears immediately.
+      this.cdr.markForCheck();
     }
   }
 
@@ -322,6 +327,9 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.timer = setInterval(() => {
       this.timeLeft--;
       if (this.timeLeft <= 0) { this.clearTimer(); this.suspendAndLogout(); }
+      // setInterval fires outside Angular in zoneless mode — without this the
+      // countdown display (and the suspend state) would freeze on screen.
+      this.cdr.markForCheck();
     }, 1000);
   }
 

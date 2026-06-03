@@ -10,8 +10,13 @@ import { SecurityChallengeComponent } from './security-challenge/security-challe
 import { SecurityChallengeGuard } from './shared/guards/security-challenge.guard';
 import { AdminGuard } from './shared/guards/admin.guard';
 import { ChallengeGuard } from './shared/guards/challenge.guard';
+import { LandingComponent } from './landing/landing';
+import { DetailViewComponent } from './shared/detail-view/detail-view';
+import { AnalyticsComponent } from './analytics/analytics';
 
 export const routes: Routes = [
+  { path: 'home', component: LandingComponent, canActivate: [SecurityChallengeGuard] },
+  { path: 'view/:type/:id', component: DetailViewComponent, canActivate: [SecurityChallengeGuard, AuthGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'login', component: LoginComponent },
   { path: 'challenge', component: SecurityChallengeComponent, canActivate: [ChallengeGuard] },
@@ -19,5 +24,6 @@ export const routes: Routes = [
   {path: 'tasks',component: TasksContainer, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'documents',component: DocumentContainerComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
   {path: 'admin',component: AdminDashboardComponent, canActivate: [SecurityChallengeGuard, AuthGuard, AdminGuard]},
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  {path: 'analytics',component: AnalyticsComponent, canActivate: [SecurityChallengeGuard, AuthGuard]},
+  { path: '', component: LandingComponent, pathMatch: 'full', canActivate: [SecurityChallengeGuard] }
 ];
