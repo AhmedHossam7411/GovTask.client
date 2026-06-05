@@ -11,6 +11,7 @@ import { Router, RouterModule } from '@angular/router';
 import { passwordRules } from '../shared/Custom-validators';
 import { Auth } from '../services/auth-service';
 import { BehaviorTrackerService } from '../services/behavior-tracker.service';
+import { BehaviorPredictorService } from '../services/behavior-predictor.service';
 
 @Component({
   selector: 'app-login',
@@ -22,6 +23,7 @@ export class LoginComponent {
   private auth = inject(Auth);
   private router = inject(Router);
   private behaviorTracker = inject(BehaviorTrackerService);
+  private behaviorPredictor = inject(BehaviorPredictorService);
   errorMessage: string = '';
 
   form = new FormGroup({
@@ -58,6 +60,12 @@ export class LoginComponent {
         this.router.navigate(['/departments']);
         this.behaviorTracker.setContext('postAuth');
         this.behaviorTracker.start();
+        // The predictor is what escalates a detection into the challenge. It must
+        // be re-armed alongside the tracker — triggerSecurityChallenge() stops it,
+        // and App.ngOnInit only starts it once at bootstrap, so without this a
+        // post-challenge re-login leaves detections logging a warning but never
+        // firing the challenge. start() is idempotent (guards on its subscription).
+        this.behaviorPredictor.start();
       },
       error: (err) => {
         if (err?.status === 423) {

@@ -8,6 +8,8 @@ import { Auth } from '../services/auth-service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../environments/environment';
+import { BehaviorTrackerService } from '../services/behavior-tracker.service';
+import { BehaviorPredictorService } from '../services/behavior-predictor.service';
 
 @Component({
   selector: 'app-security-challenge',
@@ -19,10 +21,12 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
   @ViewChild('clickCanvas') clickCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('codeCanvas')  codeCanvas!:  ElementRef<HTMLCanvasElement>;
 
-  private auth   = inject(Auth);
-  private router = inject(Router);
-  private http   = inject(HttpClient);
-  private cdr    = inject(ChangeDetectorRef);
+  private auth      = inject(Auth);
+  private router    = inject(Router);
+  private http      = inject(HttpClient);
+  private cdr       = inject(ChangeDetectorRef);
+  private tracker   = inject(BehaviorTrackerService);
+  private predictor = inject(BehaviorPredictorService);
 
   triggerReason = 'Suspicious behavior detected';
   timeLeft      = 120;
@@ -340,6 +344,11 @@ export class SecurityChallengeComponent implements OnInit, AfterViewInit, OnDest
     this.clearTimer();
     sessionStorage.removeItem('security_challenge_active');
     sessionStorage.removeItem('challenge_reason');
+    // triggerSecurityChallenge() stopped both services when the challenge fired.
+    // Re-arm them now so monitoring continues after a successful solve — otherwise
+    // detection stays dead until a full page reload. Both start() calls are idempotent.
+    this.tracker.start();
+    this.predictor.start();
     this.router.navigate([sessionStorage.getItem('pre_challenge_url') || '/departments']);
   }
 
